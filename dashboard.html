@@ -241,7 +241,7 @@
         .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
         
         /* 🔥 FIXED LOGOUT BUTTON - SIMPLE & WORK */
-        .logout-btn {
+           .logout-btn {
             width: 100%; 
             padding: 12px;
             background: rgba(239, 68, 68, 0.1);
@@ -405,7 +405,7 @@
             border-left: 3px solid var(--accent-pink); padding-left: 10px;
         }
 
-        /* --- TOOLS PAGE --- */
+/* --- TOOLS PAGE --- */
         .tools-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 25px;
@@ -528,7 +528,7 @@
             text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
         }
 
-     /* Specific Tool Colors */
+        /* Specific Tool Colors */
         .spam-card { background: var(--card-bg-red); border-color: rgba(255, 51, 51, 0.4); }
         .spam-card .tool-icon-circle { background: linear-gradient(135deg, var(--accent-red), var(--accent-red-dark)); }
         .spam-card .tool-desc { color: var(--accent-red); text-shadow: 0 0 3px rgba(255, 51, 51, 0.3); }
@@ -776,7 +776,7 @@
             text-shadow: 0 0 10px rgba(219, 39, 119, 0.5);
         }
 
-        .submenu-subtitle {
+                .submenu-subtitle {
             font-family: var(--font-code);
             font-size: 10px;
             color: var(--accent-pink);
@@ -1033,7 +1033,7 @@
                 </a>
             </li>
             
-                   <!-- ADMIN MENU - Hanya muncul untuk owner dan admin -->
+            <!-- ADMIN MENU - Hanya muncul untuk owner dan admin -->
             <li class="sidebar-item hidden" id="admin-menu-item">
                 <a href="/user-management" class="sidebar-link">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
@@ -1061,18 +1061,8 @@
         </ul>
 
         <!-- 🔥 LOGOUT BUTTON FIXED -->
-        <div class="sidebar-footer">
-            <a href="/logout" class="logout-btn" onclick="return confirmLogout()">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                </svg>
-                LOGOUT SYSTEM
-            </a>
-        </div>
-    </aside>
 
-    <!-- SUBMENU MODAL -->
-    <div class="submenu-overlay" id="submenuOverlay">
+        <div class="submenu-overlay" id="submenuOverlay">
         <div class="submenu-container" id="submenuContainer">
             <div class="submenu-header">
                 <div>
@@ -1318,7 +1308,7 @@
         </div>
     </main>
 
-        <!-- Bottom Navbar -->
+    <!-- Bottom Navbar -->
     <nav class="bottom-nav">
         <button class="nav-item active" data-page="dashboard">
             <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
@@ -1346,284 +1336,15 @@
         </button>
     </nav>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        const container = document.getElementById('particle-container');
-        const particleCount = 35; 
+        <script>
+document.addEventListener("DOMContentLoaded", () => {
 
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            const size = Math.random() * 3 + 2; 
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            
-            particle.style.left = `${Math.random() * 100}vw`;
-            particle.style.top = `${Math.random() * 100}vh`;
-            
-            const duration = Math.random() * 15 + 10;
-            particle.style.animationDuration = `${duration}s`;
-            
-            particle.style.animationDelay = `-${Math.random() * 20}s`;
+    // ===== MENU SIDEBAR =====
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
 
-            container.appendChild(particle);
-        }
-
-        let currentUserRole = 'user';
-
-        window.confirmLogout = function() {
-            return confirm('Apakah Anda yakin ingin logout?');
-        };
-
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                console.log('Page loaded from cache, refreshing...');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 100);
-            }
-        });
-
-        if (window.history.replaceState) {
-            window.history.replaceState(null, null, window.location.href);
-        }
-
-        async function fetchUserData() {
-            try {
-                const response = await fetch('/api/option-data');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch user data');
-                }
-                const userData = await response.json();
-                
-                console.log('User data fetched:', userData);
-                
-                currentUserRole = userData.role || 'user';
-                
-                const sidebarUsername = document.getElementById('sidebar-username');
-                const sidebarRole = document.getElementById('sidebar-role');
-                
-                if (sidebarUsername) sidebarUsername.textContent = userData.username || 'Guest';
-                if (sidebarRole) sidebarRole.textContent = `ID: #${userData.username || '000'} • ${currentUserRole.toUpperCase()}`;
-                
-                const statUsername = document.getElementById('stat-username');
-                const statRole = document.getElementById('stat-role');
-                const statExpired = document.getElementById('stat-expired');
-                const activeSenders = document.getElementById('active-senders');
-                const toolsBadge = document.getElementById('tools-badge');
-                
-                if (statUsername) statUsername.textContent = userData.username || 'Guest';
-                if (statRole) statRole.textContent = currentUserRole.toUpperCase();
-                if (statExpired) {
-                    if (userData.expired === 'Permanent' || userData.daysRemaining === 99999) {
-                        statExpired.textContent = 'Permanent';
-                        statExpired.style.color = '#10b981';
-                    } else {
-                        statExpired.textContent = userData.expired || 'Unknown';
-                        statExpired.style.color = '#eab308';
-                    }
-                }
-                if (activeSenders) activeSenders.textContent = userData.activeSenders || '0';
-                if (toolsBadge) toolsBadge.textContent = currentUserRole.toUpperCase();
-                
-                try {
-                    const onlineResponse = await fetch('/api/online-users');
-                    if (onlineResponse.ok) {
-                        const onlineData = await onlineResponse.json();
-                        const onlineUsersElement = document.getElementById('online-users');
-                        if (onlineUsersElement) {
-                            onlineUsersElement.textContent = onlineData.onlineUsers || 1;
-                        }
-                    }
-                } catch (onlineError) {
-                    console.warn('Could not fetch online users:', onlineError);
-                    const onlineUsersElement = document.getElementById('online-users');
-                    if (onlineUsersElement) {
-                        onlineUsersElement.textContent = '1';
-                    }
-                }
-                
-                updateAccessByRole(currentUserRole);
-                
-                return userData;
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                document.getElementById('sidebar-username').textContent = 'Error';
-                document.getElementById('sidebar-role').textContent = 'ID: #ERROR • ROLE';
-                document.getElementById('stat-username').textContent = 'Error';
-                document.getElementById('stat-role').textContent = 'ERROR';
-                document.getElementById('stat-expired').textContent = 'Error loading';
-                document.getElementById('active-senders').textContent = '0';
-                document.getElementById('tools-badge').textContent = 'ERROR';
-                document.getElementById('online-users').textContent = '1';
-                
-                const adminMenuItem = document.getElementById('admin-menu-item');
-                if (adminMenuItem) {
-                    adminMenuItem.classList.add('hidden');
-                }
-                
-                return null;
-            }
-        }
-
-        function updateAccessByRole(role) {
-            const adminMenuItem = document.getElementById('admin-menu-item');
-            const toolsNavButton = document.querySelector('.nav-item[data-page="tools"]');
-            
-            if (role === 'owner' || role === 'admin') {
-                if (adminMenuItem) adminMenuItem.classList.remove('hidden');
-                if (toolsNavButton) toolsNavButton.classList.remove('hidden');
-                
-                setupToolsPageForAdmin();
-            } else {
-                if (adminMenuItem) adminMenuItem.classList.add('hidden');
-                if (toolsNavButton) toolsNavButton.classList.add('hidden');
-                
-                setupToolsPageForUser();
-            }
-        }
-
-        function setupToolsPageForAdmin() {
-            const toolsPage = document.getElementById('tools-page');
-            if (!toolsPage) return;
-            
-            const accessDeniedDiv = document.getElementById('tools-access-denied');
-            if (accessDeniedDiv) {
-                accessDeniedDiv.remove();
-            }
-            
-            const toolsHeader = toolsPage.querySelector('.tools-header');
-            const toolsGrid = toolsPage.querySelector('.tools-grid');
-            if (toolsHeader) toolsHeader.classList.remove('hidden');
-            if (toolsGrid) toolsGrid.classList.remove('hidden');
-        }
-
-        function setupToolsPageForUser() {
-            const toolsPage = document.getElementById('tools-page');
-            if (!toolsPage) return;
-            
-            let accessDeniedDiv = document.getElementById('tools-access-denied');
-            
-            if (!accessDeniedDiv) {
-                accessDeniedDiv = document.createElement('div');
-                accessDeniedDiv.id = 'tools-access-denied';
-                accessDeniedDiv.style.cssText = `
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    height: 70vh;
-                    text-align: center;
-                    padding: 30px;
-                    margin-top: 20px;
-                `;
-                
-                accessDeniedDiv.innerHTML = `
-                    <div style="
-                        width: 100px;
-                        height: 100px;
-                        background: rgba(219, 39, 119, 0.1);
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        margin-bottom: 30px;
-                        border: 3px solid rgba(219, 39, 119, 0.3);
-                    ">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="50" viewBox="0 -960 960 960" width="50" fill="#db2777">
-                            <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Zm-40 200h80v-80h-80v80Zm0-160h80v-240h-80v240Z"/>
-                        </svg>
-                    </div>
-                    <h2 style="
-                        font-family: var(--font-title);
-                        font-size: 28px;
-                        font-weight: 700;
-                        color: #db2777;
-                        margin-bottom: 15px;
-                        letter-spacing: 1px;
-                    ">
-                        ⚠️ ACCESS RESTRICTED
-                    </h2>
-                    <div style="
-                        font-family: var(--font-code);
-                        font-size: 14px;
-                        color: #9ca3af;
-                        max-width: 350px;
-                        line-height: 1.6;
-                        margin-bottom: 25px;
-                    ">
-                        <strong style="color: #fff;">Fitur Tools hanya untuk Owner dan Admin!</strong><br><br>
-                        Anda login sebagai <span style="color: #db2777; font-weight: bold;">USER</span>. 
-                        Fitur tools premium hanya dapat diakses oleh akun dengan role Owner atau Admin.<br><br>
-                        Untuk upgrade akun, hubungi admin:
-                    </div>
-                    <div style="
-                        background: rgba(219, 39, 119, 0.15);
-                        border: 1px solid rgba(219, 39, 119, 0.3);
-                        border-radius: 12px;
-                        padding: 12px 20px;
-                        margin-bottom: 25px;
-                    ">
-                        <div style="
-                            font-family: var(--font-title);
-                            font-size: 16px;
-                            color: #fff;
-                            margin-bottom: 5px;
-                        ">
-                            📞 Admin Contact
-                        </div>
-                        <div style="
-                            font-family: var(--font-code);
-                            font-size: 14px;
-                            color: #db2777;
-                            font-weight: bold;
-                        ">
-                            @mailsukamieayam
-                        </div>
-                    </div>
-                    <button id="backToDashboardBtn" style="
-                        background: linear-gradient(100deg, #db2777, #9333ea);
-                        color: white;
-                        border: none;
-                        padding: 12px 30px;
-                        border-radius: 10px;
-                        font-family: var(--font-title);
-                        font-size: 14px;
-                        font-weight: 700;
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        box-shadow: 0 4px 15px rgba(219, 39, 119, 0.3);
-                        transition: transform 0.2s;
-                    ">
-                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
-                        </svg>
-                        Back to Dashboard
-                    </button>
-                `;
-                
-                const toolsHeader = toolsPage.querySelector('.tools-header');
-                const toolsGrid = toolsPage.querySelector('.tools-grid');
-                if (toolsHeader) toolsHeader.classList.add('hidden');
-                if (toolsGrid) toolsGrid.classList.add('hidden');
-                
-                toolsPage.appendChild(accessDeniedDiv);
-                
-                document.getElementById('backToDashboardBtn').addEventListener('click', () => {
-                    switchPage('dashboard');
-                });
-            }
-        }
-
-        await fetchUserData();
-
-        const menuBtn = document.getElementById('menuBtn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-
+    if (menuBtn && sidebar && overlay) {
         function toggleSidebar() {
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
@@ -1631,112 +1352,1565 @@
 
         menuBtn.addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);
+    }
 
-        const navItems = document.querySelectorAll('.nav-item[data-page]');
-        const pages = document.querySelectorAll('.page');
-        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    // ===== SUPPORT LINK =====
+    const supportLink = document.getElementById("spsupport-link");
 
-        function switchPage(pageId) {
-            if (pageId === 'tools' && currentUserRole === 'user') {
-                showNotification('Akses ditolak! Fitur Tools hanya untuk Owner dan Admin!');
-                return;
-            }
-            
-            pages.forEach(page => {
-                page.classList.remove('active');
-            });
+    if (supportLink) {
+        supportLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            alert("Hubungi Owner: @Winz_ofcial");
+            window.location.href = supportLink.href;
+        });
+    }
 
-            const activePage = document.getElementById(`${pageId}-page`);
-            if (activePage) {
-                activePage.classList.add('active');
-                
-                if (pageId === 'tools' && (currentUserRole === 'owner' || currentUserRole === 'admin')) {
-                    setTimeout(() => {
-                        const toolCards = document.querySelectorAll('#tools-page .tool-card');
-                        toolCards.forEach((card, index) => {
-                            setTimeout(() => {
-                                card.classList.add('animate-pop');
-                            }, index * 100);
-                        });
-                    }, 50);
-                }
-            }
+});
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const aiBtn = document.getElementById("whatsapp-nav");
 
-            navItems.forEach(item => {
-                item.classList.remove('active');
-                item.classList.remove('active-tools');
-                if (item.getAttribute('data-page') === pageId) {
-                    if (pageId === 'tools') {
-                        item.classList.add('active-tools');
-                    } else {
-                        item.classList.add('active');
-                    }
-                }
-            });
+    if (aiBtn) {
+      aiBtn.addEventListener("click", () => {
+        window.location.href = "ai.html";
+      });
+    }
+  });
+</script> 
+<script>
+ document.addEventListener("DOMContentLoaded", () => {
+    const aiBtn = document.getElementById("tools"); 
+    
+             if (aiBtn) {
+      aiBtn.addEventListener("click", () => {
+        window.location.href = "tools.html";
+      });
+    }
+  });
+</script>
+    <script src="profil.html">
+      
+    </script>
+</body>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
-            sidebar.classList.remove('active');
-            overlay.classList.remove('active');
+  const dashboardMenu = document.getElementById("dashboardMenu");
+  const toolContent   = document.getElementById("toolContent");
+
+  const myGanzBtn = document.getElementById("my-ganz-btn");
+  const drakBtn   = document.getElementById("drak-btn");
+  const sanzBtn   = document.getElementById("sanz-btn");
+
+  /* =========================
+     FUNGSI GLOBAL
+  ========================= */
+  function hideDashboard() {
+    if (dashboardMenu) dashboardMenu.style.display = "none";
+    toolContent.style.display = "block";
+  }
+
+  function showDashboard() {
+    toolContent.style.display = "none";
+    toolContent.innerHTML = "";
+    if (dashboardMenu) dashboardMenu.style.display = "block";
+  }
+
+  /* =========================
+     CRATE WEB
+  ========================= */
+                        if (myGanzBtn) {
+    myGanzBtn.addEventListener("click", () => {
+      hideDashboard();
+
+      toolContent.innerHTML = `
+        <div class="container">
+
+          <button id="backDashboard" style="
+            margin-bottom:15px;
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:12px;
+            font-weight:700;
+            font-size:14px;
+            color:#000;
+            background:linear-gradient(90deg,#00ffff,#00ff99);
+            cursor:pointer;
+            animation:neonPulse 1.4s infinite alternate;
+            box-shadow:
+              0 0 8px #00ffff,
+              0 0 16px #00ffff,
+              0 0 24px #00ff99;
+          ">
+            ⬅️ Kembali ke Dashboard
+          </button>
+
+          <div class="marquee">
+  <h2>🚀 crate Website Otomatis punya winz </h2>
+</div>
+          <form id="deployForm">
+            <label>Nama Website</label>
+            <input type="text" id="siteName" placeholder="contoh: mykerenweb" required>
+
+            <label>Upload File HTML</label>
+            <input type="file" id="htmlFile" accept=".html,text/html" required>
+
+            <button type="submit">CREATE SEKARANG</button>
+          </form>
+
+          <div id="result"></div>
+        </div>
+      `;
+
+      /* =========================
+         ELEMENT DOM
+      ========================= */
+      const backBtn  = document.getElementById("backDashboard");
+      const form     = document.getElementById("deployForm");
+      const siteName = document.getElementById("siteName");
+      const htmlFile = document.getElementById("htmlFile");
+      const result   = document.getElementById("result");
+
+      backBtn.onclick = showDashboard;
+
+      htmlFile.addEventListener("change", () => {
+        if (htmlFile.files.length > 0) {
+          result.innerHTML = "✅ File dipilih: " + htmlFile.files[0].name;
+        }
+      });
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const name = siteName.value.trim();
+        const file = htmlFile.files[0];
+
+        if (!name || !file) {
+          result.innerHTML = "❌ Isi nama & upload file HTML!";
+          return;
         }
 
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const pageId = item.getAttribute('data-page');
-                switchPage(pageId);
-            });
+        if (!file.name.endsWith(".html")) {
+          result.innerHTML = "❌ File harus .html";
+          return;
+        }
+
+        result.innerHTML = "⏳ Proses berjalan...";
+        console.log("Nama:", name);
+        console.log("File:", file);
+      });
+    });
+  }
+
+  /* =========================
+     ACTION CARD LAIN
+  ========================= */
+                        if (drakBtn) {
+    drakBtn.addEventListener("click", () => {
+      alert("My Senders belum dibuat");
+    });
+  }
+
+  if (sanzBtn) {
+    sanzBtn.addEventListener("click", () => {
+      alert("Developer menu belum dibuat");
+    });
+  }
+
+});
+</script>
+<style>
+/* =====================
+   GLOBAL
+===================== */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #000;
+  color: #e0e0e0;
+}
+
+/* =====================
+   CONTAINER
+===================== */
+.container {
+  max-width: 480px;
+  margin: 40px auto;
+  background: #1f1f1f;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* =====================
+   MARQUEE (TEXT BERJALAN)
+===================== */
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.marquee h2 {
+  display: inline-block;
+  padding-left: 100%;
+  font-size: 20px;
+  font-weight: 700;
+  animation:
+    berjalan 10s linear infinite,
+    warnaGanti 1.5s infinite alternate;
+}
+
+/* =====================
+   FORM
+===================== */
+form {
+  width: 100%;
+}
+
+/* LABEL */
+form label {
+  display: block;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+/* INPUT */
+form input[type="text"],
+form input[type="file"] {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  border-radius: 12px;
+  border: none;
+  background: #2a2a2a;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+/* INPUT FILE */
+form input[type="file"] {
+  cursor: pointer;
+}
+
+/* TOMBOL SUBMIT */
+form button {
+  width: 100%;
+  margin-top: 22px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(90deg, #00ffff, #00ff99);
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0, 255, 200, 0.6);
+}
+
+form button:active {
+  transform: scale(0.97);
+}
+
+/* HASIL */
+#result {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* =====================
+   ANIMATION
+===================== */
+
+/* TEXT BERJALAN */
+@keyframes berjalan {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* WARNA GANTI-GANTI */
+@keyframes warnaGanti {
+  0% {
+    color: #ff0000;
+    text-shadow: 0 0 10px #ff0000;
+  }
+  25% {
+    color: #ffff00;
+    text-shadow: 0 0 12px #ffff00;
+  }
+  50% {
+    color: #00ff00;
+    text-shadow: 0 0 14px #00ff00;
+  }
+  75% {
+    color: #00ffff;
+    text-shadow: 0 0 16px #00ffff;
+  }
+  100% {
+    color: #ff00ff;
+    text-shadow: 0 0 18px #ff00ff;
+  }
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const dashboardMenu = document.getElementById("dashboardMenu");
+    const toolContent   = document.getElementById("toolContent");
+    const developerBtn  = document.getElementById("developper-btn");
+
+    function hideDashboard() {
+        dashboardMenu.style.display = "none";
+        toolContent.style.display = "block";
+    }
+
+    function showDashboard() {
+        toolContent.innerHTML = "";
+        toolContent.style.display = "none";
+        dashboardMenu.style.display = "block";
+    }
+
+    // 🔥 PENTING: event developper-btn
+    if (developerBtn) {
+        developerBtn.addEventListener("click", () => {
+            hideDashboard();
+
+            // ⬇️ MASUKKAN HTML FORM
+            toolContent.innerHTML = `
+<style>
+        :root {
+            --bg-dark: #080310;       
+            --bg-gradient: radial-gradient(circle at 50% 0%, #1a0b2e 0%, #080310 80%);
+            
+            --card-bg: rgba(26, 11, 46, 0.85);       
+            --glass-border: rgba(255, 255, 255, 0.08);
+            
+            --accent-pink: #db2777;   
+            --accent-purple: #9333ea; 
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ff3333;
+            --accent-orange: #ffaa00;
+            --accent-cyan: #00d9ff;
+            
+            --text-gray: #9ca3af; 
+            --text-light: #e8e8e8;
+            
+            --font-title: 'Share Tech Mono', sans-serif;
+            --font-code: 'Share Tech Mono', monospace;
+            --font-head: 'Orbitron', sans-serif;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            outline: none; 
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            background-image: var(--bg-gradient);
+            color: #ffffff;
+            font-family: var(--font-code);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 90px;
+        }
+
+        /* --- PARTICLES --- */
+        #particle-container {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            z-index: -1; 
+            pointer-events: none; 
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6); 
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+            animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+        }
+
+        /* --- HEADER --- */
+                header {
+            display: flex; 
+            align-items: center; 
+            gap: 16px; 
+            padding: 20px 25px; 
+            padding-top: 40px; 
+            background: rgba(8, 3, 16, 0.95);
+            z-index: 50;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(219, 39, 119, 0.5) 50%, transparent 100%);
+        }
+
+        .back-btn {
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+            width: 35px; 
+            height: 35px;
+            border-radius: 10px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .back-btn:hover {
+            background: var(--accent-pink); 
+            border-color: var(--accent-pink);
+            transform: translateX(-3px);
+        }
+
+        .brand-title { 
+            font-family: var(--font-head);
+            font-size: 18px; 
+            font-weight: 700; 
+            letter-spacing: 1px; 
+            color: #fff;
+            text-shadow: 0 0 10px rgba(219, 39, 119, 0.6);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* --- GLASS CARDS --- */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.1); 
+            margin-bottom: 25px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .section-title {
+            font-family: var(--font-title);
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        .section-icon { 
+            color: var(--accent-pink); 
+            font-size: 18px; 
+        }
+
+        /* --- PROMO BANNER --- */
+        .promo-banner {
+            background: linear-gradient(135deg, rgba(219, 39, 119, 0.2), rgba(59, 130, 246, 0.2));
+            border: 1px solid rgba(219, 39, 119, 0.3);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: perspective(1000px) rotateX(0deg) rotateY(-2deg);
+        }
+
+        .promo-banner:hover {
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+            box-shadow: 0 10px 30px rgba(219, 39, 119, 0.3);
+        }
+
+        .promo-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .promo-icon {
+            font-size: 24px;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 15px rgba(0, 217, 255, 0.7);
+        }
+
+        .promo-text h4 {
+            color: #fff;
+            font-family: var(--font-head);
+            font-size: 14px;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .promo-text p {
+            color: var(--text-light);
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .promo-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(219, 39, 119, 0.4);
+            z-index: 2;
+            font-family: var(--font-head);
+            text-transform: uppercase;
+        }
+
+        /* --- GUIDE BUTTON --- */
+                .guide-btn-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0 25px 0;
+        }
+
+        .guide-btn {
+            background: linear-gradient(135deg, rgba(219, 39, 119, 0.2), rgba(59, 130, 246, 0.2));
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 50px;
+            padding: 10px 20px;
+            color: var(--accent-cyan);
+            font-family: var(--font-head);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .guide-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .guide-btn:hover::before {
+            left: 100%;
+        }
+
+        .guide-btn:hover {
+            background: linear-gradient(135deg, rgba(219, 39, 119, 0.3), rgba(59, 130, 246, 0.3));
+            border-color: var(--accent-pink);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .input-group { 
+            margin-bottom: 15px; 
+        }
+
+        .input-label {
+            font-family: var(--font-code);
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .paradox-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            font-family: var(--font-code);
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .paradox-input:focus {
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 15px rgba(219, 39, 119, 0.3);
+        }
+
+        /* --- CUSTOM DROPDOWN --- */
+        .custom-dropdown { 
+            position: relative; 
+            width: 100%; 
+            z-index: 100; 
+        }
+
+        .dropdown-trigger {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            cursor: pointer;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            transition: 0.3s;
+        }
+        
+        .dropdown-trigger:hover { 
+            border-color: var(--accent-purple); 
+        }
+        
+        .dropdown-menu {
+            position: absolute; 
+            top: 110%; 
+            left: 0; 
+            width: 100%;
+            background: #1a0b2e;
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            max-height: 250px; 
+            overflow-y: auto;
+            opacity: 0; 
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .custom-dropdown.active .dropdown-menu { 
+            opacity: 1; 
+            visibility: visible; 
+            transform: translateY(0); 
+        }
+
+        .dropdown-item {
+            padding: 12px 15px;
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: 0.2s; 
+            color: var(--text-gray); 
+            font-size: 13px;
+        }
+
+        .dropdown-item:hover { 
+            background: rgba(147, 51, 234, 0.2); 
+            color: #fff; 
+            padding-left: 20px; 
+        }
+        .dropdown-item.selected { 
+            background: rgba(219, 39, 119, 0.2); 
+            color: var(--accent-pink); 
+            font-weight: bold; 
+        }
+
+        /* --- BUTTONS --- */
+        .btn-core {
+            width: 100%; 
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            border: none; 
+            border-radius: 12px;
+            color: white;
+            font-family: var(--font-title); 
+            font-weight: 700; 
+            font-size: 14px; 
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(219, 39, 119, 0.4);
+            transition: 0.3s;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 8px;
+        }
+        .btn-core:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(219, 39, 119, 0.6);
+        }
+
+        /* --- SENDER LIST --- */
+        .senders-list-container {
+            margin-top: 20px;
+        }
+
+        .sender-item {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            transition: 0.3s;
+        }
+        
+        .sender-item:hover { 
+            border-color: var(--accent-blue); 
+            transform: translateX(5px); 
+        }
+
+        .sender-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+
+        .sender-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .sender-status.connected { 
+            background: var(--accent-green); 
+            box-shadow: 0 0 8px var(--accent-green); 
+        }
+        .sender-status.connecting { 
+            background: var(--accent-orange); 
+            box-shadow: 0 0 8px var(--accent-orange); 
+            animation: pulse 2s infinite;
+        }
+        .sender-status.waiting_pairing { 
+            background: var(--accent-blue); 
+            box-shadow: 0 0 8px var(--accent-blue); 
+            animation: pulse 1.5s infinite;
+        }
+        .sender-status.disconnected, 
+        .sender-status.error { 
+            background: var(--accent-red); 
+            box-shadow: 0 0 8px var(--accent-red); 
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .sender-number { 
+            font-size: 14px; 
+            color: #fff; 
+            font-family: var(--font-head);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-trash {
+            width: 35px; 
+            height: 35px;
+            background: rgba(255, 51, 51, 0.1); 
+            color: var(--accent-red);
+            border-radius: 8px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .btn-trash:hover { 
+            background: var(--accent-red); 
+            color: white; 
+            transform: scale(1.1);
+        }
+
+        /* --- MODAL STYLES --- */
+        .modal-overlay {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0,0,0,0.85); 
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            opacity: 0; 
+            visibility: hidden; 
+            transition: 0.3s;
+        }
+        .modal-overlay.active { 
+            opacity: 1; 
+            visibility: visible; 
+        }
+        
+        .modal-card {
+            background: #1a0b2e;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            border-radius: 24px;
+            padding: 30px;
+            width: 90%; 
+            max-width: 500px;
+            text-align: center;
+            transform: scale(0.9); 
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.active .modal-card { 
+            transform: scale(1); 
+        }
+
+        /* Guide Modal Specific */
+        .guide-modal .modal-card {
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .guide-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .guide-icon {
+            font-size: 30px;
+            color: var(--accent-pink);
+            text-shadow: 0 0 15px rgba(219, 39, 119, 0.5);
+        }
+
+        .guide-title {
+            font-family: var(--font-head);
+            font-size: 18px;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        .guide-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .guide-step {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-pink);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--accent-green);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 32%;
+            text-align: center;
+            line-height: 27px;
+            font-weight: bold;
+            margin-right: 2px;
+            font-family: var(--font-head);
+        }
+
+        .step-title {
+            display: inline-block;
+            color: #fff;
+            font-family: var(--font-head);
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .step-description {
+            color: var(--text-light);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-left: 38px;
+        }
+
+        .step-description strong {
+            color: var(--accent-cyan);
+        }
+
+        .guide-note {
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .note-title {
+            color: var(--accent-orange);
+            font-family: var(--font-head);
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .note-text {
+            color: var(--text-light);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .close-guide-btn {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-family: var(--font-title);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 25px;
+            width: 100%;
+        }
+
+        .close-guide-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(219, 39, 119, 0.4);
+        }
+
+        /* Pairing Modal */
+         .code-display {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--accent-pink);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: var(--font-head);
+            font-size: 32px;
+            color: #fff;
+            letter-spacing: 4px;
+            text-shadow: 0 0 15px rgba(219, 39, 119, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .modal-instructions {
+            text-align: left;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid var(--accent-pink);
+        }
+
+        .modal-instructions h4 {
+            color: var(--accent-pink);
+            margin-bottom: 10px;
+            font-family: var(--font-head);
+            font-size: 14px;
+        }
+
+        .modal-instructions ol {
+            color: var(--text-light);
+            padding-left: 20px;
+            font-size: 12px;
+        }
+
+        .modal-instructions li {
+            margin-bottom: 8px;
+        }
+
+        .modal-warning {
+            color: var(--accent-orange);
+            font-size: 12px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-copy {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: var(--font-title);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-copy:hover {
+            background: var(--accent-purple);
+            transform: translateY(-2px);
+        }
+
+        .btn-copy.copied {
+            background: var(--accent-green);
+            color: #000;
+            animation: pulseSuccess 0.5s;
+        }
+
+        @keyframes pulseSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-close {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-family: var(--font-title);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(219, 39, 119, 0.4);
+        }
+
+        /* Delete Modal */
+        .modal-card.delete-theme {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.2);
+        }
+
+        .icon-box-danger {
+            width: 60px; 
+            height: 60px;
+            background: rgba(255, 51, 51, 0.1);
+            color: var(--accent-red);
+            border-radius: 50%;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 15px auto;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            animation: pulseRed 2s infinite;
+        }
+
+        @keyframes pulseRed {
+            0% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 51, 51, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); }
+        }
+
+        .modal-actions {
+            display: flex; 
+            gap: 10px; 
+            margin-top: 25px;
+        }
+
+        .btn-cancel {
+            flex: 1; 
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: var(--font-title);
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn-delete-confirm {
+            flex: 1; 
+            padding: 12px;
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            border: none;
+            color: #fff;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: var(--font-title);
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+            transition: 0.3s;
+        }
+
+        .btn-delete-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.6);
+        }
+
+        /* --- NOTIFICATION TOAST --- */
+           .notification-toast {
+            position: fixed; 
+            top: -60px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            background: rgba(26, 11, 46, 0.95);
+            color: var(--accent-pink);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-family: var(--font-title);
+            font-weight: 700;
+            z-index: 2000;
+            border: 1px solid rgba(219, 39, 119, 0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .notification-toast.show { 
+            top: 20px; 
+        }
+
+        .notification-toast.success {
+            color: var(--accent-green);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .notification-toast.error {
+            color: var(--accent-red);
+            border-color: rgba(255, 51, 51, 0.3);
+        }
+
+        .notification-toast.info {
+            color: var(--accent-blue);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* --- LOADING & NO DATA --- */
+        .loading-text, .no-senders {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-gray);
+            font-style: italic;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .glass-card {
+                padding: 15px;
+            }
+            
+            .code-display {
+                font-size: 24px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            .promo-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .guide-modal .modal-card {
+                padding: 20px;
+</style>
+
+<div class="container">
+    <button id="backDashboard" style="
+        margin-bottom: 15px;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        color: #000;
+        background: linear-gradient(90deg,#00ffff,#00ff99);
+        cursor: pointer;
+        box-shadow: 0 0 8px #00ffff, 0 0 16px #00ffff, 0 0 24px #00ff99;
+    ">⬅️ Kembali ke Dashboard</button>
+    <div class="container">
+        
+        <!-- CARD 1: ADD SENDER -->
+        <div class="glass-card">
+            <div class="section-header">
+                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#c32fff"><path d="M207.54-287.54q-56.23-58.08-84.19-128T95.39-560q0-74.54 27.96-144.46t84.19-128l37.23 37.23Q196-746.08 172-684.54 148-623 148-560q0 63 24 124.54 24 61.54 72.77 110.69l-37.23 37.23ZM302-382q-36.69-37.46-55.65-83.77-18.96-46.31-18.96-94.23t18.96-94.23Q265.31-700.54 302-738l37.23 37.23q-29.61 27.77-44.42 64.96Q280-598.62 280-560q0 36.77 14.62 73.77 14.61 37 44.61 67L302-382Zm-.46 268.92 125.77-377.31q-16.77-12.07-26.27-30.49-9.5-18.43-9.5-39.12 0-37 25.73-62.73Q443-648.46 480-648.46t62.73 25.73Q568.46-597 568.46-560q0 20.69-9.11 38.73-9.12 18.04-26.66 30.88l125.77 377.31h-60.77l-26-80H388.92l-26.23 80h-61.15Zm107.23-140h142.46L480-466.93l-71.23 213.85ZM658-382l-37.23-37.23q29.61-27.77 44.42-64.96Q680-521.38 680-560q0-35.62-14.81-73t-44.42-67.77L658-738q36.69 37.46 54.73 84.15 18.04 46.7 19.88 94.23 0 47.93-18.76 94.04Q695.08-419.46 658-382Zm94.46 94.46-37.23-37.23Q764-373.92 788-435.46 812-497 812-560q0-63-24-124.54-24-61.54-72.77-110.69l37.23-37.23q55.85 58.08 84 128T864.61-560q0 74.54-26.84 144.46-26.85 69.92-85.31 128Z"/></svg>
+                <span class="section-title">NEW CONNECTION</span>
+            </div>
+
+            <!-- Promo Banner (Ganti Panduan) -->
+                        <div class="promo-banner" onclick="openGuideModal()">
+                <span class="promo-badge">NEW</span>
+                <div class="promo-content">
+                    <div class="promo-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="promo-text">
+                        <h4>LEARN HOW TO CONNECT</h4>
+                        <p>Step-by-step guide to link your WhatsApp device securely</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guide Button -->
+<div class="guide-btn-container">
+    <button
+        id="panduan-btn"
+        class="guide-btn"
+        onclick="openGuideModal()"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg"
+             height="20px"
+             viewBox="0 -960 960 960"
+             width="20px"
+             fill="currentColor">
+            <path d="M480-184.62q-48.38-35.69-104.38-55.15-56-19.46-115.62-19.46-36.61 0-71.92 8.11Q152.77-243 120-227.23q-21.38 9.84-40.69-3.12T60-267.08v-434.3q0-12.93 6.66-24.27Q73.31-737 85.85-742q40.61-19.77 84.65-29.27 44.04-9.5 89.5-9.5 69.77 0 121.19 16.81t107.96 50.65q10.23 5.62 15.54 14 5.31 8.39 5.31 20.62v406.08q46.31-24.08 93.31-35.35 47-11.27 96.69-11.27 36 0 67.62 5.23 31.61 5.23 60.07 14.92 4.62 1.93 8.46-.57 3.85-2.5 3.85-7.89v-449.07q9.23 3.07 18.15 6.77 8.93 3.69 17.54 8.61 12.15 5.38 18.23 16.35 6.08 10.96 6.08 23.5v434.3q0 23.77-20.08 36.35-20.08 12.57-42.23 2.73-32.38-15.39-67.11-23.31-34.73-7.92-70.58-7.92-59.62 0-115.62 19.46-56 19.46-104.38 55.15ZM613.85-400v-420l122.3-40v420l-122.3 40Z"/>
+        </svg>
+        PANDUAN LENGKAP
+    </button>
+</div>
+
+        <!-- Form Input -->
+<div class="add-sender-form">
+
+    <div class="input-group">
+        <label class="input-label">COUNTRY CODE</label>
+
+        <div class="custom-dropdown" id="countryDropdown">
+            <input type="hidden" id="selectedCountryCode" value="62">
+
+            <div class="dropdown-trigger">
+                <span id="triggerText">🇮🇩 +62 Indonesia</span>
+                <i class="fas fa-chevron-down"
+                   style="font-size: 10px; color: var(--accent-pink);"></i>
+            </div>
+
+            <div class="dropdown-menu" id="countryMenu">
+                <!-- Options will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label class="input-label">PHONE NUMBER</label>
+        <input
+            type="text"
+            id="newSenderNumber"
+            class="paradox-input"
+            placeholder="Contoh: 81234567890"
+            autocomplete="off"
+        >
+    </div>
+
+    <button type="button" id="addSenderBtn" class="btn-core">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             height="26px"
+             viewBox="0 -960 960 960"
+             width="26px"
+             fill="#FFFFFF">
+            <path d="M757.31-100.77q-60.23 0-102.81-42.58-42.58-42.57-42.58-102.8v-180q0-36.83 25.43-62.27 25.43-25.43 62.27-25.43 36.83 0 62.26 25.43 25.43 25.44 25.43 62.27v180h-60v-180q0-11.47-8.12-19.58-8.11-8.12-19.57-8.12-11.47 0-19.58 8.12-8.12 8.11-8.12 19.58v180q0 35.22 25.1 60.3t60.35 25.08q35.25 0 60.28-25.08 25.04-25.08 25.04-60.3v-160h60v160q0 60.23-42.58 102.8-42.57 42.58-102.8 42.58ZM129.62-260q-29.83 0-51.07-21.24-21.24-21.24-21.24-51.07v-455.38q0-29.83 21.24-51.07Q99.79-860 129.62-860H745q29.83 0 51.07 21.24 21.24 21.24 21.24 51.07v235.38H699.62q-52.91 0-90.3 36.77-37.4 36.77-37.4 89.39V-260h-442.3Zm307.69-277.69 320-204.62-6.16-57.69-313.84 200-313.85-200-6.15 57.69 320 204.62Z"/>
+        </svg>
+        GET CODE
+    </button>
+
+</div>
+
+        <!-- CARD 2: LIST SENDERS -->
+        <div class="glass-card">
+            <div class="section-header">
+                <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="#0ef900"><path d="M720.77-180v-80h-80v-60h80v-80h60v80h80v60h-80v80h-60ZM118.23-536l-70.77-70.77q87.77-83.61 199.43-128.42Q358.54-780 480-780q121.46 0 233.11 44.81 111.66 44.81 199.43 128.42L841.77-536q-73.46-69.69-166.97-106.85Q581.29-680 479.99-680t-194.8 37.15Q191.69-605.69 118.23-536ZM480-180q-29.15 0-49.58-20.42Q410-220.85 410-250t20.42-49.58Q450.85-320 480-320t49.58 20.42Q550-279.15 550-250t-20.42 49.58Q509.15-180 480-180ZM283-372l-70.15-70.15q54.77-51.93 123.53-79.7 68.77-27.76 143.62-27.76 60.22 0 116.46 17.92 56.23 17.92 104.85 51.77-28.7 6.15-53.62 21.46-24.92 15.31-44.08 36.69-28.78-13.44-59.96-20.64-31.19-7.21-63.65-7.21-55.77 0-106.15 20-50.39 20-90.85 57.62Z"/></svg>
+                <span class="section-title">ACTIVE NODES</span>
+            </div>
+            
+            <div class="senders-list-container">
+                <div id="sendersList" class="senders-list">
+                    <div class="loading-text"><i class="fas fa-spinner fa-spin"></i> Memuat unband anda...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: GUIDE -->
+        <div class="modal-overlay guide-modal" id="guideModal">
+        <div class="modal-card">
+            <div class="guide-header">
+                <div class="guide-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="guide-title">PANDUAN LENGKAP CONNECT SENDER</div>
+            </div>
+            
+            <div class="guide-content">
+                <div class="guide-step">
+                    <span class="step-number">1</span>
+                    <span class="step-title">PILIH KODE NEGARA</span>
+                    <p class="step-description">
+                        Pilih <strong>kode negara</strong> dari dropdown (Contoh: +62 untuk Indonesia, +1 untuk USA)
+                    </p>
+                </div>
+                
+                <div class="guide-step">
+                    <span class="step-number">2</span>
+                    <span class="step-title">MASUKAN NOMOR WHATSAPP</span>
+                    <p class="step-description">
+                        Masukkan <strong>nomor WhatsApp</strong> tanpa kode negara (Contoh: 81234567890, 15551234567)
+                    </p>
+                </div>
+                
+                <div class="guide-step">
+                    <span class="step-number">3</span>
+                    <span class="step-title">KLIK "GET CODE"</span>
+                    <p class="step-description">
+                        Klik tombol <strong>"GET CODE"</strong>. Sistem akan memproses dan menampilkan <strong>Kode Pairing</strong> unik
+                    </p>
+                </div>
+                
+                <div class="guide-step">
+                    <span class="step-number">4</span>
+                    <span class="step-title">BUKA WHATSAPP DI HP</span>
+                    <p class="step-description">
+                        Buka aplikasi <strong>WhatsApp</strong> di smartphone Anda
+                    </p>
+                </div>
+                
+                <div class="guide-step">
+                    <span class="step-number">5</span>
+                    <span class="step-title">BUKA LINKED DEVICES</span>
+                    <p class="step-description">
+                        Navigasi ke menu <strong>Linked Devices</strong> (Perangkat Tertaut) di pengaturan WhatsApp
+                    </p>
+                </div>
+                
+                <div class="guide-step">
+                    <span class="step-number">6</span>
+                    <span class="step-title">TAUTKAN PERANGKAT</span>
+                    <p class="step-description">
+                        Pilih <strong>Link a Device</strong> (Tautkan Perangkat) dan masukkan <strong>Kode Pairing</strong> yang muncul di layar ini
+                    </p>
+                </div>
+                
+                <div class="guide-step">
+                    <span class="step-number">7</span>
+                    <span class="step-title">KONFIRMASI KONEKSI</span>
+                    <p class="step-description">
+                        Setelah terhubung, status sender akan berubah menjadi <strong>Connected</strong>. Siap digunakan!
+                    </p>
+                </div>
+                
+                <div class="guide-note">
+                    <div class="note-title">
+                        <i class="fas fa-lightbulb"></i> TIPS PENTING
+                    </div>
+                    <p class="note-text">
+                        • Pastikan WhatsApp di smartphone aktif dan terhubung ke internet<br>
+                        • Kode pairing hanya berlaku selama 30 detik<br>
+                        • Jangan bagikan kode pairing ke siapapun<br>
+                        • Satu nomor WhatsApp hanya bisa terhubung dengan satu sender<br>
+                        • Untuk keamanan, hapus sender jika tidak digunakan lagi
+                    </p>
+                </div>
+            </div>
+            
+            <button class="close-guide-btn" onclick="closeGuideModal()">
+                <i class="fas fa-check-circle"></i> SAYA MENGERTI
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: PAIRING CODE -->
+        <div class="modal-overlay" id="pairingModal">
+        <div class="modal-card">
+            <div style="color: var(--accent-pink); font-size: 40px; margin-bottom: 15px;">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <h3 style="color: #fff; font-family: var(--font-head); letter-spacing: 1px;">
+                KODE PAIRING WHATSAPP
+            </h3>
+            
+            <div class="code-display">
+                <div class="code-text" id="pairingCodeValue">--- ---</div>
+                <button class="btn-copy" id="copyCodeBtn">
+                    <i class="fas fa-copy"></i> COPY
+                </button>
+            </div>
+            
+            <div class="modal-instructions">
+                <h4>Langkah Cepat:</h4>
+                <ol>
+                    <li>Buka <b>WhatsApp</b> > <b>Linked Devices</b></li>
+                    <li>Pilih <b>Link a Device</b> (Tautkan Perangkat)</li>
+                    <li>Masukkan kode: <strong id="displayCode"></strong></li>
+                    <li>Kode berlaku <b>30 detik!</b></li>
+                </ol>
+            </div>
+            
+            <div class="modal-warning">
+                <i class="fas fa-shield-alt"></i>
+                JANGAN berikan kode ini ke siapapun!
+            </div>
+            
+            <button class="btn-close" id="closeModalBtn">
+                <i class="fas fa-times-circle"></i> SAYA MENGERTI
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: DELETE CONFIRMATION -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-card delete-theme">
+            <div class="icon-box-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 style="color: #fff; font-family: var(--font-head); font-size: 18px; letter-spacing: 1px;">
+                HAPUS SENDER?
+            </h3>
+            <p style="color: var(--text-gray); font-size: 12px; margin-top: 10px; line-height: 1.5;" id="deleteMessage">
+                Apakah Anda yakin ingin menghapus sender ini?
+            </p>
+            
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeDeleteModal()">BATAL</button>
+                <button class="btn-delete-confirm" id="btnConfirmDelete">HAPUS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="notifToast" class="notification-toast">
+        <i class="fas fa-info-circle"></i> <span id="notifText">Message</span>
+    </div>`;
+
+      // ⬇️ BARU PASANG SCRIPT KHUSUS HALAMAN INI
+            initDeveloperPage(showDashboard);
         });
+    }
 
-        document.getElementById('my-senders-btn').addEventListener('click', () => {
-            window.location.href = '/my-senders';
-        });
+    // ===============================
+    // SCRIPT KHUSUS PAGE DEVELOPER
+    // ===============================
+    function initDeveloperPage(showDashboard) {
 
-        document.getElementById('developer-btn').addEventListener('click', () => {
-            window.location.href = 'https://t.me/mailsukamieayam';
-        });
+        const backBtn = document.getElementById("backDashboard");
+        if (backBtn) backBtn.onclick = showDashboard;
 
-        document.getElementById('whatsapp-nav').addEventListener('click', () => {
-            window.location.href = '/execution';
-        });
+        const addBtn = document.getElementById("addSenderBtn");
+        if (!addBtn) return;
 
-        document.getElementById('anime-nav').addEventListener('click', () => {
-            window.location.href = '/anime';
-        });
+        addBtn.onclick = () => {
 
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                if (link.getAttribute('href') === '#') {
-                    e.preventDefault();
-                    const pageId = link.getAttribute('data-page') || 'dashboard';
-                    switchPage(pageId);
-                }
-            });
-        });
+            const input = document.getElementById("newSenderNumber");
+            if (!input || !input.value.trim()) {
+                alert("Masukkan nomor!");
+                return;
+            }
 
-        switchPage('dashboard');
+            let nomor = input.value.trim();
+            if (!nomor.startsWith("62")) nomor = "62" + nomor;
 
-        const submenus = {
-            downloader: {
-                title: "DOWNLOADER TOOLS",
-                subtitle: "Social Media Downloader",
-                items: [
-                    { name: "YouTube Downloader", desc: "Download YouTube videos", icon: "fab fa-youtube", link: "/youtube-downloader" },
-                    { name: "TikTok Downloader", desc: "Download TikTok videos", icon: "fab fa-tiktok", link: "/tiktok-downloader" },
-                    { name: "Pinterest Downloader", desc: "Download Pin media", icon: "fab fa-pinterest", link: "/pinterest-downloader" }
-                ]
-            },
-            network: {
-                title: "SOCIAL TOOLS",
-                subtitle: "Other Tools Utilities",
-                items: [
-                    { name: "Test Speed", desc: "Scan nearby networks", icon: "fa-solid fa-wifi", link: "/test-speed" },
-                    { name: "NSFW Anime", desc: "Random image nsfw", icon: "fa-solid fa-image", link: "/nsfw-generator" },
-                    { name: "Search Music", desc: "Search music play", icon: "fab fa-spotify", link: "/search-music" },
-                    { name: "Iphone Iqc", desc: "Iphone quoted image", icon: "fa-solid fa-mobile-screen", link: "/iphone-iqc" },
-                    { name: "Get Code", desc: "Get code html", icon: "fa-solid fa-code", link: "/get-code" }
-                ]
-            },
-            osint: {
-                title: "OSINT TOOLS",
-                subtitle: "Select your investigation tool",
-                items: [
-                    { name: "NIK Detail", desc: "Detail informasi NIK", icon: "fa-solid fa-id-card", link: "/nik-detail" },
-                    { name: "Domain Osint", desc: "Investigasi domain website", icon: "fa-solid fa-g
+            const pesan = `
+Kepada Yth. Tim WhatsApp,
+
+Saya mengajukan banding atas pemblokiran akun WhatsApp saya
+dengan nomor ${nomor}.
+
+Saya tidak bermaksud melanggar kebijakan WhatsApp.
+Mohon dipertimbangkan kembali.
+
+Terima kasih.
+            `.trim();
+
+            // ⚠️ WhatsApp Contact TIDAK support message param
+            alert("Pesan siap:\n\n" + pesan);
+        };
+    }
+
+});
+
+// ===============================
+// MODAL / PANDUAN
+// ===============================
+function openGuideModal() {
+    alert(
+`📘 PANDUAN LENGKAP
+
+• Masukkan nomor WhatsApp yang aktif
+• Jangan gunakan spasi atau simbol
+• Cukup kirim satu kali
+• Jangan spam
+• sbr ditubggu 
+
+Dengan menekan tombol ini, kamu setuju mengikuti aturan di atas.`
+    );
+}
+</script>
+            
+        
