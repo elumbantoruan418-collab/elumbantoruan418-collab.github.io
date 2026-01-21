@@ -1,29 +1,81 @@
-// script.js
+// ============================
+// LOGIN SCRIPT
+// ============================
 
 function login() {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
 
   if (!username || !password) {
-    showNotif("error", "Login gagal", "Username atau password kosong");
+    notify("Username dan password wajib diisi", "error");
     return;
   }
 
-  const user = USERS.find(
-    u => u.username === username && u.password === password
+  // ===== CEK ADMIN =====
+  const admin = ADMINS.find(
+    (a) => a.username === username && a.password === password
   );
 
-  if (!user) {
-    showNotif("error", "Login gagal", "Username atau password salah");
+  if (admin) {
+    setSession("admin", admin.username);
+    redirect("admin.html");
     return;
   }
 
-  // simpan session sederhana
-  localStorage.setItem("loginUser", JSON.stringify(user));
+  // ===== CEK USER =====
+  const user = USERS.find(
+    (u) => u.username === username && u.password === password
+  );
 
-  showNotif("success", "Login berhasil", "Mengalihkan ke dashboard...");
+  if (user) {
+    setSession("user", user.username);
+    redirect("dashboard.html");
+    return;
+  }
 
-  setTimeout(() => {
-    window.location.href = "dashboard.html";
-  }, 1200);
+  // ===== GAGAL =====
+  notify("Username atau password salah", "error");
+}
+
+// ============================
+// DAFTAR USER (ANTI ADMIN)
+// ============================
+
+function register(username, password) {
+  if (!username || !password) {
+    notify("Username dan password wajib diisi", "warning");
+    return;
+  }
+
+  const adminExist = ADMINS.some((a) => a.username === username);
+  const userExist = USERS.some((u) => u.username === username);
+
+  if (adminExist || userExist) {
+    notify("Username sudah digunakan", "error");
+    return;
+  }
+
+  USERS.push({ username, password });
+  notify("Akun berhasil dibuat", "success");
+}
+
+// ============================
+// SESSION & REDIRECT
+// ============================
+
+function setSession(role, username) {
+  localStorage.setItem("role", role);
+  localStorage.setItem("username", username);
+}
+
+function redirect(page) {
+  window.location.href = page;
+}
+
+// ============================
+// NOTIFIKASI (BISA SAMBUNG KE UI LU)
+// ============================
+
+function notify(message, type = "info") {
+  alert(`[${type.toUpperCase()}] ${message}`);
 }
