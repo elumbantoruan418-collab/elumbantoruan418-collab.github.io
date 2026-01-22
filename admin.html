@@ -1,154 +1,68 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Admin Panel</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #020617;
-      color: white;
-      margin: 0;
-    }
+<style>
+#order {
+  background: #111;
+  color: #fff;
+  padding: 10px;
+  cursor: pointer;
+  width: fit-content;
+  border-radius: 6px;
+}
 
-    header {
-      background: #020617;
-      padding: 15px 20px;
-      border-bottom: 1px solid #1e293b;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .container {
-      padding: 20px;
-    }
-
-    .card {
-      background: #020617;
-      border: 1px solid #1e293b;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
-    }
-
-    input {
-      width: 100%;
-      padding: 8px;
-      margin: 6px 0;
-      border-radius: 6px;
-      border: none;
-    }
-
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    button.danger {
-      background: #dc2626;
-    }
-  </style>
+#orderList {
+  display: none;
+  margin-top: 10px;
+  background: #f1f1f1;
+  color: #000;
+  padding: 10px;
+  border-radius: 6px;
+}
+</style>
 </head>
 
 <body>
 
-<!-- 🔐 PROTEKSI ADMIN -->
-<script>
-  if (localStorage.getItem("role") !== "admin") {
-    location.href = "index.html";
-  }
-</script>
+<h2>📦 ADMIN PANEL</h2>
 
-<header>
-  <div>🛠️ Admin Panel</div>
-  <button class="danger" onclick="logout()">Logout</button>
-</header>
+<!-- INI ID YANG LO MAKSUD -->
+<div id="order">📂 LIHAT ORDER</div>
 
-<div class="container">
-
-  <!-- INFO ADMIN -->
-  <div class="card">
-    <h3>👤 Info Admin</h3>
-    <p>Username: <b id="adminName"></b></p>
-  </div>
-
-  <!-- TAMBAH USER -->
-  <div class="card">
-    <h3>➕ Tambah User</h3>
-    <input id="newUser" placeholder="Username">
-    <input id="newPass" placeholder="Password">
-    <button onclick="addUser()">Tambah</button>
-  </div>
-
-  <!-- HAPUS USER -->
-  <div class="card">
-    <h3>🗑️ Hapus User</h3>
-    <input id="delUser" placeholder="Username">
-    <button class="danger" onclick="deleteUser()">Hapus</button>
-  </div>
-
-  <!-- LIST USER -->
-  <div class="card">
-    <h3>📋 Daftar User</h3>
-    <ul id="userList"></ul>
-  </div>
-
-</div>
-
-<script src="users.js"></script>
+<!-- TEMPAT ORDER MUNCUL -->
+<div id="orderList"></div>
 
 <script>
-  document.getElementById("adminName").innerText =
-    localStorage.getItem("username");
+const btnOrder = document.getElementById("order");
+const list = document.getElementById("orderList");
 
-  function addUser() {
-    const u = newUser.value.trim();
-    const p = newPass.value.trim();
+btnOrder.onclick = () => {
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
 
-    if (!u || !p) return alert("Lengkapi data!");
-
-    if (USERS.find(x => x.username === u)) {
-      return alert("Username sudah ada!");
-    }
-
-    USERS.push({ username: u, password: p, role: "user" });
-    render();
-    alert("User ditambahkan (demo)");
-  }
-
-  function deleteUser() {
-    const u = delUser.value.trim();
-    const idx = USERS.findIndex(x => x.username === u);
-
-    if (idx === -1) return alert("User tidak ditemukan");
-
-    USERS.splice(idx, 1);
-    render();
-    alert("User dihapus (demo)");
-  }
-
-  function render() {
-    userList.innerHTML = "";
-    USERS.forEach(u => {
-      const li = document.createElement("li");
-      li.textContent = u.username;
-      userList.appendChild(li);
+  if (orders.length === 0) {
+    list.innerHTML = "Belum ada order";
+  } else {
+    list.innerHTML = "";
+    orders.forEach((o, i) => {
+      list.innerHTML += `
+        <div style="margin-bottom:10px;">
+          <b>Order #${i + 1}</b><br>
+          Nomor: ${o.nomor}<br>
+          Paket: ${o.paket}<br>
+          Harga: ${o.harga}<br>
+          Waktu: ${o.waktu}
+        </div>
+        <hr>
+      `;
     });
   }
 
-  function logout() {
-    localStorage.clear();
-    location.href = "index.html";
-  }
-
-  render();
+  // toggle tampil / sembunyi
+  list.style.display = list.style.display === "none" ? "block" : "none";
+};
 </script>
 
 </body>
