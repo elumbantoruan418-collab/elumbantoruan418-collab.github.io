@@ -1,67 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <title>Admin Panel</title>
-
 <style>
-#order {
-  background: #111;
+body {
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
   color: #fff;
-  padding: 10px;
-  cursor: pointer;
-  width: fit-content;
-  border-radius: 6px;
+  margin: 0;
 }
-
-#orderList {
-  display: none;
+.admin-box {
+  max-width: 500px;
+  margin: 30px auto;
+  background: #121212;
+  padding: 20px;
+  border-radius: 12px;
+}
+h2 {
+  text-align: center;
+  color: #38bdf8;
+}
+button {
+  width: 100%;
   margin-top: 10px;
-  background: #f1f1f1;
-  color: #000;
+  padding: 12px;
+  background: #2563eb;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+.order {
+  margin-top: 12px;
   padding: 10px;
-  border-radius: 6px;
+  border: 1px dashed #38bdf8;
+  border-radius: 8px;
+}
+.small {
+  font-size: 12px;
+  opacity: 0.8;
 }
 </style>
 </head>
 
 <body>
 
-<h2>📦 ADMIN PANEL</h2>
+<div class="admin-box">
+  <h2>🛠️ ADMIN PANEL</h2>
 
-<!-- INI ID YANG LO MAKSUD -->
-<div id="order">📂 LIHAT ORDER</div>
+  <button id="vpsusersbtn">📦 Order VPS</button>
+  <button id="clearbtn">🗑️ Hapus Semua Order</button>
 
-<!-- TEMPAT ORDER MUNCUL -->
-<div id="orderList"></div>
+  <div id="output"></div>
+</div>
 
 <script>
-const btnOrder = document.getElementById("order");
-const list = document.getElementById("orderList");
-
-btnOrder.onclick = () => {
-  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+// === TAMPILKAN ORDER VPS ===
+document.getElementById("vpsusersbtn").onclick = () => {
+  const output = document.getElementById("output");
+  const orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
 
   if (orders.length === 0) {
-    list.innerHTML = "Belum ada order";
-  } else {
-    list.innerHTML = "";
-    orders.forEach((o, i) => {
-      list.innerHTML += `
-        <div style="margin-bottom:10px;">
-          <b>Order #${i + 1}</b><br>
-          Nomor: ${o.nomor}<br>
-          Paket: ${o.paket}<br>
-          Harga: ${o.harga}<br>
-          Waktu: ${o.waktu}
-        </div>
-        <hr>
-      `;
-    });
+    output.innerHTML = "<p class='small'>Belum ada order VPS</p>";
+    return;
   }
 
-  // toggle tampil / sembunyi
-  list.style.display = list.style.display === "none" ? "block" : "none";
+  output.innerHTML = orders.map((o, i) => `
+    <div class="order">
+      <b>#${i + 1}</b><br>
+      Nomor: ${o.nomor}<br>
+      Paket: ${o.paket}<br>
+      Harga: ${o.harga}<br>
+      Waktu: ${o.waktu}<br>
+      Status: ${o.status}
+    </div>
+  `).join("");
+};
+
+// === HAPUS ORDER ===
+document.getElementById("clearbtn").onclick = () => {
+  if (confirm("Hapus semua order?")) {
+    localStorage.removeItem("vpsOrders");
+    document.getElementById("output").innerHTML = "";
+  }
 };
 </script>
 
