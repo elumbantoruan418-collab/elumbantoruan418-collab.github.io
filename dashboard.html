@@ -1,106 +1,438 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>User Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VPS Panel</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #020617;
-      color: white;
-      margin: 0;
-    }
+<style>
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    header {
-      background: #020617;
-      padding: 15px 20px;
-      border-bottom: 1px solid #1e293b;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+/* ===== BODY ===== */
+body {
+  font-family: Arial, sans-serif;
+  background: #020617;
+  color: #e5e7eb;
+  min-height: 100vh;
+}
 
-    .container {
-      padding: 20px;
-    }
+/* ===== HEADER ===== */
+header {
+  padding: 16px;
+  border-bottom: 1px solid #1e293b;
+  text-align: center;
+}
 
-    .card {
-      background: #020617;
-      border: 1px solid #1e293b;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
-    }
+header h1 {
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #f8fafc;
+}
 
-    button {
-      background: #2563eb;
-      border: none;
-      color: white;
-      padding: 10px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+/* ===== CONTAINER ===== */
+.container {
+  padding: 20px;
+}
 
-    button.logout {
-      background: #dc2626;
-    }
+/* ===== MENU ROW (PAKSA SAMPING) ===== */
+.menu-row {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;       /* kalau layar kecil, bisa geser */
+  padding-bottom: 10px;
+}
 
-    button:hover {
-      opacity: 0.9;
-    }
-  </style>
+/* ===== MENU CARD ===== */
+.menu-card {
+  min-width: 180px;       /* PENTING: biar gak turun */
+  background: #f8fafc;
+  color: #020617;
+  padding: 18px;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+  flex-shrink: 0;         /* PAKSA TETAP SAMPING */
+}
+
+.menu-card:hover {
+  transform: translateY(-5px);
+  background: #e5e7eb;
+}
+
+/* ===== ICON ===== */
+.menu-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+/* ===== TITLE ===== */
+.menu-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* ===== DESC ===== */
+.menu-desc {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+/* ===== Running ke kiri dengan gradient ===== */
+.runningg-text {
+  width: 100%;
+  overflow: hidden;
+  background: #020617;
+  border-bottom: 1px solid #1e293b;
+  padding: 10px 0;
+}
+
+.runningg-text span {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: bold;
+
+  /* Gradient warna-warni */
+  background: linear-gradient(
+    90deg,
+    #f87171,  /* merah */
+    #fbbf24,  /* kuning */
+    #34d399,  /* hijau */
+    #38bdf8,  /* biru muda */
+    #a78bfa   /* ungu */
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* Animasi */
+  animation: runLeft 12s linear infinite, rainbowShift 4s linear infinite;
+}
+
+/* Animasi teks ke kiri */
+@keyframes runLeft {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Gradient bergerak */
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ===== Running ke kanan biasa ===== */
+.winz-text {
+  width: 100%;
+  overflow: hidden;
+  background: #020617;
+  border-bottom: 1px solid #1e293b;
+  padding: 10px 0;
+}
+
+.winz-text span {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 20px;
+  color: #e5e7eb;
+  padding-left: 100%;
+  animation: runRight 12s linear infinite;
+}
+
+/* Animasi teks ke kanan */
+@keyframes runRight {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+  .menu-list {
+  margin-top: 10px;
+  padding-left: 20px;
+  color: #020617;
+  background: #e5e7eb;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.menu-list li {
+  margin: 5px 0;
+  cursor: pointer;
+}
+</style>
 </head>
-
 <body>
 
-<!-- 🔐 PROTEKSI USER -->
-<script>
-  if (!localStorage.getItem("username") || localStorage.getItem("role") !== "user") {
-    location.href = "index.html";
-  }
-</script>
-
-<header>
-  <div>👤 User Dashboard</div>
-  <button class="logout" onclick="logout()">Logout</button>
-</header>
+  
+<div class="runningg-text">
+  <span>⚡ SELAMAT DATANG DI ORDER SHOP MURAH • VPS PANEL • SCRIPT VPS • NOKOS • PANEL ⚡</span>
+</div>
 
 <div class="container">
 
-  <div class="card">
-    <h3>👋 Selamat Datang</h3>
-    <p>Username: <b id="username"></b></p>
-    <p>Status Akun: <span style="color:#22c55e">AKTIF</span></p>
-  </div>
+  <!-- MENU SELALU SAMPING -->
+  <div class="menu-row">
 
-  <div class="card">
-    <h3>💰 Saldo</h3>
-    <p>Saldo Anda: <b id="saldo">Rp 0</b></p>
-    <button onclick="alert('Topup belum tersedia')">➕ Top Up</button>
-  </div>
+<div class="menu-card" id="menu-vps" data-menu="vps">
+  <div class="menu-icon">🖥️</div>
+  <div class="menu-title">Panel VPS</div>
+  <div class="menu-desc">Kelola server otomatis</div>
+</div>
+    <div class="menu-card">
+      <div class="menu-icon">🚀</div>
+      <div class="menu-title">Script VPS</div>
+      <div class="menu-desc">Install otomatis</div>
+    </div>
 
-  <div class="card">
-    <h3>📦 Layanan</h3>
-    <button onclick="alert('Layanan OTP')">📱 OTP</button>
-    <button onclick="alert('Layanan API')">🔑 API</button>
+    <div class="menu-card">
+      <div class="menu-icon">📦</div>
+      <div class="menu-title">Panel Script</div>
+      <div class="menu-desc">Manajemen script</div>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-icon">📲</div>
+      <div class="menu-title">Nokos</div>
+      <div class="menu-desc">WA & Telegram</div>
+    </div>
+
   </div>
 
 </div>
-
+<div class="winz-text">
+  <span>╰┈➣ geser krii liat menu lain nya</span>
+</div>
+<div id="content"></div>
 <script>
-  document.getElementById("username").innerText =
-    localStorage.getItem("username");
+// Ambil semua menu-card
+const menus = document.querySelectorAll('.menu-card');
 
-  // contoh saldo (nanti bisa ambil dari users.js / backend)
-  document.getElementById("saldo").innerText = "Rp 10.000";
+menus.forEach(menu => {
+  menu.addEventListener('click', () => {
+    let list = menu.querySelector('.menu-list');
 
-  function logout() {
-    localStorage.clear();
-    location.href = "index.html";
+    if (!list) {
+      list = document.createElement('ul');
+      list.classList.add('menu-list');
+
+      // Ambil data dari attribute data-list
+      const items = JSON.parse(menu.getAttribute('data-list'));
+      list.innerHTML = items.map(item => `<li>${item}</li>`).join('');
+
+      menu.appendChild(list);
+    } else {
+      list.remove(); // toggle
+    }
+  });
+});
+
+
+
+</script>
+<script>
+const content = document.getElementById("content");
+
+// contoh saldo user (nanti bisa dari API / database)
+let saldoUser = 1000;
+
+/* ======================
+   HTML VPS
+====================== */
+const vpsHTML = `
+<style>
+/* ===== BODY ===== */
+body {
+  font-family: Arial, sans-serif;
+  background: #0f0f0f; /* full gelap */
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== MENU BOX ===== */
+.menu-box {
+  max-width: 400px;
+  margin: 40px auto;
+  background: #121212; /* gelap */
+  padding: 20px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+/* ===== TITLE ===== */
+.menu-box h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #38bdf8; /* biru terang */
+}
+
+/* ===== FORM ===== */
+label {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #cbd5f5;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  background: #1e1e1e; /* gelap */
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+}
+
+/* ===== HARGA ===== */
+.harga {
+  margin-top: 12px;
+  text-align: center;
+  font-weight: bold;
+  color: #38bdf8;
+}
+
+/* ===== ORDER BOX ===== */
+.order-box {
+  margin-top: 12px;
+  background: #1a1a1a; /* gelap */
+  border: 1px dashed #38bdf8;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+  color: #fff;
+}
+
+/* ===== BUTTON ===== */
+button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb; /* biru */
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+/* ===== FOOT INFO ===== */
+.info {
+  margin-top: 15px;
+  font-size: 13px;
+  text-align: center;
+  color: #cbd5f5;
+  line-height: 1.6;
+}
+</style>
+<div class="menu-box" id="orderForm">
+
+  <h2>🖥️ MENU VPS</h2>
+
+  <label>Masukkan Nomor Tujuan panel krim pastikan masih pakai WhatsApp</label>
+  <input type="number" class="nomor" placeholder="08xxxxxxxxxx">
+
+  <label>Pilih Paket VPS</label>
+  <select class="paket">
+    <option value="">-- Pilih Paket --</option>
+    <option value="1 GB|500">1 GB - 500</option>
+    <option value="2 GB|1000">2 GB - 1000</option>
+    <option value="3 GB|2000">3 GB - 2000</option>
+    <option value="4 GB|2500">4 GB - 2500</option>
+    <option value="5 GB|5000">5 GB - 5000</option>
+    <option value="6 GB|5200">6 GB - 5200</option>
+    <option value="Unlimited|7000">Unlimited - 7000</option>
+  </select>
+
+  <div class="harga">Harga: -</div>
+
+  <div class="order-box">
+    📦 Pesanan akan tampil di sini
+  </div>
+
+  <button onclick="kirimOrder()">📤 KIRIM KE ADMIN</button>
+
+  <div class="info">
+    ✔️ Pul Garansi<br>
+    ✔️ Sampai Masa Aktif Habis<br>
+    ✔️ VPS Aktif & Siap Pakai<br>
+    ✔️ Aman & Terpercaya<br>
+    ✔️ Kalau panel-nya di-sos langsung hubungi aku, pergi ke story di profilmu
+  </div>
+
+</div>
+`;
+  document.getElementById("menu-vps").addEventListener("click", () => {
+  content.innerHTML = vpsHTML;
+});
+
+// ===== UPDATE HARGA =====
+function updateHarga() {
+  const paket = document.getElementById("paket").value;
+  if (!paket) {
+    document.getElementById("harga").innerText = "Harga: -";
+    return;
   }
+
+  hargaPaket = parseInt(paket.split("|")[1]);
+  document.getElementById("harga").innerText = "Harga: " + hargaPaket;
+}
+
+// ===== KIRIM ORDER =====
+function kirimOrder() {
+  const nomor = document.getElementById("nomor").value;
+  const paket = document.getElementById("paket").value;
+  const orderBox = document.getElementById("orderBox");
+
+  if (!nomor || !paket) {
+    alert("Lengkapi data dulu!");
+    return;
+  }
+
+  // CEK SALDO
+  if (saldo < hargaPaket) {
+    orderBox.innerHTML = "❌ Saldo tidak cukup";
+    return;
+  }
+
+  // POTONG SALDO
+  saldo -= hargaPaket;
+
+  // DATA ORDER
+  const order = {
+    nomor,
+    paket: paket.split("|")[0],
+    harga: hargaPaket,
+    waktu: new Date().toLocaleString()
+  };
+
+  // SIMPAN KE ADMIN
+  let adminOrders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+  adminOrders.push(order);
+  localStorage.setItem("vpsOrders", JSON.stringify(adminOrders));
+
+  orderBox.innerHTML = `
+    ✅ ORDER BERHASIL<br>
+    Paket: ${order.paket}<br>
+    Harga: ${order.harga}<br>
+    Sisa Saldo: ${saldo}
+  `;
+}
 </script>
 
-</body>
-</html>
+
+  
