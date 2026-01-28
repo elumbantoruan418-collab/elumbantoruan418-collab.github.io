@@ -147,7 +147,7 @@ header h1 {
 }
 
 /* Animasi teks ke kanan */
-@keyframes runRight {
+  keyframes runRight {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
@@ -168,7 +168,6 @@ header h1 {
 </head>
 <body>
 
-  
 <div class="runningg-text">
   <span>⚡ SELAMAT DATANG DI ORDER SHOP MURAH • VPS PANEL • SCRIPT VPS • NOKOS • PANEL ⚡</span>
 </div>
@@ -243,7 +242,7 @@ let saldoUser = 1000;
 /* ======================
    HTML VPS
 ====================== */
-const vpsHTML = `
+  const vpsHTML = `
 <style>
 /* ===== BODY ===== */
 body {
@@ -376,7 +375,8 @@ button:hover {
 
 </div>
 `;
-  document.getElementById("menu-vps").addEventListener("click", () => {
+
+document.getElementById("menu-vps").addEventListener("click", () => {
   content.innerHTML = vpsHTML;
 });
 
@@ -430,9 +430,17 @@ function kirimOrder() {
     Paket: ${order.paket}<br>
     Harga: ${order.harga}<br>
     Sisa Saldo: ${saldo}
+    📨 sbar dalam antrian ya kk<br>
+  ⏳ nanti kk dapet juga gransi  pul sesuai kk beli<br> cara nya pergi ke profil<br> pergi ke sprot nya kk kasi domain/web/pw/username/ jelas kan se detil mukin 
+
   `;
 }
 </script>
+
+
+<script src="saldo.js"></script>
+
+  
 
 
   
