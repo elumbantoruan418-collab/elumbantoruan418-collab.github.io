@@ -2,90 +2,304 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel</title>
+
 <style>
+:root {
+  --bg: #070711;
+  --card: rgba(18,18,32,0.9);
+  --primary: #38bdf8;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --text: #e5e7eb;
+  --glow: 0 0 20px rgba(56,189,248,.45);
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: #fff;
   margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background:
+    radial-gradient(circle at top, #0c1220, #05050b 60%);
+  color: var(--text);
+  min-height: 100vh;
 }
-.admin-box {
-  max-width: 500px;
-  margin: 30px auto;
-  background: #121212;
-  padding: 20px;
-  border-radius: 12px;
+
+/* ===== CONTAINER ===== */
+.admin-container {
+  max-width: 540px;
+  margin: 40px auto;
+  padding: 15px;
 }
-h2 {
+
+/* ===== HEADER ===== */
+.header {
   text-align: center;
-  color: #38bdf8;
+  margin-bottom: 22px;
 }
-button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 12px;
-  background: #2563eb;
+
+.header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--primary);
+  text-shadow: 0 0 15px rgba(56,189,248,.8);
+}
+
+.header p {
+  font-size: 12px;
+  opacity: .7;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(56,189,248,.25);
+  box-shadow:
+    0 0 30px rgba(56,189,248,.15),
+    inset 0 0 20px rgba(56,189,248,.05);
+  backdrop-filter: blur(10px);
+}
+
+/* ===== MENU BUTTON ===== */
+.menu-btn {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.menu-btn button {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid rgba(56,189,248,.25);
+  cursor: pointer;
+  font-weight: bold;
+  background: #0b1222;
+  color: var(--text);
+  transition: .3s;
+}
+
+.menu-btn button:hover {
+  box-shadow: var(--glow);
+  transform: translateY(-2px);
+}
+
+.menu-btn button.active {
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: #020617;
+  box-shadow:
+    0 0 25px rgba(56,189,248,.9);
+}
+
+/* ===== ORDER CARD ===== */
+.order {
+  margin-top: 14px;
+  padding: 15px;
+  border-radius: 14px;
+  background: linear-gradient(
+    160deg,
+    rgba(15,23,42,.95),
+    rgba(8,12,25,.95)
+  );
+  border: 1px solid rgba(56,189,248,.35);
+  font-size: 13px;
+  box-shadow: inset 0 0 10px rgba(56,189,248,.08);
+  animation: fadeIn .4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.order-title {
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 6px;
+  text-shadow: 0 0 10px rgba(56,189,248,.6);
+}
+
+/* ===== ACTION ===== */
+.action {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.action button {
+  flex: 1;
+  padding: 9px;
+  border-radius: 10px;
   border: none;
-  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: .3s;
+}
+
+.btn-acc {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #022c22;
+  box-shadow: 0 0 15px rgba(34,197,94,.6);
+}
+
+.btn-acc:hover {
+  transform: scale(1.05);
+}
+
+.btn-tolak {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: white;
+  box-shadow: 0 0 15px rgba(239,68,68,.6);
+}
+
+.btn-tolak:hover {
+  transform: scale(1.05);
+}
+
+/* ===== CLEAR ===== */
+.clear-btn {
+  margin-top: 22px;
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #7f1d1d, #450a0a);
+  border: 1px solid rgba(239,68,68,.4);
+  border-radius: 12px;
   color: white;
   cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 0 18px rgba(239,68,68,.5);
+  transition: .3s;
 }
-.order {
-  margin-top: 12px;
-  padding: 10px;
-  border: 1px dashed #38bdf8;
-  border-radius: 8px;
+
+.clear-btn:hover {
+  transform: translateY(-2px);
 }
+
+/* ===== EMPTY TEXT ===== */
 .small {
+  text-align: center;
   font-size: 12px;
-  opacity: 0.8;
+  opacity: .65;
+  margin-top: 14px;
 }
 </style>
-</head>
 
 <body>
 
-<div class="admin-box">
-  <h2>🛠️ ADMIN PANEL</h2>
+<div class="admin-container">
+  <div class="header">
+    <h2>🛠️ ADMIN PANEL</h2>
+    <p>Kelola Order & Deposit User</p>
+  </div>
 
-  <button id="vpsusersbtn">📦 Order VPS</button>
-  <button id="clearbtn">🗑️ Hapus Semua Order</button>
+  <div class="card">
+    <div class="menu-btn">
+      <button id="btnVps" class="active">📦 VPS</button>
+      <button id="btnDeposit">💰 Deposit</button>
+    </div>
 
-  <div id="output"></div>
+    <div id="output"></div>
+
+    <button class="clear-btn" onclick="clearAll()">🗑️ Hapus Semua Data</button>
+  </div>
 </div>
 
 <script>
-// === TAMPILKAN ORDER VPS ===
-document.getElementById("vpsusersbtn").onclick = () => {
-  const output = document.getElementById("output");
-  const orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+const output = document.getElementById("output");
+const btnVps = document.getElementById("btnVps");
+const btnDeposit = document.getElementById("btnDeposit");
 
-  if (orders.length === 0) {
-    output.innerHTML = "<p class='small'>Belum ada order VPS</p>";
+btnVps.onclick = () => {
+  btnVps.classList.add("active");
+  btnDeposit.classList.remove("active");
+  showVps();
+};
+
+btnDeposit.onclick = () => {
+  btnDeposit.classList.add("active");
+  btnVps.classList.remove("active");
+  showDeposit();
+};
+
+function showVps() {
+  const orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+  if (!orders.length) {
+    output.innerHTML = `<p class="small">Belum ada order VPS</p>`;
     return;
   }
 
-  output.innerHTML = orders.map((o, i) => `
+  output.innerHTML = orders.map((o,i)=>`
     <div class="order">
-      <b>#${i + 1}</b><br>
+      <div class="order-title">📦 VPS #${i+1}</div>
       Nomor: ${o.nomor}<br>
       Paket: ${o.paket}<br>
-      Harga: ${o.harga}<br>
-      Waktu: ${o.waktu}<br>
-      Status: ${o.status}
+      Harga: Rp ${o.harga}<br>
+      Status: <b>${o.status || "pending"}</b>
     </div>
   `).join("");
-};
+}
 
-// === HAPUS ORDER ===
-document.getElementById("clearbtn").onclick = () => {
-  if (confirm("Hapus semua order?")) {
-    localStorage.removeItem("vpsOrders");
-    document.getElementById("output").innerHTML = "";
+function showDeposit() {
+  const deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+
+  if (!deposits.length) {
+    output.innerHTML = `<p class="small">Belum ada request deposit</p>`;
+    return;
   }
-};
+
+  output.innerHTML = deposits.map((d,i)=>`
+    <div class="order">
+      <div class="order-title">💰 Deposit #${i+1}</div>
+      User: ${d.username}<br>
+      Nominal: Rp ${d.amount}<br>
+      Status: <b>${d.status}</b>
+
+      ${d.status === "pending" ? `
+      <div class="action">
+        <button class="btn-acc" onclick="acc(${i})">ACC</button>
+        <button class="btn-tolak" onclick="tolak(${i})">Tolak</button>
+      </div>` : ""}
+    </div>
+  `).join("");
+}
+
+function acc(i){
+  let deposits = JSON.parse(localStorage.getItem("depositRequests"));
+  let users = JSON.parse(localStorage.getItem("users"));
+  let d = deposits[i];
+  let u = users.find(x=>x.id===d.idUser);
+
+  if(!u) return alert("User tidak ditemukan");
+
+  u.saldo = (u.saldo||0) + Number(d.amount);
+  d.status = "approved";
+
+  localStorage.setItem("users",JSON.stringify(users));
+  localStorage.setItem("depositRequests",JSON.stringify(deposits));
+  showDeposit();
+}
+
+function tolak(i){
+  let deposits = JSON.parse(localStorage.getItem("depositRequests"));
+  deposits[i].status = "rejected";
+  localStorage.setItem("depositRequests",JSON.stringify(deposits));
+  showDeposit();
+}
+
+function clearAll(){
+  if(confirm("Hapus semua data?")){
+    localStorage.removeItem("vpsOrders");
+    localStorage.removeItem("depositRequests");
+    output.innerHTML="";
+  }
+}
+
+showVps();
 </script>
 
-</body>
 </html>
+</body>
