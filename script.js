@@ -1,72 +1,84 @@
-// ===== LOGIN =====
-document.getElementById("loginForm")?.addEventListener("submit", function (e) {
-  e.preventDefault();
+// ==========================
+// LOGIN
+// ==========================
+const loginForm = document.getElementById("loginForm");
 
-  const username = this.username.value.trim();
-  const password = this.password.value.trim();
+if (loginForm) {
+  loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-  if (!username || !password) {
-    alert("Username & password wajib diisi");
-    return;
-  }
+    const username = this.username.value.trim();
+    const password = this.password.value.trim();
 
-  // cek admin
-  const admin = ADMINS.find(
-    a => a.username === username && a.password === password
-  );
+    if (!username || !password) {
+      alert("Username & password wajib diisi");
+      return;
+    }
 
-  if (admin) {
-    localStorage.setItem("role", "admin");
-    localStorage.setItem("user", JSON.stringify(admin));
-    location.href = "admin.html";
-    return;
-  }
+    // === CEK ADMIN ===
+    const admin = ADMINS.find(
+      a => a.username === username && a.password === password
+    );
 
-  // cek user
-  const user = USERS.find(
-    u => u.username === username && u.password === password
-  );
+    if (admin) {
+      localStorage.setItem("role", "admin");
+      localStorage.setItem("user", JSON.stringify(admin));
+      window.location.href = "admin.html";
+      return;
+    }
 
-  if (user) {
-    localStorage.setItem("role", "user");
-    localStorage.setItem("user", JSON.stringify(user));
-    location.href = "dashboard.html";
-    return;
-  }
+    // === CEK USER ===
+    const user = USERS.find(
+      u => u.username === username && u.password === password
+    );
 
-  alert("Username atau password salah");
-});
+    if (user) {
+      localStorage.setItem("role", "user");
+      localStorage.setItem("user", JSON.stringify(user));
+      window.location.href = "dashboard.html";
+      return;
+    }
+
+    alert("Username atau password salah");
+  });
+}
 
 
-// ===== REGISTER =====
-document.getElementById("registerForm")?.addEventListener("submit", function (e) {
-  e.preventDefault();
+// ==========================
+// REGISTER
+// ==========================
+const registerForm = document.getElementById("registerForm");
 
-  const username = this.username.value.trim();
-  const password = this.password.value.trim();
+if (registerForm) {
+  registerForm.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-  if (!username || !password) {
-    alert("Username & password wajib diisi");
-    return;
-  }
+    const username = this.username.value.trim();
+    const password = this.password.value.trim();
 
-  // cek username sudah ada
-  const exists = USERS.find(u => u.username === username);
-  if (exists) {
-    alert("Username sudah terdaftar");
-    return;
-  }
+    if (!username || !password) {
+      alert("Username & password wajib diisi");
+      return;
+    }
 
-  const newUser = {
-    id: generateUserId(),
-    username,
-    password,
-    createdAt: new Date().toISOString()
-  };
+    // username harus unik
+    const exists = USERS.some(u => u.username === username);
+    if (exists) {
+      alert("Username sudah terdaftar");
+      return;
+    }
 
-  USERS.push(newUser);
-  saveUsers();
+    const newUser = {
+      id: generateUserId(), // angka mulai 7
+      username,
+      password,
+      createdAt: Date.now()
+    };
 
-  alert("Daftar berhasil, silakan login");
-  location.href = "index.html";
-});
+    USERS.push(newUser);
+    saveUsers();
+
+    alert("Daftar berhasil, silakan login");
+    window.location.href = "index.html";
+  });
+}
