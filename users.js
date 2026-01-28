@@ -1,29 +1,31 @@
-// ambil user
-let USERS = JSON.parse(localStorage.getItem("USERS")) || [];
-
-// admin
-const ADMINS = [
+// ===== USERS DATA =====
+const USERS = [
   {
-    id: 7000000000,
-    username: "admin",
-    password: "admin123"
+    id: 8427342247,
+    username: "winz",
+    password: "001",
+    createdAt: "2025-01-20"
+  },
+  {
+    id: 7391842561,
+    username: "user1",
+    password: "12345",
+    createdAt: "2025-01-21"
   }
 ];
 
-// simpan
+// ===== SAVE & LOAD =====
 function saveUsers() {
   localStorage.setItem("USERS", JSON.stringify(USERS));
 }
 
-// generate ID:
-// contoh: 7428391056
-function generateUserId() {
-  let id;
-  do {
-    // selalu mulai dari 7
-    const rest = Math.floor(100000000 + Math.random() * 900000000);
-    id = Number("7" + rest); // total 10 digit
-  } while (USERS.some(u => u.id === id));
-
-  return id;
+function loadUsers() {
+  const data = localStorage.getItem("USERS");
+  if (data) {
+    USERS.length = 0;
+    USERS.push(...JSON.parse(data));
+  }
 }
+
+// auto load saat halaman dibuka
+loadUsers();
