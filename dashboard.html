@@ -147,7 +147,7 @@ header h1 {
 }
 
 /* Animasi teks ke kanan */
-  keyframes runRight {
+@keyframes runRight {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
@@ -164,13 +164,61 @@ header h1 {
   margin: 5px 0;
   cursor: pointer;
 }
+/* kita coba*/
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: rgba(10,10,16,0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* ITEM */
+.bottom-nav .nav-item {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.bottom-nav .nav-icon {
+  font-size: 20px;
+  display: block;
+}
+
+/* ACTIVE */
+.bottom-nav .nav-item.active {
+  color: #ffd700;
+}
+
+.bottom-nav .nav-item.active .nav-icon {
+  text-shadow: 0 0 10px rgba(255,215,0,0.8);
+}
+
+/* Biar konten gak ketutup */
+body {
+  padding-bottom: 70px;
+}
 </style>
 </head>
 <body>
 
+  <!-- MENU TOP UP -->
+  </div>
 <div class="runningg-text">
   <span>⚡ SELAMAT DATANG DI ORDER SHOP MURAH • VPS PANEL • SCRIPT VPS • NOKOS • PANEL ⚡</span>
 </div>
+
 
 <div class="container">
 
@@ -207,6 +255,28 @@ header h1 {
   <span>╰┈➣ geser krii liat menu lain nya</span>
 </div>
 <div id="content"></div>
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active">
+    <span class="nav-icon">🏠</span>
+    <span class="nav-text">Home</span>
+  </div>
+
+  <div class="nav-item" id="nav-deposit">
+    <span class="nav-icon">💰</span>
+    <span class="nav-text">Deposit</span>
+  </div>
+
+  <div class="nav-item">
+    <span class="nav-icon">📊</span>
+    <span class="nav-text">Activity</span>
+  </div>
+
+  <div class="nav-item">
+    <span class="nav-icon">👤</span>
+    <span class="nav-text">Profile</span>
+  </div>
+</div>
 <script>
 // Ambil semua menu-card
 const menus = document.querySelectorAll('.menu-card');
@@ -375,21 +445,25 @@ button:hover {
 
 </div>
 `;
-
 document.getElementById("menu-vps").addEventListener("click", () => {
   content.innerHTML = vpsHTML;
 });
 
 // ===== UPDATE HARGA =====
+let hargaPaket = 0;
+
 function updateHarga() {
   const paket = document.getElementById("paket").value;
+  const hargaEl = document.getElementById("harga");
+
   if (!paket) {
-    document.getElementById("harga").innerText = "Harga: -";
+    hargaEl.innerText = "Harga: -";
+    hargaPaket = 0;
     return;
   }
 
   hargaPaket = parseInt(paket.split("|")[1]);
-  document.getElementById("harga").innerText = "Harga: " + hargaPaket;
+  hargaEl.innerText = "Harga: " + hargaPaket;
 }
 
 // ===== KIRIM ORDER =====
@@ -399,15 +473,23 @@ function kirimOrder() {
   const orderBox = document.getElementById("orderBox");
 
   if (!nomor || !paket) {
-    alert("Lengkapi data dulu!");
+    orderBox.innerHTML = "⚠️ Lengkapi data dulu kk";
     return;
   }
 
-  // CEK SALDO
+  // ❌ SALDO TIDAK CUKUP
   if (saldo < hargaPaket) {
-    orderBox.innerHTML = "❌ Saldo tidak cukup";
+    orderBox.innerHTML = `
+      ❌ <b>Saldo kamu tidak cukup</b><br>
+      💰 Saldo: ${saldo}<br>
+      📦 Harga Paket: ${hargaPaket}<br><br>
+      👉 Silakan <b>top up dulu kk</b>
+    `;
     return;
   }
+
+  // ✅ SALDO CUKUP → PROSES
+  orderBox.innerHTML = "⏳ Sedang mengirim order ke admin...";
 
   // POTONG SALDO
   saldo -= hargaPaket;
@@ -425,22 +507,31 @@ function kirimOrder() {
   adminOrders.push(order);
   localStorage.setItem("vpsOrders", JSON.stringify(adminOrders));
 
+  // HASIL AKHIR
   orderBox.innerHTML = `
-    ✅ ORDER BERHASIL<br>
-    Paket: ${order.paket}<br>
-    Harga: ${order.harga}<br>
-    Sisa Saldo: ${saldo}
-    📨 sbar dalam antrian ya kk<br>
-  ⏳ nanti kk dapet juga gransi  pul sesuai kk beli<br> cara nya pergi ke profil<br> pergi ke sprot nya kk kasi domain/web/pw/username/ jelas kan se detil mukin 
+    ✅ <b>ORDER BERHASIL</b><br><br>
+    📦 Paket: ${order.paket}<br>
+    💰 Harga: ${order.harga}<br>
+    💳 Sisa Saldo: ${saldo}<br><br>
 
+    📨 Pesanan masuk antrian ya kk<br>
+    ⏳ VPS akan diproses admin<br><br>
+
+    ✔️ Pul Garansi<br>
+    ✔️ Sampai Masa Aktif Habis<br>
+    ✔️ VPS Aktif & Siap Pakai<br>
+    ✔️ Aman & Terpercaya<br><br>
+
+    📌 Untuk akses:
+    masuk ke <b>Profil → Support</b><br>
+    kirim <b>domain / web / username / password</b> sedetail mungkin
   `;
 }
+
 </script>
-
-
-<script src="saldo.js"></script>
-
-  
-
-
+<script>
+  document.getElementById("nav-deposit")?.addEventListener("click", () => {
+  window.location.href = "deposit.html";
+});
+</script>
   
