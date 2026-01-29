@@ -7,7 +7,7 @@ const USERS = [
     username: "winz",
     password: "001",
     apiKey: "WINZ_8F2KA9QXW1",
-    role: "ADMIN",
+    role: "USER",
     createdAt: "2025-01-20"
   },
   {
