@@ -540,9 +540,19 @@ function kirimOrder() {
   document.getElementById("vpsbtnjd")?.addEventListener("click", () => {
   window.location.href = "Script.html";
 });
-</script>
+<!-- Tombol cek bio -->
+<button id="cekbiobtn">Cek Profil</button>
+
 <script>
-document.getElementById("cekbiobtn")?.addEventListener("click", () => {
-  window.location.href = "Profil.html";
-});
+  // Ambil tombol
+  const cekBioBtn = document.getElementById("cekbiobtn");
+
+  // Hanya pas tombol ada
+  if (cekBioBtn) {
+    cekBioBtn.addEventListener("click", () => {
+      // Pastikan nama file persis sama dengan di repo
+      // Misal file di repo: profil.html (huruf kecil)
+      window.location.href = "profil.html";
+    });
+  }
 </script>
