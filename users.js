@@ -1,4 +1,6 @@
-// ===== USERS DATA =====
+// =======================
+// USERS DATA
+// =======================
 const USERS = [
   {
     id: 8427342247,
@@ -14,18 +16,26 @@ const USERS = [
   }
 ];
 
-// ===== SAVE & LOAD =====
+// =======================
+// SAVE USERS TO STORAGE
+// =======================
 function saveUsers() {
   localStorage.setItem("USERS", JSON.stringify(USERS));
 }
 
+// =======================
+// LOAD USERS FROM STORAGE
+// =======================
 function loadUsers() {
-  const data = localStorage.getItem("USERS");
-  if (data) {
-    USERS.length = 0;
-    USERS.push(...JSON.parse(data));
-  }
+  const storedUsers = localStorage.getItem("USERS");
+
+  if (!storedUsers) return;
+
+  USERS.length = 0;
+  USERS.push(...JSON.parse(storedUsers));
 }
 
-// auto load saat halaman dibuka
+// =======================
+// AUTO LOAD ON PAGE OPEN
+// =======================
 loadUsers();
