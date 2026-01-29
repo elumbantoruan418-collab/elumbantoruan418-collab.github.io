@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daftar Akun</title>
+
+<style>
+:root {
+  --bg: #020617;
+  --card: #0b0b12;
+  --primary: #38bdf8;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --text: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #020617, #0b0b12);
+  color: var(--text);
+}
+
+/* tombol kembali */
+.back-btnn {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  font-size: 12px;
+  color: #38bdf8;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.back-btnn:hover {
+  color: #7dd3fc;
+  transform: translateX(-3px);
+}
+
+/* box register */
+.regis-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 0 35px rgba(56,189,248,.2);
+}
+
+.regis-box h2 {
+  margin: 0;
+  text-align: center;
+  color: var(--primary);
+}
+
+.regis-box p {
+  text-align: center;
+  font-size: 12px;
+  opacity: .7;
+  margin-bottom: 22px;
+}
+
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-group label {
+  font-size: 12px;
+  opacity: .8;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: #020617;
+  color: white;
+}
+
+.btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: .9;
+}
+
+.status {
+  margin-top: 16px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.success { color: var(--success); }
+.error { color: var(--danger); }
+
+.apikey-box {
+  margin-top: 18px;
+  padding: 14px;
+  background: #020617;
+  border-radius: 12px;
+  font-size: 12px;
+  display: none;
+  word-break: break-all;
+}
+</style>
+
+<body>
+
+<div class="back-btnn" onclick="goLogin()">
+  ← Kembali 
+</div>
+
+<div class="regis-box">
+  <h2>🧾 Daftar Akun</h2>
+  <p>Buat akun baru untuk masuk ke dashboard</p>
+
+  <div class="input-group">
+    <label>Username</label>
+    <input type="text" id="username" placeholder="username">
+  </div>
+
+  <div class="input-group">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="password">
+  </div>
+
+  <button class="btn" onclick="register()">DAFTAR AKUN</button>
+
+  <div class="status" id="status"></div>
+  <div class="apikey-box" id="apikeyBox"></div>
+</div>
+
+</body>
+<script>
+<script>
+// =====================
+// GENERATOR
+// =====================
+function generateId() {
+  return Math.floor(1_000_000 + Math.random() * 9_000_000);
+}
+
+function generateApiKey() {
+  const random = Math.random().toString(36).substring(2, 10).toUpperCase();
+  const time   = Date.now().toString(36).toUpperCase();
+  return `API-${random}-${time}`;
+}
+
+// =====================
+// REGISTER
+// =====================
+function register() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const status   = document.getElementById("status");
+  const apiBox   = document.getElementById("apikeyBox");
+
+  // validasi input
+  if (!username || !password) {
+    status.textContent = "❌ Username & password wajib diisi";
+    status.className = "status error";
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  // cek username
+  if (users.some(u => u.username === username)) {
+    status.textContent = "❌ Username sudah digunakan";
+    status.className = "status error";
+    return;
+  }
+
+  // buat akun
+  const user = {
+    id: generateId(),
+    username: username,
+    password: password,
+    saldo: 0,
+    apiKey: generateApiKey(),
+    createdAt: new Date().toLocaleString()
+  };
+
+  users.push(user);
+  localStorage.setItem("users", JSON.stringify(users));
+
+  // auto login
+  localStorage.setItem("currentUser", JSON.stringify(user));
+
+  status.textContent = "✅ Akun berhasil dibuat, masuk ke dashboard...";
+  status.className = "status success";
+
+  apiBox.style.display = "block";
+  apiBox.innerHTML = `
+    🔑 <b>API KEY KAMU</b><br><br>
+    ${user.apiKey}<br><br>
+    <small>Simpan baik-baik. Jangan dibagikan ke orang lain.</small>
+  `;
+
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 2000);
+}
+</script>
+
+<script>
+function goLogin() {
+  window.location.href = "login.html";
+}
+</script>
+</body>
+</html>
