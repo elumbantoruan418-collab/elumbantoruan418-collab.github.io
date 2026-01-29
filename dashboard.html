@@ -214,7 +214,8 @@ body {
 <body>
 
   <!-- MENU TOP UP -->
-  </div>
+
+</div>
 <div class="runningg-text">
   <span>⚡ SELAMAT DATANG DI ORDER SHOP MURAH • VPS PANEL • SCRIPT VPS • NOKOS • PANEL ⚡</span>
 </div>
@@ -230,11 +231,11 @@ body {
   <div class="menu-title">Panel VPS</div>
   <div class="menu-desc">Kelola server otomatis</div>
 </div>
-    <div class="menu-card">
-      <div class="menu-icon">🚀</div>
-      <div class="menu-title">Script VPS</div>
-      <div class="menu-desc">Install otomatis</div>
-    </div>
+<div class="menu-card">
+  <div class="menu-icon" id="vpsbtnjd">🚀</div>
+  <div class="menu-title">Script</div>
+  <div class="menu-desc">otomatis</div>
+</div>
 
     <div class="menu-card">
       <div class="menu-icon">📦</div>
@@ -267,12 +268,12 @@ body {
     <span class="nav-text">Deposit</span>
   </div>
 
-  <div class="nav-item">
-    <span class="nav-icon">📊</span>
-    <span class="nav-text">Activity</span>
-  </div>
+<div class="nav-item" id="nav-activity">
+  <span class="nav-icon">📊</span>
+  <span class="nav-text">Activity</span>
+</div>
 
-  <div class="nav-item">
+  <div class="nav-item" id= "cekbiobtn">
     <span class="nav-icon">👤</span>
     <span class="nav-text">Profile</span>
   </div>
@@ -312,7 +313,7 @@ let saldoUser = 1000;
 /* ======================
    HTML VPS
 ====================== */
-  const vpsHTML = `
+const vpsHTML = `
 <style>
 /* ===== BODY ===== */
 body {
@@ -433,7 +434,7 @@ button:hover {
     📦 Pesanan akan tampil di sini
   </div>
 
-  <button onclick="kirimOrder()">📤 KIRIM KE ADMIN</button>
+  <button onclick="kirimOrder()">📤 PESAN</button>
 
   <div class="info">
     ✔️ Pul Garansi<br>
@@ -445,6 +446,7 @@ button:hover {
 
 </div>
 `;
+
 document.getElementById("menu-vps").addEventListener("click", () => {
   content.innerHTML = vpsHTML;
 });
@@ -534,4 +536,13 @@ function kirimOrder() {
   window.location.href = "deposit.html";
 });
 </script>
-  
+<script>
+  document.getElementById("vpsbtnjd")?.addEventListener("click", () => {
+  window.location.href = "Script.html";
+});
+</script>
+<script>
+document.getElementById("cekbiobtn")?.addEventListener("click", () => {
+  window.location.href = "Profil.html";
+});
+</script>
