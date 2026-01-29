@@ -1,19 +1,30 @@
 // =======================
-// USERS DATA
+// USERS DATA (DEFAULT)
 // =======================
 const USERS = [
   {
     id: 8427342247,
     username: "winz",
     password: "001",
-    apiKey: "W_8f2kA9Qxw1",
+    apiKey: "WINZ_8F2KA9QXW1",
+    role: "ADMIN",
     createdAt: "2025-01-20"
   },
   {
     id: 7391842561,
     username: "user1",
     password: "12345",
-    apiKey: "U_Lp29ZxM81Q",
+    apiKey: "WINZ_LP29ZXM81Q",
+    role: "USER",
     createdAt: "2025-01-21"
   }
 ];
+
+// =======================
+// INIT STORAGE (JANGAN TIMPA DATA)
+// =======================
+(function initUsers() {
+  if (!localStorage.getItem("users")) {
+    localStorage.setItem("users", JSON.stringify(USERS));
+  }
+})();
