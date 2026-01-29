@@ -39,7 +39,7 @@ if (loginForm) {
       return;
     }
 
-    alert("Username atau password salah");
+    alert("Username atau password salah belum daftar di githab");
   });
 }
 
