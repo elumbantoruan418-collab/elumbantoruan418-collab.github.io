@@ -129,9 +129,8 @@ body {
 
 <body>
 
-<div class="back-btnn" onclick="goLogin()">
-  ← Kembali 
-</div>
+
+<div class="back-btnn" onclick="goLogin()"> ← Kembali </div>
 
 <div class="regis-box">
   <h2>🧾 Daftar Akun</h2>
@@ -147,21 +146,16 @@ body {
     <input type="password" id="password" placeholder="password">
   </div>
 
-  <button class="btn" onclick="register()">DAFTAR AKUN</button>
+  <button class="btn" id="btnDaftar" onclick="register()">DAFTAR AKUN</button>
 
   <div class="status" id="status"></div>
-  <div class="apikey-box" id="apikeyBox"></div>
+  <div class="apikey-box" id="apikeyBox" style="display:none; background:#333; padding:10px; border-radius:5px; margin-top:10px;"></div>
 </div>
 
-</body>
 <script>
-<script>
-// =====================
-// GENERATOR
-// =====================
-function generateId() {
-  return Math.floor(1_000_000 + Math.random() * 9_000_000);
-}
+// KONFIGURASI SUPABASE (Ganti dengan punya kamu yang tadi)
+const SB_URL = "https://rrpdnfqcgbsqptlvsldf.supabase.co/rest/v1/users";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJycGRuZnFjZ2JzcXB0bHZzbGRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MTY1NTcsImV4cCI6MjA4ODQ5MjU1N30.R9SWq-t7n7q3qagY5IIXQrw181pTWPxH0YIwFpYPb7c";
 
 function generateApiKey() {
   const random = Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -169,67 +163,77 @@ function generateApiKey() {
   return `API-${random}-${time}`;
 }
 
-// =====================
-// REGISTER
-// =====================
-function register() {
+async function register() {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
   const status   = document.getElementById("status");
   const apiBox   = document.getElementById("apikeyBox");
+  const btn      = document.getElementById("btnDaftar");
 
-  // validasi input
   if (!username || !password) {
     status.textContent = "❌ Username & password wajib diisi";
-    status.className = "status error";
     return;
   }
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+  btn.disabled = true;
+  status.textContent = "⏳ Memproses pendaftaran...";
 
-  // cek username
-  if (users.some(u => u.username === username)) {
-    status.textContent = "❌ Username sudah digunakan";
-    status.className = "status error";
-    return;
+  try {
+    // 1. Cek apakah username sudah ada di Database
+    const cekRes = await fetch(`${SB_URL}?username=eq.${username}`, {
+      method: "GET",
+      headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` }
+    });
+    const cekData = await cekRes.json();
+
+    if (cekData.length > 0) {
+      status.textContent = "❌ Username sudah digunakan!";
+      btn.disabled = false;
+      return;
+    }
+
+    // 2. Buat Data User Baru
+    const apiKeyBaru = generateApiKey();
+    const userBaru = {
+      username: username,
+      password: password,
+      api_key: apiKeyBaru,
+      saldo: 0
+    };
+
+    // 3. Simpan ke Supabase (Pengganti simpan ke users.js)
+    const simpanRes = await fetch(SB_URL, {
+      method: "POST",
+      headers: {
+        "apikey": SB_KEY,
+        "Authorization": `Bearer ${SB_KEY}`,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify(userBaru)
+    });
+
+    if (simpanRes.ok) {
+      status.textContent = "✅ Akun berhasil dibuat!";
+      apiBox.style.display = "block";
+      apiBox.innerHTML = `🔑 <b>API KEY:</b><br>${apiKeyBaru}`;
+      
+      // Simpan sesi login sementara
+      localStorage.setItem("currentUser", JSON.stringify(userBaru));
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 3000);
+    }
+
+  } catch (error) {
+    status.textContent = "❌ Terjadi kesalahan jaringan";
+    btn.disabled = false;
   }
-
-  // buat akun
-  const user = {
-    id: generateId(),
-    username: username,
-    password: password,
-    saldo: 0,
-    apiKey: generateApiKey(),
-    createdAt: new Date().toLocaleString()
-  };
-
-  users.push(user);
-  localStorage.setItem("users", JSON.stringify(users));
-
-  // auto login
-  localStorage.setItem("currentUser", JSON.stringify(user));
-
-  status.textContent = "✅ Akun berhasil dibuat, masuk ke dashboard...";
-  status.className = "status success";
-
-  apiBox.style.display = "block";
-  apiBox.innerHTML = `
-    🔑 <b>API KEY KAMU</b><br><br>
-    ${user.apiKey}<br><br>
-    <small>Simpan baik-baik. Jangan dibagikan ke orang lain.</small>
-  `;
-
-  setTimeout(() => {
-    window.location.href = "index.html";
-  }, 2000);
 }
-</script>
 
-<script>
 function goLogin() {
   window.location.href = "login.html";
 }
 </script>
-</body>
-</html>
+  
