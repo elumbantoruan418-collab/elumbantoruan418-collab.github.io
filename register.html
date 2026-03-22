@@ -4,76 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Winz Cloud // Secure Registration</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-
     <style>
-        :root {
-            --primary: #00AED6; 
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-        }
-
+        :root { --primary: #00AED6; --bg: #f8fafc; --card-bg: #ffffff; }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background-color: var(--bg);
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* BACKGROUND PARTICLES */
+        body { background-color: var(--bg); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; position: relative; }
         .particles-bg { position: fixed; inset: 0; z-index: -1; }
         .dot { position: absolute; background: var(--primary); border-radius: 50%; opacity: 0.1; animation: floatUp 10s infinite linear; }
         @keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 0.2; } 100% { transform: translateY(-100vh); opacity: 0; } }
-
-        /* REG CARD */
         .reg-container { width: 100%; max-width: 420px; padding: 20px; z-index: 10; }
-        .reg-card {
-            background: var(--card-bg);
-            padding: 35px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
-
+        .reg-card { background: var(--card-bg); padding: 35px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
         .header { text-align: center; margin-bottom: 25px; }
         .header h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; color: #0f172a; }
         .header p { font-size: 13px; color: #64748b; margin-top: 5px; }
-
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-        
         .input-box { position: relative; }
         .input-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px; }
-        .form-input {
-            width: 100%; padding: 12px 15px 12px 42px;
-            background: #f1f5f9; border: 2px solid transparent;
-            border-radius: 12px; font-size: 14px; transition: 0.3s;
-        }
+        .form-input { width: 100%; padding: 12px 15px 12px 42px; background: #f1f5f9; border: 2px solid transparent; border-radius: 12px; font-size: 14px; transition: 0.3s; }
         .form-input:focus { background: #fff; border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(0, 174, 214, 0.1); }
-
-        .btn-reg {
-            width: 100%; padding: 14px; background: var(--primary); color: white; border: none;
-            border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px;
-            box-shadow: 0 4px 10px rgba(0, 174, 214, 0.2);
-        }
+        .btn-reg { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 10px rgba(0, 174, 214, 0.2); }
         .btn-reg:hover { background: #0081A0; transform: translateY(-1px); }
-
         .back { display: block; text-align: center; margin-top: 20px; font-size: 13px; text-decoration: none; color: #64748b; font-weight: 500; }
         .back b { color: var(--primary); }
-
-        #toast { 
-            position: fixed; top: 20px; right: 20px; background: #10b981; color: white;
-            padding: 15px 25px; border-radius: 12px; font-size: 14px; font-weight: 600;
-            transform: translateX(150%); transition: 0.5s; z-index: 9999;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-        }
+        #toast { position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 15px 25px; border-radius: 12px; font-size: 14px; font-weight: 600; transform: translateX(150%); transition: 0.5s; z-index: 9999; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
         #toast.active { transform: translateX(0); }
     </style>
 </head>
@@ -82,7 +37,6 @@
 <script src="users.js"></script>
 
 <div class="particles-bg" id="particles"></div>
-
 <div id="toast">Registrasi Berhasil! Mengalihkan...</div>
 
 <div class="reg-container">
@@ -91,7 +45,6 @@
             <h1>Create Account</h1>
             <p>Daftar layanan Winz Cloud Hosting</p>
         </div>
-
         <form id="regForm">
             <div class="form-group">
                 <label>Username</label>
@@ -100,7 +53,6 @@
                     <input type="text" id="username" class="form-input" placeholder="Masukkan username" required>
                 </div>
             </div>
-
             <div class="form-group">
                 <label>Password</label>
                 <div class="input-box">
@@ -108,16 +60,14 @@
                     <input type="password" id="password" class="form-input" placeholder="••••••••" required>
                 </div>
             </div>
-
             <button type="submit" class="btn-reg">Daftar Sekarang</button>
-
             <a href="index.html" class="back">Sudah punya akun? <b>Login Disini</b></a>
         </form>
     </div>
 </div>
 
 <script>
-    // --- PARTICLE EFFECT (Dekorasi) ---
+    // Partikel latar belakang
     const pContainer = document.getElementById('particles');
     for(let i=0; i<30; i++) {
         let dot = document.createElement('div');
@@ -130,20 +80,25 @@
         pContainer.appendChild(dot);
     }
 
-    // --- LOGIC REGISTER (Connect to UserDB) ---
+    // --- LOGIC REGISTER SINKRON DENGAN users.js ---
     document.getElementById('regForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
         const userVal = document.getElementById('username').value.trim();
         const passVal = document.getElementById('password').value.trim();
 
-        // 1. Cek apakah username sudah ada menggunakan fungsi UserDB.find()
-        if (typeof UserDB !== "undefined" && UserDB.find(userVal)) {
-            alert("Username '" + userVal + "' sudah digunakan. Pilih yang lain!");
+        // 1. Ambil data dari LocalStorage (Database utama)
+        // Gunakan nama key "users" sesuai initUsers() di users.js kamu
+        let currentUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+        // 2. Cek apakah username sudah ada
+        const isExist = currentUsers.find(u => u.username.toLowerCase() === userVal.toLowerCase());
+        if (isExist) {
+            alert("Username '" + userVal + "' sudah digunakan!");
             return;
         }
 
-        // 2. Buat objek user baru sesuai struktur di users.js kamu
+        // 3. Buat objek user baru sesuai format USERS kamu
         const newUser = {
             id: Math.floor(Math.random() * 9000000000) + 1000000000,
             username: userVal,
@@ -153,23 +108,20 @@
             createdAt: new Date().toISOString().split('T')[0]
         };
 
-        // 3. Simpan ke LocalStorage menggunakan fungsi UserDB.save()
-        if (typeof UserDB !== "undefined") {
-            UserDB.save(newUser);
-            
-            // Tampilkan Feedback Sukses
-            const toast = document.getElementById('toast');
-            toast.classList.add('active');
-            
-            setTimeout(() => {
-                window.location.href = "access.html";
-            }, 1500);
-        } else {
-            alert("Error: File users.js tidak ditemukan atau gagal dimuat!");
-        }
+        // 4. Simpan kembali ke LocalStorage
+        currentUsers.push(newUser);
+        localStorage.setItem("users", JSON.stringify(currentUsers));
+
+        // 5. Efek Berhasil
+        const toast = document.getElementById('toast');
+        toast.classList.add('active');
+        
+        setTimeout(() => {
+            window.location.href = "access.html";
+        }, 1500);
     });
 </script>
-
 </body>
 </html>
 
+            
