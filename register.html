@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winz Cloud // Secure Access</title>
+    <title>Winz Cloud // Secure Registration</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -12,8 +12,7 @@
         :root {
             --brand-primary: #6366f1; 
             --brand-secondary: #8b5cf6;
-            --bg-body: #0f172a; /* Gelap Premium */
-            --white: #ffffff;
+            --bg-body: #0f172a;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -29,10 +28,10 @@
             overflow: hidden;
         }
 
-        /* TOAST ERROR */
+        /* TOAST SUCCESS */
         #toast { 
             position: fixed; top: 20px; right: 20px; 
-            background: #ef4444; color: white; padding: 16px 24px; border-radius: 12px;
+            background: #10b981; color: white; padding: 16px 24px; border-radius: 12px;
             box-shadow: 0 10px 15px rgba(0,0,0,0.3);
             transform: translateX(150%); transition: 0.5s; z-index: 1000;
         }
@@ -72,41 +71,37 @@
         }
         .form-control:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
 
-        .btn-login {
+        .btn-reg {
             width: 100%; padding: 14px; background: var(--brand-primary);
             color: white; border: none; border-radius: 12px;
             font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s;
         }
-        .btn-login:hover { background: var(--brand-secondary); transform: translateY(-2px); }
+        .btn-reg:hover { background: var(--brand-secondary); transform: translateY(-2px); }
 
-        .divider { margin: 25px 0; border-top: 1px solid #334155; position: relative; }
-        .divider span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #1e293b; padding: 0 10px; font-size: 12px; color: #64748b; }
-
-        .btn-register {
-            display: block; width: 100%; padding: 12px;
-            border: 1px solid #334155; border-radius: 12px;
-            color: white; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s;
+        .back-link {
+            display: block; margin-top: 20px; color: #94a3b8;
+            text-decoration: none; font-size: 13px; font-weight: 500;
         }
-        .btn-register:hover { background: #334155; }
+        .back-link b { color: var(--brand-primary); }
     </style>
 </head>
 <body>
 
-<div id="toast">Gagal masuk. Username atau Password salah!</div>
+<div id="toast">Akun Berhasil Dibuat! Mengalihkan...</div>
 
 <div class="auth-card">
     <div class="brand-logo">
-        <i class="fas fa-terminal"></i>
+        <i class="fas fa-user-plus"></i>
     </div>
-    <h1>Winz Cloud Access</h1>
-    <p>Sign in to manage your framework</p>
+    <h1>Create Account</h1>
+    <p>Join Winz Cloud Infrastructure</p>
 
-    <form id="loginForm">
+    <form id="regForm">
         <div class="form-group">
             <label>Username</label>
             <div class="input-wrapper">
                 <i class="fas fa-user"></i>
-                <input type="text" id="username" class="form-control" placeholder="Your username" required>
+                <input type="text" id="username" class="form-control" placeholder="Choose username" required>
             </div>
         </div>
 
@@ -118,47 +113,60 @@
             </div>
         </div>
 
-        <button type="submit" class="btn-login">Login System</button>
+        <button type="submit" class="btn-reg">Daftar Sekarang</button>
 
-        <div class="divider"><span>ATAU</span></div>
-
-        <a href="register.html" class="btn-register">Buat Akun Baru</a>
+        <a href="index.html" class="back-link">Sudah punya akun? <b>Login</b></a>
     </form>
 </div>
 
 <script src="users.js"></script>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+    document.getElementById('regForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const userInp = document.getElementById('username').value.trim();
-        const passInp = document.getElementById('password').value.trim();
+        const userVal = document.getElementById('username').value.trim();
+        const passVal = document.getElementById('password').value.trim();
 
-        // Ambil data users dari LocalStorage (yang dikelola users.js)
-        const allUsers = JSON.parse(localStorage.getItem("users")) || [];
-
-        // Validasi
-        const userFound = allUsers.find(u => u.username === userInp && u.password === passInp);
-
-        if (userFound) {
-            // Jika berhasil, simpan session sementara
-            localStorage.setItem("currentUser", JSON.stringify(userFound));
-            
-            // Arahkan ke dashboard (Ganti 'dashboard.html' sesuai filemu)
-            alert("Login Berhasil! Selamat datang " + userFound.username);
-            window.location.href = "dashboard.html"; 
-        } else {
-            // Munculkan Toast Error
-            const toast = document.getElementById('toast');
-            toast.classList.add('visible');
-            setTimeout(() => toast.classList.remove('visible'), 3000);
+        // 1. Cek apakah UserDB tersedia (dari users.js)
+        if (typeof UserDB === "undefined") {
+            alert("Error: File users.js tidak terbaca!");
+            return;
         }
+
+        // 2. Cek apakah username sudah ada
+        if (UserDB.find(userVal)) {
+            alert("Username '" + userVal + "' sudah terdaftar!");
+            return;
+        }
+
+        // 3. Buat objek user baru sesuai format kamu
+        const newUser = {
+            id: Date.now(),
+            username: userVal,
+            password: passVal,
+            apiKey: "WINZ_" + Math.random().toString(36).substring(2, 12).toUpperCase(),
+            role: "USER",
+            createdAt: new Date().toISOString().split('T')[0]
+        };
+
+        // 4. Simpan ke database (LocalStorage)
+        UserDB.save(newUser);
+
+        // 5. Tampilkan Feedback & Otomatis Balik ke index.html
+        const toast = document.getElementById('toast');
+        toast.classList.add('visible');
+        
+        // Jeda 1.5 detik supaya user bisa lihat pesan sukses, lalu pindah
+        setTimeout(() => {
+            window.location.href = "index.html"; 
+        }, 1500);
     });
 </script>
 
 </body>
 </html>
+
 
 
             
