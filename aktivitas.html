@@ -182,6 +182,58 @@
     function showDetail(data) {
         const modal = document.getElementById('logModal');
         const title = document.getElementById('modalTitle');
+<script>
+    // Ambil Session User (Hanya untuk identitas di badge atas)
+    const sessionUser = localStorage.getItem("winz_session") || "GUEST";
+
+    function loadLogs() {
+        const container = document.getElementById("logList");
+        const badge = document.getElementById("userBadge");
+
+        // Identitas pengakses
+        badge.innerHTML = `<i class="fas fa-eye"></i> VIEWING AS: ${sessionUser.toUpperCase()}`;
+
+        // Ambil SEMUA data logs tanpa filter owner
+        const allLogs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
+        
+        if (allLogs.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-folder-open fa-2x"></i><br><br>
+                    BELUM ADA AKTIVITAS GLOBAL
+                </div>`;
+            return;
+        }
+
+        // Tampilkan semua logs
+        container.innerHTML = allLogs.map((l) => {
+            const isGagal = (l.status === 'gagal' || l.status === 'Rejected');
+            const cardClass = isGagal ? 'log-card gagal' : 'log-card';
+            const badgeClass = isGagal ? 'badge-gagal' : 'badge-sukses';
+            const badgeText = isGagal ? 'Rejected' : 'Success';
+            
+            // Nama user pemilik transaksi (Owner)
+            const ownerName = l.owner ? l.owner.toUpperCase() : "SYSTEM";
+
+            return `
+                <div class="${cardClass}" onclick='showDetail(${JSON.stringify(l).replace(/'/g, "&apos;")})'>
+                    <div class="order-id">#${l.orderID || 'XTR-SYS'}</div>
+                    
+                    <div style="font-size: 10px; color: var(--blue-glow); margin-bottom: 5px; font-family: var(--font-mono);">
+                        <i class="fas fa-user"></i> USER: ${ownerName}
+                    </div>
+
+                    <span class="status-badge ${badgeClass}">${badgeText}</span>
+                    <span class="time"><i class="far fa-clock"></i> ${l.waktu}</span>
+                    <div class="content">${l.teks}</div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    function showDetail(data) {
+        const modal = document.getElementById('logModal');
+        const title = document.getElementById('modalTitle');
         const body = document.getElementById('modalBody');
         const isGagal = (data.status === 'gagal' || data.status === 'Rejected');
 
@@ -190,15 +242,15 @@
 
         body.innerHTML = `
             <div style="margin-bottom:15px; border-bottom:1px solid #222; padding-bottom:10px;">
-                <b style="color:#fff">ORDER ID:</b><br>
-                <span style="color:var(--blue-glow)">#${data.orderID || 'N/A'}</span>
+                <b style="color:#fff">PEMILIK:</b><br>
+                <span style="color:var(--blue-glow)">${(data.owner || 'System').toUpperCase()}</span>
             </div>
             <div style="margin-bottom:15px;">
-                <b style="color:#fff">TIMESTAMP:</b><br>
-                <span>${data.waktu}</span>
+                <b style="color:#fff">ORDER ID:</b><br>
+                <span>#${data.orderID || 'N/A'}</span>
             </div>
             <div style="padding:15px; background:rgba(0,0,0,0.5); border-radius:10px; border:1px solid #334155;">
-                <b style="color:var(--blue-glow)">SYSTEM NOTE:</b><br>
+                <b style="color:var(--blue-glow)">KETERANGAN:</b><br>
                 <span style="color:#e2e8f0; font-size:12px; line-height:1.6;">${data.teks}</span>
             </div>
         `;
@@ -209,12 +261,11 @@
         document.getElementById('logModal').style.display = 'none';
     }
 
-    // Jalankan awal
     loadLogs();
-    
-    // Auto-refresh setiap 7 detik
-    setInterval(loadLogs, 7000);
+    // Refresh otomatis tiap 10 detik biar kalau ada yang di-ACC admin langsung muncul
+    setInterval(loadLogs, 10000);
 </script>
+
 </body>
 </html>
 
