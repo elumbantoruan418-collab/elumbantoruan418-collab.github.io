@@ -53,6 +53,7 @@
             padding: 6px 12px; 
             border-radius: 8px; 
             border: 1px solid rgba(56, 189, 248, 0.3);
+            text-transform: uppercase;
         }
 
         /* LOG LIST */
@@ -67,8 +68,9 @@
             cursor: pointer;
             transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             animation: slideUp 0.4s ease-out;
+            overflow: hidden;
         }
-        .log-card:hover { transform: translateY(-3px); background: #121225; }
+        .log-card:hover { transform: translateY(-3px); background: #121225; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         .log-card.gagal { border-left-color: var(--red-glow); }
 
         .order-id { 
@@ -87,24 +89,26 @@
         .badge-sukses { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
         .badge-gagal { background: rgba(239, 68, 68, 0.2); color: var(--red-glow); }
 
-        .content { font-size: 14px; line-height: 1.5; color: #cbd5e1; }
+        .content { font-size: 14px; line-height: 1.5; color: #cbd5e1; white-space: pre-wrap; }
 
         /* MODAL */
         .modal { 
             display: none; position: fixed; z-index: 999; 
             left: 0; top: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); 
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(8px); 
             align-items: center; justify-content: center; padding: 20px; 
         }
         .modal-content { 
-            background: #111122; border: 1px solid var(--blue-glow); 
+            background: #0d0d1a; border: 1px solid var(--blue-glow); 
             border-radius: 20px; width: 100%; max-width: 400px; 
             padding: 30px; position: relative; 
             animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.2);
         }
-        .close-btn { position: absolute; right: 20px; top: 20px; color: #fff; font-size: 24px; cursor: pointer; }
+        .close-btn { position: absolute; right: 20px; top: 20px; color: #fff; font-size: 24px; cursor: pointer; opacity: 0.6; }
+        .close-btn:hover { opacity: 1; }
 
-        .empty-state { text-align: center; margin-top: 100px; opacity: 0.4; font-family: var(--font-mono); font-size: 12px; }
+        .empty-state { text-align: center; margin-top: 100px; opacity: 0.4; font-family: var(--font-mono); font-size: 12px; line-height: 2; }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes modalPop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
@@ -114,8 +118,8 @@
 
 <div class="container">
     <div class="header">
-        <div><h2><i class="fas fa-terminal" style="color:var(--blue-glow)"></i> LOGS</h2></div>
-        <div id="userBadge" class="user-badge">GUEST</div>
+        <div><h2><i class="fas fa-terminal" style="color:var(--blue-glow)"></i> XTR LOGS</h2></div>
+        <div id="userBadge" class="user-badge">IDENTIFYING...</div>
     </div>
     <div id="logList" class="log-list"></div>
 </div>
@@ -123,13 +127,13 @@
 <div id="logModal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h3 id="modalTitle" style="margin-bottom: 20px; text-transform: uppercase;">DETAIL</h3>
+        <h3 id="modalTitle" style="margin-bottom: 20px; text-transform: uppercase; font-size: 18px;">DETAIL AKTIVITAS</h3>
         <div id="modalBody" style="font-family: var(--font-mono); font-size: 13px; color: #94a3b8;"></div>
     </div>
 </div>
 
 <script>
-    // 1. Pastikan Session User terdeteksi
+    // Ambil Session User
     const sessionUser = localStorage.getItem("winz_session") || "";
 
     function loadLogs() {
@@ -137,35 +141,36 @@
         const badge = document.getElementById("userBadge");
 
         if (!sessionUser) {
-            badge.innerText = "NOT LOGGED IN";
-            container.innerHTML = `<div class="empty-state">LOGIN DULU WINZ!</div>`;
+            badge.innerText = "GUEST_MODE";
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-user-slash fa-2x"></i><br><br>SESI TIDAK DITEMUKAN<br>SILAHKAN LOGIN KEMBALI</div>`;
             return;
         }
 
         badge.innerHTML = `<i class="fas fa-user-circle"></i> ${sessionUser}`;
 
-        // 2. Ambil data logs dari LocalStorage
+        // Ambil data logs
         const allLogs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
         
-        // 3. FILTER DATA (Ditingkatkan: Gak peduli huruf besar/kecil & spasi)
+        // FILTER: Cocokkan 'owner' log dengan 'sessionUser' (Case Insensitive)
         const myLogs = allLogs.filter(l => 
             String(l.owner).toLowerCase().trim() === sessionUser.toLowerCase().trim()
         );
 
         if (myLogs.length === 0) {
-            container.innerHTML = `<div class="empty-state">BELUM ADA DATA UNTUK: ${sessionUser.toUpperCase()}</div>`;
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-folder-open fa-2x"></i><br><br>BELUM ADA RIWAYAT AKTIVITAS<br>UNTUK AKUN: ${sessionUser.toUpperCase()}</div>`;
             return;
         }
 
+        // Tampilkan logs (Urutan terbaru sudah di-handle oleh unshift di admin)
         container.innerHTML = myLogs.map((l) => {
             const isGagal = (l.status === 'gagal' || l.status === 'Rejected');
             const cardClass = isGagal ? 'log-card gagal' : 'log-card';
             const badgeClass = isGagal ? 'badge-gagal' : 'badge-sukses';
-            const badgeText = isGagal ? 'Rejected' : 'Executed';
+            const badgeText = isGagal ? 'Rejected' : 'Success';
 
             return `
                 <div class="${cardClass}" onclick='showDetail(${JSON.stringify(l)})'>
-                    <div class="order-id">#${l.orderID || 'XTR'}</div>
+                    <div class="order-id">#${l.orderID || 'XTR-SYS'}</div>
                     <span class="status-badge ${badgeClass}">${badgeText}</span>
                     <span class="time"><i class="far fa-clock"></i> ${l.waktu}</span>
                     <div class="content">${l.teks}</div>
@@ -180,27 +185,38 @@
         const body = document.getElementById('modalBody');
         const isGagal = (data.status === 'gagal' || data.status === 'Rejected');
 
-        title.innerText = isGagal ? "Detail Penolakan" : "Aktivitas Sukses";
+        title.innerText = isGagal ? "Laporan Penolakan" : "Laporan Berhasil";
         title.style.color = isGagal ? "var(--red-glow)" : "var(--blue-glow)";
 
         body.innerHTML = `
-            <p><b>ID:</b> #${data.orderID || 'N/A'}</p>
-            <p><b>WAKTU:</b> ${data.waktu}</p><br>
-            <div style="padding:15px; background:#000; border-radius:10px; border:1px solid #333;">
-                <b style="color:var(--blue-glow)">PESAN ADMIN:</b><br>
-                <span>${data.teks}</span>
+            <div style="margin-bottom:15px; border-bottom:1px solid #222; padding-bottom:10px;">
+                <b style="color:#fff">ORDER ID:</b><br>
+                <span style="color:var(--blue-glow)">#${data.orderID || 'N/A'}</span>
+            </div>
+            <div style="margin-bottom:15px;">
+                <b style="color:#fff">TIMESTAMP:</b><br>
+                <span>${data.waktu}</span>
+            </div>
+            <div style="padding:15px; background:rgba(0,0,0,0.5); border-radius:10px; border:1px solid #334155;">
+                <b style="color:var(--blue-glow)">SYSTEM NOTE:</b><br>
+                <span style="color:#e2e8f0; font-size:12px; line-height:1.6;">${data.teks}</span>
             </div>
         `;
         modal.style.display = 'flex';
     }
 
-    function closeModal() { document.getElementById('logModal').style.display = 'none'; }
+    function closeModal() {
+        document.getElementById('logModal').style.display = 'none';
+    }
 
-    // Start
+    // Jalankan awal
     loadLogs();
-    setInterval(loadLogs, 5000);
+    
+    // Auto-refresh setiap 7 detik
+    setInterval(loadLogs, 7000);
 </script>
 </body>
 </html>
+
 
 
