@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winz // LOG AKTIVITAS</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #030305;
+            --card-bg: #0d0d1a;
+            --blue-glow: #38bdf8;
+            --red-glow: #ef4444;
+            --text-main: #e5e7eb;
+            --font-display: 'Rajdhani', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text-main); font-family: var(--font-display); padding: 30px 20px; min-height: 100vh; }
+        .container { max-width: 500px; margin: auto; }
+
+        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid rgba(56, 189, 248, 0.1); }
+        .header h2 { font-size: 22px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px var(--blue-glow); }
+
+        .log-card { 
+            background: var(--card-bg); 
+            padding: 18px; 
+            margin-bottom: 15px; 
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease-out;
+            border-left: 5px solid var(--blue-glow);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .log-card:hover { transform: translateY(-3px); background: #121225; }
+        .log-card.gagal { border-left: 5px solid var(--red-glow); }
+
+        .order-id {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--blue-glow);
+            opacity: 0.6;
+        }
+
+        .time { color: var(--blue-glow); font-family: var(--font-mono); font-size: 11px; display: block; margin-bottom: 10px; opacity: 0.8; }
+        .log-card.gagal .time { color: var(--red-glow); }
+        .log-card.gagal .order-id { color: var(--red-glow); }
+
+        .content { font-size: 15px; line-height: 1.5; letter-spacing: 0.5px; word-break: break-word; }
+
+        .status-badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; font-weight: bold; margin-bottom: 8px; display: inline-block; font-family: var(--font-mono); }
+        .badge-sukses { background: rgba(56, 189, 248, 0.2); color: var(--blue-glow); }
+        .badge-gagal { background: rgba(239, 68, 68, 0.2); color: var(--red-glow); }
+
+        .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--blue-glow); border-radius: 16px; width: 100%; max-width: 400px; padding: 25px; position: relative; box-shadow: 0 0 30px rgba(56, 189, 248, 0.3); animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 15px; font-weight: bold; text-transform: uppercase; }
+        .modal-body { font-size: 14px; color: #ccc; line-height: 1.6; font-family: var(--font-mono); }
+        .close-btn { position: absolute; right: 20px; top: 20px; color: #fff; font-size: 24px; cursor: pointer; opacity: 0.6; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes modalPop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <i class="fas fa-history" style="font-size: 24px; color: #facc15;"></i>
+        <h2>Log Aktivitas Sukses</h2>
+    </div>
+    <div id="logList"></div>
+</div>
+
+<div id="logModal" class="modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="modal-header" id="modalHeader">Detail Transaksi</div>
+        <div id="modalBody" class="modal-body"></div>
+    </div>
+</div>
+
+<script>
+    // Generator ID Pesanan Unik
+    function generateOrderID(index) {
+        // Menggunakan index agar ID tetap sama saat direfresh
+        let seed = index + 1000;
+        return `WINZ-${seed}XTR`;
+    }
+
+    function sensorData(teks) {
+        return teks.replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[0-9]{10,14})/g, (match) => {
+            if (match.includes('@')) {
+                let [user, domain] = match.split("@");
+                return user.substring(0, 2) + "***@" + domain;
+            } else {
+                return match.substring(0, 3) + "******" + match.substring(match.length - 3);
+            }
+        });
+    }
+
+    function loadLogs() {
+        const logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
+        const container = document.getElementById("logList");
+        
+        if(logs.length === 0) {
+            container.innerHTML = `<div style="text-align:center; opacity:0.4; margin-top:50px;">Belum ada riwayat.</div>`;
+            return;
+        }
+
+        container.innerHTML = logs.map((l, index) => {
+            const isGagal = l.teks.includes("GAGAL") || l.status === 'gagal';
+            const cardClass = isGagal ? 'log-card gagal' : 'log-card';
+            const badgeClass = isGagal ? 'badge-gagal' : 'badge-sukses';
+            const badgeText = isGagal ? 'Rejected' : 'Executed';
+            const orderID = generateOrderID(logs.length - index - 1); // ID urut dari bawah
+            const cleanTeks = sensorData(l.teks);
+
+            return `
+                <div class="${cardClass}" onclick='showDetail(${JSON.stringify({ ...l, teks: cleanTeks, orderID: orderID })})'>
+                    <div class="order-id">#${orderID}</div>
+                    <span class="status-badge ${badgeClass}">${badgeText}</span>
+                    <span class="time"><i class="far fa-clock"></i> ${l.waktu}</span>
+                    <div class="content">${cleanTeks}</div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    function showDetail(data) {
+        const modal = document.getElementById('logModal');
+        const body = document.getElementById('modalBody');
+        const header = document.getElementById('modalHeader');
+        const isGagal = data.teks.includes("GAGAL");
+
+        header.innerHTML = isGagal ? "Detail Penolakan" : "Detail Aktivitas Sukses";
+        header.style.color = isGagal ? "var(--red-glow)" : "var(--blue-glow)";
+
+        body.innerHTML = `
+            <div style="margin-bottom:12px;"><b style="color:var(--blue-glow)">ID Pesanan:</b> #${data.orderID}</div>
+            <div style="margin-bottom:12px;"><b style="color:var(--blue-glow)">Status:</b> ${isGagal ? 'Rejected' : 'Success'}</div>
+            <div style="margin-bottom:12px;"><b style="color:var(--blue-glow)">Waktu:</b> ${data.waktu}</div>
+            <div style="padding:10px; background:rgba(0,0,0,0.3); border-radius:8px; border:1px solid #333;">
+                <b style="color:var(--blue-glow)">Deskripsi:</b><br>
+                <span style="font-size:13px; color:#fff;">${data.teks}</span>
+            </div>
+        `;
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() { document.getElementById('logModal').style.display = 'none'; }
+
+    loadLogs();
+    setInterval(loadLogs, 5000);
+</script>
+</body>
+</html>
