@@ -3,125 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winz Cloud // Secure Registration</title>
+    <title>Winz Cloud // Secure Access</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
     <style>
-        :root { --primary: #00AED6; --bg: #f8fafc; --card-bg: #ffffff; }
+        :root {
+            --brand-primary: #6366f1; 
+            --brand-secondary: #8b5cf6;
+            --bg-body: #0f172a; /* Gelap Premium */
+            --white: #ffffff;
+        }
+
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { background-color: var(--bg); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; position: relative; }
-        .particles-bg { position: fixed; inset: 0; z-index: -1; }
-        .dot { position: absolute; background: var(--primary); border-radius: 50%; opacity: 0.1; animation: floatUp 10s infinite linear; }
-        @keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 0.2; } 100% { transform: translateY(-100vh); opacity: 0; } }
-        .reg-container { width: 100%; max-width: 420px; padding: 20px; z-index: 10; }
-        .reg-card { background: var(--card-bg); padding: 35px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 800; color: #0f172a; }
-        .header p { font-size: 13px; color: #64748b; margin-top: 5px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-box { position: relative; }
-        .input-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px; }
-        .form-input { width: 100%; padding: 12px 15px 12px 42px; background: #f1f5f9; border: 2px solid transparent; border-radius: 12px; font-size: 14px; transition: 0.3s; }
-        .form-input:focus { background: #fff; border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(0, 174, 214, 0.1); }
-        .btn-reg { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 10px rgba(0, 174, 214, 0.2); }
-        .btn-reg:hover { background: #0081A0; transform: translateY(-1px); }
-        .back { display: block; text-align: center; margin-top: 20px; font-size: 13px; text-decoration: none; color: #64748b; font-weight: 500; }
-        .back b { color: var(--primary); }
-        #toast { position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 15px 25px; border-radius: 12px; font-size: 14px; font-weight: 600; transform: translateX(150%); transition: 0.5s; z-index: 9999; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        #toast.active { transform: translateX(0); }
+        
+        body {
+            background-color: var(--bg-body);
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* TOAST ERROR */
+        #toast { 
+            position: fixed; top: 20px; right: 20px; 
+            background: #ef4444; color: white; padding: 16px 24px; border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.3);
+            transform: translateX(150%); transition: 0.5s; z-index: 1000;
+        }
+        #toast.visible { transform: translateX(0); }
+
+        .auth-card {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #334155;
+            text-align: center;
+        }
+
+        .brand-logo {
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+            border-radius: 14px; margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .brand-logo i { color: white; font-size: 24px; }
+
+        h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; margin-bottom: 10px; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
+
+        .form-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; font-size: 12px; font-weight: 700; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; }
+        
+        .input-wrapper { position: relative; }
+        .input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b; }
+
+        .form-control {
+            width: 100%; padding: 12px 16px 12px 48px;
+            background: #0f172a; border: 1px solid #334155;
+            border-radius: 12px; color: white; outline: none; transition: 0.3s;
+        }
+        .form-control:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
+
+        .btn-login {
+            width: 100%; padding: 14px; background: var(--brand-primary);
+            color: white; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s;
+        }
+        .btn-login:hover { background: var(--brand-secondary); transform: translateY(-2px); }
+
+        .divider { margin: 25px 0; border-top: 1px solid #334155; position: relative; }
+        .divider span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #1e293b; padding: 0 10px; font-size: 12px; color: #64748b; }
+
+        .btn-register {
+            display: block; width: 100%; padding: 12px;
+            border: 1px solid #334155; border-radius: 12px;
+            color: white; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s;
+        }
+        .btn-register:hover { background: #334155; }
     </style>
 </head>
 <body>
 
-<script src="users.js"></script>
+<div id="toast">Gagal masuk. Username atau Password salah!</div>
 
-<div class="particles-bg" id="particles"></div>
-<div id="toast">Registrasi Berhasil! Mengalihkan...</div>
-
-<div class="reg-container">
-    <div class="reg-card">
-        <div class="header">
-            <h1>Create Account</h1>
-            <p>Daftar layanan Winz Cloud Hosting</p>
-        </div>
-        <form id="regForm">
-            <div class="form-group">
-                <label>Username</label>
-                <div class="input-box">
-                    <i class="fas fa-at"></i>
-                    <input type="text" id="username" class="form-input" placeholder="Masukkan username" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <div class="input-box">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
-                </div>
-            </div>
-            <button type="submit" class="btn-reg">Daftar Sekarang</button>
-            <a href="index.html" class="back">Sudah punya akun? <b>Login Disini</b></a>
-        </form>
+<div class="auth-card">
+    <div class="brand-logo">
+        <i class="fas fa-terminal"></i>
     </div>
+    <h1>Winz Cloud Access</h1>
+    <p>Sign in to manage your framework</p>
+
+    <form id="loginForm">
+        <div class="form-group">
+            <label>Username</label>
+            <div class="input-wrapper">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" class="form-control" placeholder="Your username" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Security Password</label>
+            <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login">Login System</button>
+
+        <div class="divider"><span>ATAU</span></div>
+
+        <a href="register.html" class="btn-register">Buat Akun Baru</a>
+    </form>
 </div>
 
-<script>
-    // Partikel latar belakang
-    const pContainer = document.getElementById('particles');
-    for(let i=0; i<30; i++) {
-        let dot = document.createElement('div');
-        dot.className = 'dot';
-        dot.style.width = dot.style.height = Math.random()*6+2 + 'px';
-        dot.style.left = Math.random()*100 + 'vw';
-        dot.style.bottom = '-10px';
-        dot.style.animationDelay = Math.random()*10 + 's';
-        dot.style.animationDuration = Math.random()*5+5 + 's';
-        pContainer.appendChild(dot);
-    }
+<script src="users.js"></script>
 
-    // --- LOGIC REGISTER SINKRON DENGAN users.js ---
-    document.getElementById('regForm').addEventListener('submit', function(e) {
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const userVal = document.getElementById('username').value.trim();
-        const passVal = document.getElementById('password').value.trim();
+        const userInp = document.getElementById('username').value.trim();
+        const passInp = document.getElementById('password').value.trim();
 
-        // 1. Ambil data dari LocalStorage (Database utama)
-        // Gunakan nama key "users" sesuai initUsers() di users.js kamu
-        let currentUsers = JSON.parse(localStorage.getItem("users")) || [];
+        // Ambil data users dari LocalStorage (yang dikelola users.js)
+        const allUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-        // 2. Cek apakah username sudah ada
-        const isExist = currentUsers.find(u => u.username.toLowerCase() === userVal.toLowerCase());
-        if (isExist) {
-            alert("Username '" + userVal + "' sudah digunakan!");
-            return;
+        // Validasi
+        const userFound = allUsers.find(u => u.username === userInp && u.password === passInp);
+
+        if (userFound) {
+            // Jika berhasil, simpan session sementara
+            localStorage.setItem("currentUser", JSON.stringify(userFound));
+            
+            // Arahkan ke dashboard (Ganti 'dashboard.html' sesuai filemu)
+            alert("Login Berhasil! Selamat datang " + userFound.username);
+            window.location.href = "dashboard.html"; 
+        } else {
+            // Munculkan Toast Error
+            const toast = document.getElementById('toast');
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 3000);
         }
-
-        // 3. Buat objek user baru sesuai format USERS kamu
-        const newUser = {
-            id: Math.floor(Math.random() * 9000000000) + 1000000000,
-            username: userVal,
-            password: passVal,
-            apiKey: "WINZ_" + Math.random().toString(36).substring(2, 12).toUpperCase(),
-            role: "USER",
-            createdAt: new Date().toISOString().split('T')[0]
-        };
-
-        // 4. Simpan kembali ke LocalStorage
-        currentUsers.push(newUser);
-        localStorage.setItem("users", JSON.stringify(currentUsers));
-
-        // 5. Efek Berhasil
-        const toast = document.getElementById('toast');
-        toast.classList.add('active');
-        
-        setTimeout(() => {
-            window.location.href = "index.html";
-        }, 1500);
     });
 </script>
+
 </body>
 </html>
+
 
             
