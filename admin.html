@@ -2,37 +2,88 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Winz // ADMIN TERMINAL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winz // ADMIN TERMINAL - XTR SYSTEM</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #070711; --card: #121220; --primary: #38bdf8; --accent: #22c55e; --danger: #ef4444; }
-        body { background: var(--bg); color: white; font-family: 'Rajdhani', sans-serif; padding: 20px; }
-        .container { max-width: 500px; margin: auto; }
-        .header { text-align: center; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 15px; margin-bottom: 20px; }
-        
-        .search-box { position: relative; margin-bottom: 20px; }
-        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
-        .search-input { 
-            width: 100%; padding: 12px 15px 12px 45px; background: #000; border: 1px solid var(--primary); 
-            border-radius: 10px; color: white; outline: none; box-sizing: border-box; font-family: 'JetBrains Mono';
+        :root { 
+            --bg: #05050a; 
+            --card: #0d0d1a; 
+            --primary: #38bdf8; 
+            --accent: #22c55e; 
+            --danger: #ef4444; 
+            --text: #e2e8f0;
         }
 
-        .order-card { background: var(--card); border-radius: 15px; padding: 18px; margin-bottom: 20px; border-left: 5px solid var(--primary); position: relative; }
-        .order-id-tag { float: right; font-family: 'JetBrains Mono'; font-size: 10px; color: var(--primary); opacity: 0.8; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Rajdhani', sans-serif; 
+            padding: 20px;
+            background-image: radial-gradient(circle at top right, #1e1e38 0%, #05050a 100%);
+        }
+
+        .container { max-width: 500px; margin: auto; }
         
-        /* Badge Username */
-        .user-tag { background: var(--primary); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; margin-bottom: 10px; display: inline-block; text-transform: uppercase; }
+        .header { 
+            text-align: center; 
+            padding-bottom: 20px; 
+            margin-bottom: 25px; 
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2); 
+        }
+        .header h2 { letter-spacing: 3px; color: #fff; text-shadow: 0 0 10px var(--primary); }
+        .mode-tag { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--primary); background: rgba(56, 189, 248, 0.1); padding: 4px 10px; border-radius: 5px; margin-top: 5px; display: inline-block; }
+
+        /* SEARCH */
+        .search-box { position: relative; margin-bottom: 20px; }
+        .search-input { 
+            width: 100%; padding: 14px 15px 14px 45px; 
+            background: #000; border: 1px solid #1e293b; 
+            border-radius: 12px; color: #fff; outline: none; 
+            font-family: 'JetBrains Mono'; transition: 0.3s;
+        }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(56,189,248,0.2); }
+        .search-box i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--primary); }
+
+        /* ORDER CARD */
+        .order-card { 
+            background: var(--card); border-radius: 18px; padding: 20px; 
+            margin-bottom: 20px; border: 1px solid #1e1e38; position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+        .order-id-tag { position: absolute; right: 20px; top: 20px; font-family: 'JetBrains Mono'; font-size: 10px; color: var(--primary); opacity: 0.6; }
+
+        /* BOX INFO AKUN PEMBELI */
+        .account-box { 
+            background: rgba(0,0,0,0.4); 
+            border: 1px solid rgba(56, 189, 248, 0.2); 
+            padding: 12px; border-radius: 10px; margin: 15px 0;
+            font-family: 'JetBrains Mono'; font-size: 12px;
+        }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 4px; }
+        .info-row:last-child { border: none; }
+        .label { color: var(--primary); font-weight: bold; }
+        .copy-btn { cursor: pointer; color: #94a3b8; transition: 0.2s; }
+        .copy-btn:hover { color: #fff; }
+
+        /* BUKTI */
+        .bukti-img { width: 100%; border-radius: 12px; margin: 10px 0; cursor: pointer; border: 1px solid #333; }
         
-        .bukti-img { width: 100%; border-radius: 10px; margin: 12px 0; border: 1px solid #333; cursor: pointer; transition: 0.3s; }
-        .bukti-img:hover { opacity: 0.8; transform: scale(1.02); }
-        
-        textarea { width: 100%; background: #050510; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-family: 'JetBrains Mono'; font-size: 12px; resize: none; }
-        
+        textarea { 
+            width: 100%; background: #000; color: #fff; border: 1px solid #1e293b; 
+            padding: 12px; border-radius: 10px; margin-bottom: 15px; 
+            font-family: 'JetBrains Mono'; font-size: 12px; resize: none;
+        }
+
+        /* BUTTONS */
         .btn-group { display: flex; gap: 10px; }
-        .btn-acc { flex: 3; background: var(--accent); color: #000; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 800; transition: 0.3s; }
-        .btn-rej { flex: 1; background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 800; transition: 0.3s; }
-        .btn-acc:hover, .btn-rej:hover { filter: brightness(1.2); }
+        .btn-acc { flex: 3; background: var(--accent); color: #000; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 800; text-transform: uppercase; transition: 0.3s; }
+        .btn-rej { flex: 1; background: var(--danger); color: #fff; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 800; transition: 0.3s; }
+        .btn-acc:hover { background: #1da850; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(34,197,94,0.3); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -40,99 +91,113 @@
 <div class="container">
     <div class="header">
         <h2>WINZ ADMIN PANEL</h2>
-        <p style="font-size: 10px; opacity: 0.5; font-family: 'JetBrains Mono';">SINKRONISASI USERNAME AKTIF</p>
+        <div class="mode-tag"><i class="fas fa-key"></i> ACCESS: USERNAME & PASSWORD</div>
     </div>
 
     <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" id="adminSearch" class="search-input" placeholder="Cari ID, Username, atau Paket..." onkeyup="filterOrders()">
+        <input type="text" id="adminSearch" class="search-input" placeholder="Cari Username/Paket..." onkeyup="filterOrders()">
     </div>
 
     <div id="orderList"></div>
 </div>
 
 <script>
-    function filterOrders() {
-        const keyword = document.getElementById("adminSearch").value.toLowerCase();
-        const cards = document.getElementsByClassName("order-card");
-        for (let card of cards) {
-            card.style.display = card.innerText.toLowerCase().includes(keyword) ? "block" : "none";
-        }
-    }
-
     function loadOrders() {
         const container = document.getElementById("orderList");
         const orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
         
         if (orders.length === 0) {
-            container.innerHTML = "<center style='opacity:0.3; margin-top:50px; font-family:\"JetBrains Mono\"'>[ TIDAK ADA ANTRIAN PESANAN ]</center>";
+            container.innerHTML = "<center style='opacity:0.3; margin-top:80px; font-family:\"JetBrains Mono\"'>-- NO QUEUE --</center>";
             return;
         }
 
-        // Kita urutkan dari yang terbaru (pesanan terakhir masuk)
         container.innerHTML = orders.map((o, i) => {
-            // Gunakan OrderID yang sudah ada atau buat baru
             const displayID = o.orderID || `XTR-${Date.now() + i}`;
             
-            // PENTING: Kita tampilkan Username (o.user) di sini
             return `
             <div class="order-card">
                 <span class="order-id-tag">#${displayID}</span>
-                <div class="user-tag"><i class="fas fa-user-shield"></i> USER: ${o.user || o.nomor || 'Unknown'}</div>
+                <div style="font-size:16px; font-weight:bold; color:var(--primary); margin-bottom:10px;">
+                    <i class="fas fa-server"></i> ${o.paket}
+                </div>
+
+                <div class="account-box">
+                    <div class="info-row">
+                        <span class="label">USERNAME</span>
+                        <span class="value">${o.user} <i class="far fa-copy copy-btn" onclick="copyText('${o.user}')"></i></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">PASSWORD</span>
+                        <span class="value">${o.pw || '******'} <i class="far fa-copy copy-btn" onclick="copyText('${o.pw}')"></i></span>
+                    </div>
+                    <div class="info-row" style="border:none">
+                        <span class="label">WHATSAPP</span>
+                        <span class="value">${o.nomor || '-'}</span>
+                    </div>
+                </div>
                 
-                <div style="font-size:14px; margin:5px 0;"><b>PAKET:</b> <span style="color:var(--primary)">${o.paket}</span></div>
-                <div style="font-size:14px; margin:5px 0;"><b>TARGET:</b> ${o.target || '-'}</div>
+                <img src="${o.bukti}" class="bukti-img" onclick="window.open(this.src)" title="Lihat Bukti Transfer">
                 
-                <img src="${o.bukti}" class="bukti-img" onclick="window.open(this.src)" title="Klik untuk perbesar">
-                
-                <textarea id="note-${i}" placeholder="Catatan untuk user (misal: Host/IP/User/Pass)..."></textarea>
+                <textarea id="note-${i}" placeholder="Tulis Detail VPS (IP, User, Password)..."></textarea>
                 
                 <div class="btn-group">
-                    <button class="btn-acc" onclick="handleAction(${i}, 'ACC', '${displayID}')">SETUJU (ACC)</button>
-                    <button class="btn-rej" onclick="handleAction(${i}, 'REJECT', '${displayID}')">TOLAK</button>
+                    <button class="btn-acc" onclick="handleAction(${i}, 'ACC', '${displayID}')">Kirim Data & ACC</button>
+                    <button class="btn-rej" onclick="handleAction(${i}, 'REJECT', '${displayID}')">Tolak</button>
                 </div>
             </div>`;
-        }).reverse().join(""); // Reverse biar yang baru paling atas
+        }).reverse().join("");
     }
 
     function handleAction(index, tipe, orderID) {
         let orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
-        // Karena kita pake reverse di map, urutan index asli harus dihitung balik
         let realIndex = orders.length - 1 - index;
         let item = orders[realIndex];
         
-        let note = document.getElementById(`note-${index}`).value || (tipe === 'ACC' ? "Pesanan Anda telah aktif." : "Bukti pembayaran tidak valid.");
-
+        let note = document.getElementById(`note-${index}`).value || "Silahkan hubungi admin.";
         let logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
-        
-        // LOGIC SINKRONISASI: 
-        // Pastikan 'owner' di Log = 'user' di Order (Username Akun)
-        const usernameTarget = item.user || item.nomor;
 
+        // VALIDASI TARGET USERNAME
+        if(!item.user) {
+            alert("Username user tidak ditemukan di data order!");
+            return;
+        }
+
+        // Simpan Log ke database Aktivitas User
         logs.unshift({
-            owner: usernameTarget, // INI KUNCINYA: Harus Username!
+            owner: item.user, // Sesuai Winz_session di aktivitas.html
             orderID: orderID,
-            teks: tipe === 'ACC' ? `🚀 BERHASIL: ${item.paket} | Note: ${note}` : `❌ GAGAL: ${item.paket} | Alasan: ${note}`,
+            teks: tipe === 'ACC' ? `🚀 VPS AKTIF: ${item.paket} \nDetail: ${note}` : `❌ DITOLAK: ${item.paket} \nAlasan: ${note}`,
             waktu: new Date().toLocaleString('id-ID'),
             status: tipe === 'ACC' ? 'sukses' : 'gagal'
         });
 
-        // Simpan Log baru
         localStorage.setItem("aktivitasLogs", JSON.stringify(logs));
         
-        // Hapus dari antrian
+        // Hapus dari antrian Admin
         orders.splice(realIndex, 1);
         localStorage.setItem("vpsOrders", JSON.stringify(orders));
 
-        alert(`Pesanan ${usernameTarget} berhasil di-${tipe}`);
+        alert(`SUKSES! Data terkirim ke log: ${item.user}`);
         loadOrders();
     }
 
+    function copyText(txt) {
+        navigator.clipboard.writeText(txt);
+        alert("Copied: " + txt);
+    }
+
+    function filterOrders() {
+        let val = document.getElementById("adminSearch").value.toLowerCase();
+        let cards = document.getElementsByClassName("order-card");
+        for(let c of cards) { c.style.display = c.innerText.toLowerCase().includes(val) ? "block" : "none"; }
+    }
+
     loadOrders();
-    // Refresh otomatis tiap 15 detik buat cek pesanan masuk baru
-    setInterval(loadOrders, 15000);
+    setInterval(loadOrders, 8000); // Auto-update tiap 8 detik
 </script>
 </body>
 </html>
+
 
 
