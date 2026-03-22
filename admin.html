@@ -2,226 +2,118 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Winz // ADMIN TERMINAL</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #070711;
-            --card: #121220;
-            --primary: #38bdf8;
-            --accent: #22c55e;
-            --danger: #ef4444;
-            --text: #e5e7eb;
-            --font-main: 'Rajdhani', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: var(--text); font-family: var(--font-main); padding: 20px; min-height: 100vh; }
+        :root { --bg: #070711; --card: #121220; --primary: #38bdf8; --accent: #22c55e; --danger: #ef4444; }
+        body { background: var(--bg); color: white; font-family: 'Rajdhani', sans-serif; padding: 20px; }
         .container { max-width: 500px; margin: auto; }
-
-        .header { text-align: center; margin-bottom: 25px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 15px; }
-        .header h2 { color: var(--primary); letter-spacing: 3px; text-transform: uppercase; font-size: 24px; text-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
-        .header small { opacity: 0.6; font-family: var(--font-mono); font-size: 11px; }
-
-        .search-wrapper { position: relative; margin-bottom: 25px; }
-        .search-input {
-            width: 100%;
-            padding: 14px 15px 14px 45px;
-            background: var(--card);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 10px;
-            color: #fff;
-            font-family: var(--font-mono);
-            outline: none;
-            transition: 0.3s;
-        }
-        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
-        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 18px; }
-
-        .order-card {
-            background: var(--card);
-            border-left: 4px solid var(--primary);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            animation: fadeIn 0.4s ease;
-        }
-
-        .history-result {
-            background: #0d1a12;
-            border: 1px solid var(--accent);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            border-left: 5px solid var(--accent);
-        }
-        .history-result.gagal { background: #1a0d0d; border-color: var(--danger); border-left-color: var(--danger); }
-        .label-history { font-size: 10px; background: var(--accent); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
-        .history-result.gagal .label-history { background: var(--danger); color: #fff; }
-
-        .info-row { margin-bottom: 10px; font-size: 14px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px; }
-        .info-row b { color: var(--primary); font-family: var(--font-mono); text-transform: uppercase; }
-
-        .admin-note { width: 100%; padding: 12px; margin-top: 10px; background: #050510; border: 1px solid #333; color: #fff; border-radius: 6px; font-size: 13px; font-family: var(--font-mono); outline: none; }
+        .header { text-align: center; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 15px; margin-bottom: 20px; }
         
-        /* FIX IMAGE DISPLAY */
-        .bukti-container { margin: 15px 0; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; overflow: hidden; background: #000; }
-        .label-bukti { font-size: 11px; color: var(--primary); font-family: var(--font-mono); margin-bottom: 5px; display: block; }
-        .bukti-img { width: 100%; max-height: 250px; object-fit: contain; cursor: pointer; display: block; transition: 0.3s; }
-        .bukti-img:hover { filter: brightness(1.2); }
+        .search-box { position: relative; margin-bottom: 20px; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
+        .search-input { 
+            width: 100%; padding: 12px 15px 12px 45px; background: #000; border: 1px solid var(--primary); 
+            border-radius: 10px; color: white; outline: none; box-sizing: border-box; font-family: 'JetBrains Mono';
+        }
 
-        .btn-group { display: flex; gap: 12px; margin-top: 15px; }
-        .btn-acc { flex: 2; background: var(--accent); color: #000; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
-        .btn-rej { flex: 1; background: var(--danger); color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .empty-state { text-align: center; padding: 60px; opacity: 0.4; font-family: var(--font-mono); border: 1px dashed rgba(255,255,255,0.1); border-radius: 15px; }
+        .order-card { background: var(--card); border-radius: 15px; padding: 18px; margin-bottom: 20px; border-left: 5px solid var(--primary); }
+        .order-id-tag { float: right; font-family: 'JetBrains Mono'; font-size: 10px; color: var(--primary); opacity: 0.8; }
+        .user-tag { background: var(--primary); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; margin-bottom: 10px; display: inline-block; }
+        .bukti-img { width: 100%; border-radius: 10px; margin: 12px 0; border: 1px solid #333; }
+        textarea { width: 100%; background: #050510; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-family: 'JetBrains Mono'; font-size: 12px; }
+        .btn-group { display: flex; gap: 10px; }
+        .btn-acc { flex: 3; background: var(--accent); color: #000; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 800; }
+        .btn-rej { flex: 1; background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 800; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h2><i class="fas fa-terminal"></i> Admin Terminal</h2>
-        <small>WINZ XTR FRAMEWORK // SYSTEM VER 2.0</small>
+        <h2>WINZ ADMIN PANEL</h2>
     </div>
 
-    <div class="search-wrapper">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="searchInput" class="search-input" placeholder="Cari ID Pesanan, Nomor, atau Paket..." onkeyup="filterOrders()">
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="adminSearch" class="search-input" placeholder="Cari ID (#WINZ...), No WA, atau Produk..." onkeyup="filterOrders()">
     </div>
 
     <div id="orderList"></div>
 </div>
 
 <script>
-    function generateOrderID(index) {
-        return `WINZ-${index + 1000}XTR`;
+    // Generator ID yang SAMA dengan Log User
+    function generateOrderID(index, total) {
+        let seed = (total - index) + 1000;
+        return `WINZ-${seed}XTR`;
     }
 
     function filterOrders() {
-        const keyword = document.getElementById("searchInput").value.toUpperCase();
-        const container = document.getElementById("orderList");
+        const keyword = document.getElementById("adminSearch").value.toLowerCase();
         const cards = document.getElementsByClassName("order-card");
-        
-        for (let i = 0; i < cards.length; i++) {
-            const text = cards[i].innerText.toUpperCase();
-            cards[i].style.display = text.includes(keyword) ? "block" : "none";
-        }
-
-        if (keyword.includes("WINZ-")) {
-            const logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
-            let historyHTML = "";
-
-            logs.forEach((l, index) => {
-                const orderID = generateOrderID(logs.length - index - 1);
-                if (orderID.includes(keyword)) {
-                    const isGagal = l.status === 'gagal';
-                    historyHTML += `
-                        <div class="history-result ${isGagal ? 'gagal' : ''}">
-                            <div class="label-history">${isGagal ? 'REJECTED LOG' : 'DATABASE LOG FOUND'}</div>
-                            <div class="info-row"><b>Order ID:</b> <span>#${orderID}</span></div>
-                            <div class="info-row"><b>Status:</b> <span style="color:${isGagal ? 'var(--danger)' : 'var(--accent)'}">${isGagal ? 'FAILED' : 'SUCCESS'}</span></div>
-                            <div class="info-row"><b>Waktu:</b> <span>${l.waktu}</span></div>
-                            <div class="info-row" style="border:none; flex-direction:column; align-items:flex-start;">
-                                <b style="margin-bottom:5px;">System Log:</b>
-                                <div style="font-size:12px; color:#fff; font-family:var(--font-mono);">${l.teks}</div>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            const historyDiv = document.getElementById("historyView") || document.createElement("div");
-            historyDiv.id = "historyView";
-            if (historyHTML !== "") {
-                if (!document.getElementById("historyView")) container.prepend(historyDiv);
-                historyDiv.innerHTML = historyHTML;
-            } else {
-                if (document.getElementById("historyView")) historyDiv.innerHTML = "";
-            }
-        } else {
-            if (document.getElementById("historyView")) document.getElementById("historyView").innerHTML = "";
+        for (let card of cards) {
+            card.style.display = card.innerText.toLowerCase().includes(keyword) ? "block" : "none";
         }
     }
 
     function loadOrders() {
         const container = document.getElementById("orderList");
         const orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
-        const historyHTML = document.getElementById("historyView") ? document.getElementById("historyView").outerHTML : "";
-
+        
         if (orders.length === 0) {
-            container.innerHTML = historyHTML + `<div class="empty-state">-- NO PENDING ORDERS --</div>`;
+            container.innerHTML = "<center style='opacity:0.5; margin-top:50px;'>TIDAK ADA ANTRIAN</center>";
             return;
         }
 
-        container.innerHTML = historyHTML + orders.map((o, i) => `
+        container.innerHTML = orders.map((o, i) => {
+            const orderID = generateOrderID(i, orders.length);
+            return `
             <div class="order-card">
-                <div class="info-row"><b>Target:</b> <span>${o.nomor}</span></div>
-                <div class="info-row"><b>Product:</b> <span>${o.paket}</span></div>
-                <div class="info-row"><b>Arrival:</b> <span>${o.waktu}</span></div>
+                <span class="order-id-tag">#${orderID}</span>
+                <div class="user-tag"><i class="fas fa-user"></i> ${o.nomor}</div>
+                <div style="font-size:14px; margin:5px 0;"><b>PRODUK:</b> ${o.paket}</div>
+                <div style="font-size:14px; margin:5px 0;"><b>TARGET:</b> ${o.target || o.nomor}</div>
                 
-                <span class="label-bukti">BUKTI TRANSFER:</span>
-                <div class="bukti-container">
-                    <img src="${o.bukti}" class="bukti-img" onclick="window.open(this.src)" onerror="this.src='https://via.placeholder.com/400x200?text=Gambar+Tidak+Tersedia'">
-                </div>
-
-                <label style="font-size:11px; color:var(--primary); font-family:var(--font-mono); font-weight:bold;">TULIS ULASAN ADMIN:</label>
-                <textarea id="note-${i}" class="admin-note" placeholder="Contoh: VPS Aktif / Bukti tidak valid..."></textarea>
+                <img src="${o.bukti}" class="bukti-img" onclick="window.open(this.src)">
+                
+                <textarea id="note-${i}" placeholder="Tulis catatan..."></textarea>
                 
                 <div class="btn-group">
-                    <button class="btn-acc" onclick="handleAction(${i}, 'ACC')">ACC</button>
-                    <button class="btn-rej" onclick="handleAction(${i}, 'TOLAK')">REJECT</button>
+                    <button class="btn-acc" onclick="handleAction(${i}, 'ACC', '${orderID}')">ACC</button>
+                    <button class="btn-rej" onclick="handleAction(${i}, 'REJECT', '${orderID}')">REJECT</button>
                 </div>
-            </div>
-        `).join("");
+            </div>`;
+        }).join("");
     }
 
-    function handleAction(index, tipe) {
+    function handleAction(index, tipe, orderID) {
         let orders = JSON.parse(localStorage.getItem("vpsOrders"));
         let item = orders[index];
-        let note = document.getElementById(`note-${index}`).value;
+        let note = document.getElementById(`note-${index}`).value || "Proses Selesai";
 
-        if (!note) {
-            alert("Harap isi ulasan admin/alasan penolakan!");
-            return;
-        }
-
-        const skrg = new Date();
-        const tglStr = `${skrg.getDate()}/${skrg.getMonth() + 1}/${skrg.getFullYear()}`;
-        const jamStr = `${skrg.getHours().toString().padStart(2, '0')}.${skrg.getMinutes().toString().padStart(2, '0')}`;
-
-        let aktivitasLogs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
+        let logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
         
-        if (tipe === 'ACC') {
-            aktivitasLogs.unshift({
-                teks: `🚀 VPS AKTIF: ${item.paket} ke ${item.nomor} | Ulasan: ${note}`,
-                waktu: `${tglStr}, ${jamStr}`,
-                status: 'sukses'
-            });
-        } else {
-            aktivitasLogs.unshift({
-                teks: `❌ VPS GAGAL: ${item.paket} ke ${item.nomor} | Alasan: ${note}`,
-                waktu: `${tglStr}, ${jamStr}`,
-                status: 'gagal'
-            });
-        }
+        // Simpan ke database Log dengan ID yang sudah dibuat
+        logs.unshift({
+            owner: item.nomor,
+            orderID: orderID, // ID DISIMPAN PERMANEN
+            teks: tipe === 'ACC' ? `🚀 BERHASIL: ${item.paket} | Note: ${note}` : `❌ GAGAL: ${item.paket} | Alasan: ${note}`,
+            waktu: new Date().toLocaleString(),
+            status: tipe === 'ACC' ? 'sukses' : 'gagal'
+        });
 
-        localStorage.setItem("aktivitasLogs", JSON.stringify(aktivitasLogs));
+        localStorage.setItem("aktivitasLogs", JSON.stringify(logs));
         orders.splice(index, 1);
         localStorage.setItem("vpsOrders", JSON.stringify(orders));
 
-        alert(`Sistem: Pesanan Berhasil di-${tipe}!`);
+        alert(`ID ${orderID} Berhasil di-${tipe}`);
         loadOrders();
-        document.getElementById("searchInput").value = ""; 
     }
 
     loadOrders();
 </script>
 </body>
 </html>
+
