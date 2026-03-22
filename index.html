@@ -117,7 +117,6 @@
             display: flex; align-items: center; text-align: center;
             margin: 20px 0; color: var(--text-muted); font-size: 11px;
         }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
         .divider span { padding: 0 10px; font-weight: 600; text-transform: uppercase; }
 
         .btn-register {
@@ -139,7 +138,7 @@
 <body>
 
 <div id="toast">
-    <i class="fas fa-circle-exclamation"></i>
+    <i id="toastIcon" class="fas fa-circle-exclamation"></i>
     <span id="toastMsg">Gagal masuk. Periksa kembali data Anda.</span>
 </div>
 
@@ -170,9 +169,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-login">
-                Execute Access
-            </button>
+            <button type="submit" class="btn-login">Execute Access</button>
 
             <div class="divider">
                 <span>Registration Area</span>
@@ -191,19 +188,45 @@
 
 <script src="users.js"></script>
 <script src="admin.js"></script>
-<script src="script.js"></script>
 
 <script>
-    // Fungsi bantuan untuk toast jika dipanggil dari script.js
+    // FUNGSI TOAST
     function showToast(msg, type = 'error') {
         const toast = document.getElementById('toast');
         const toastMsg = document.getElementById('toastMsg');
+        const toastIcon = document.getElementById('toastIcon');
         
         toastMsg.innerText = msg;
+        toastIcon.className = type === 'success' ? 'fas fa-circle-check' : 'fas fa-circle-exclamation';
         toast.className = type === 'success' ? 'visible success' : 'visible';
         
         setTimeout(() => toast.classList.remove('visible'), 3000);
     }
+
+    // LOGIC LOGIN
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const userInp = document.getElementById('username').value.trim();
+        const passInp = document.getElementById('password').value.trim();
+
+        // 1. Ambil data dari LocalStorage (termasuk yang baru daftar)
+        const allUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+        // 2. Validasi (Bisa akun Admin di admin.js atau akun User di users.js)
+        const userFound = allUsers.find(u => u.username === userInp && u.password === passInp);
+
+        if (userFound) {
+            localStorage.setItem("currentUser", JSON.stringify(userFound));
+            showToast("Login Berhasil! Mengalihkan...", "success");
+            
+            setTimeout(() => {
+                window.location.href = "dashboard.html"; 
+            }, 1000);
+        } else {
+            showToast("ID atau Security Key Salah!");
+        }
+    });
 </script>
 
 </body>
