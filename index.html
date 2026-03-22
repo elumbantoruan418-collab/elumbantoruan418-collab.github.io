@@ -48,7 +48,6 @@
         #toast.visible { transform: translateX(0); }
         #toast.success { border-left-color: #10b981; }
 
-        /* AUTH CARD */
         .auth-container { width: 100%; max-width: 400px; padding: 20px; position: relative; z-index: 10; }
         
         .auth-card {
@@ -77,7 +76,6 @@
         }
         .auth-header p { color: var(--text-muted); font-size: 13px; }
 
-        /* FORM ELEMENTS */
         .form-group { margin-bottom: 20px; }
         .form-group label { 
             display: block; font-size: 12px; font-weight: 700; 
@@ -103,7 +101,6 @@
             outline: none;
         }
 
-        /* ACTIONS */
         .btn-login {
             width: 100%; padding: 14px;
             background: linear-gradient(to right, var(--brand-primary), var(--brand-secondary));
@@ -161,7 +158,7 @@
                 <label>Username / ID</label>
                 <div class="input-wrapper">
                     <i class="fas fa-user-shield"></i>
-                    <input type="text" name="username" class="form-control" placeholder="Masukkan ID Anda" required>
+                    <input type="text" id="username" class="form-control" placeholder="Masukkan ID Anda" required>
                 </div>
             </div>
 
@@ -169,7 +166,7 @@
                 <label>Security Key</label>
                 <div class="input-wrapper">
                     <i class="fas fa-lock"></i>
-                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
                 </div>
             </div>
 
@@ -210,4 +207,5 @@
 </script>
 
 </body>
-    </html>
+</html>
+
