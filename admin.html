@@ -26,64 +26,37 @@
         }
 
         .container { max-width: 500px; margin: auto; }
-        
-        .header { 
-            text-align: center; 
-            padding-bottom: 20px; 
-            margin-bottom: 25px; 
-            border-bottom: 1px solid rgba(56, 189, 248, 0.2); 
-        }
-        .header h2 { letter-spacing: 3px; color: #fff; text-shadow: 0 0 10px var(--primary); }
+        .header { text-align: center; padding-bottom: 20px; margin-bottom: 25px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); }
         .mode-tag { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--primary); background: rgba(56, 189, 248, 0.1); padding: 4px 10px; border-radius: 5px; margin-top: 5px; display: inline-block; }
 
         /* SEARCH */
-        .search-box { position: relative; margin-bottom: 20px; }
         .search-input { 
-            width: 100%; padding: 14px 15px 14px 45px; 
-            background: #000; border: 1px solid #1e293b; 
-            border-radius: 12px; color: #fff; outline: none; 
-            font-family: 'JetBrains Mono'; transition: 0.3s;
+            width: 100%; padding: 14px; background: #000; border: 1px solid #1e293b; 
+            border-radius: 12px; color: #fff; outline: none; font-family: 'JetBrains Mono'; margin-bottom: 20px;
         }
-        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(56,189,248,0.2); }
-        .search-box i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--primary); }
 
         /* ORDER CARD */
         .order-card { 
             background: var(--card); border-radius: 18px; padding: 20px; 
             margin-bottom: 20px; border: 1px solid #1e1e38; position: relative;
-            animation: fadeIn 0.5s ease;
         }
-        .order-id-tag { position: absolute; right: 20px; top: 20px; font-family: 'JetBrains Mono'; font-size: 10px; color: var(--primary); opacity: 0.6; }
 
-        /* BOX INFO AKUN PEMBELI */
         .account-box { 
-            background: rgba(0,0,0,0.4); 
-            border: 1px solid rgba(56, 189, 248, 0.2); 
-            padding: 12px; border-radius: 10px; margin: 15px 0;
-            font-family: 'JetBrains Mono'; font-size: 12px;
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(56, 189, 248, 0.2); 
+            padding: 12px; border-radius: 10px; margin: 15px 0; font-family: 'JetBrains Mono'; font-size: 12px;
         }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 4px; }
-        .info-row:last-child { border: none; }
         .label { color: var(--primary); font-weight: bold; }
-        .copy-btn { cursor: pointer; color: #94a3b8; transition: 0.2s; }
-        .copy-btn:hover { color: #fff; }
 
-        /* BUKTI */
-        .bukti-img { width: 100%; border-radius: 12px; margin: 10px 0; cursor: pointer; border: 1px solid #333; }
+        .bukti-img { width: 100%; border-radius: 12px; margin: 10px 0; border: 1px solid #333; cursor: pointer; }
         
         textarea { 
             width: 100%; background: #000; color: #fff; border: 1px solid #1e293b; 
-            padding: 12px; border-radius: 10px; margin-bottom: 15px; 
-            font-family: 'JetBrains Mono'; font-size: 12px; resize: none;
+            padding: 12px; border-radius: 10px; margin-bottom: 15px; font-family: 'JetBrains Mono'; font-size: 12px; resize: none;
         }
 
-        /* BUTTONS */
         .btn-group { display: flex; gap: 10px; }
-        .btn-acc { flex: 3; background: var(--accent); color: #000; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 800; text-transform: uppercase; transition: 0.3s; }
-        .btn-rej { flex: 1; background: var(--danger); color: #fff; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 800; transition: 0.3s; }
-        .btn-acc:hover { background: #1da850; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(34,197,94,0.3); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-acc { flex: 3; background: var(--accent); color: #000; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 800; }
+        .btn-rej { flex: 1; background: var(--danger); color: #fff; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 800; }
     </style>
 </head>
 <body>
@@ -91,13 +64,10 @@
 <div class="container">
     <div class="header">
         <h2>WINZ ADMIN PANEL</h2>
-        <div class="mode-tag"><i class="fas fa-key"></i> ACCESS: USERNAME & PASSWORD</div>
+        <div class="mode-tag"><i class="fas fa-bolt"></i> REAL-TIME QUEUE CLEANER</div>
     </div>
 
-    <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="adminSearch" class="search-input" placeholder="Cari Username/Paket..." onkeyup="filterOrders()">
-    </div>
+    <input type="text" id="adminSearch" class="search-input" placeholder="Cari Username/Paket..." onkeyup="filterOrders()">
 
     <div id="orderList"></div>
 </div>
@@ -105,86 +75,74 @@
 <script>
     function loadOrders() {
         const container = document.getElementById("orderList");
-        const orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+        // AMBIL DATA DARI LOCAL STORAGE
+        let orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
         
         if (orders.length === 0) {
-            container.innerHTML = "<center style='opacity:0.3; margin-top:80px; font-family:\"JetBrains Mono\"'>-- NO QUEUE --</center>";
+            container.innerHTML = "<center style='opacity:0.3; margin-top:80px;'>-- TIDAK ADA ANTRIAN --</center>";
             return;
         }
 
-        container.innerHTML = orders.map((o, i) => {
-            const displayID = o.orderID || `XTR-${Date.now() + i}`;
+        // Tampilkan pesanan (Terbaru di atas)
+        container.innerHTML = orders.slice().reverse().map((o, index) => {
+            // Karena kita me-reverse, index asli di array 'orders' harus dihitung ulang
+            const realIndex = (orders.length - 1) - index;
+            const displayID = o.orderID || `XTR-${Date.now() + realIndex}`;
             
             return `
-            <div class="order-card">
-                <span class="order-id-tag">#${displayID}</span>
+            <div class="order-card" id="order-${realIndex}">
                 <div style="font-size:16px; font-weight:bold; color:var(--primary); margin-bottom:10px;">
                     <i class="fas fa-server"></i> ${o.paket}
                 </div>
 
                 <div class="account-box">
-                    <div class="info-row">
-                        <span class="label">USERNAME</span>
-                        <span class="value">${o.user} <i class="far fa-copy copy-btn" onclick="copyText('${o.user}')"></i></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">PASSWORD</span>
-                        <span class="value">${o.pw || '******'} <i class="far fa-copy copy-btn" onclick="copyText('${o.pw}')"></i></span>
-                    </div>
-                    <div class="info-row" style="border:none">
-                        <span class="label">WHATSAPP</span>
-                        <span class="value">${o.nomor || '-'}</span>
-                    </div>
+                    <div><span class="label">USER:</span> ${o.user}</div>
+                    <div><span class="label">PASS:</span> ${o.pw || '******'}</div>
+                    <div><span class="label">ID:</span> #${displayID}</div>
                 </div>
                 
-                <img src="${o.bukti}" class="bukti-img" onclick="window.open(this.src)" title="Lihat Bukti Transfer">
+                <img src="${o.bukti}" class="bukti-img" onclick="window.open(this.src)">
                 
-                <textarea id="note-${i}" placeholder="Tulis Detail VPS (IP, User, Password)..."></textarea>
+                <textarea id="note-${realIndex}" placeholder="Input IP/Login detail..."></textarea>
                 
                 <div class="btn-group">
-                    <button class="btn-acc" onclick="handleAction(${i}, 'ACC', '${displayID}')">Kirim Data & ACC</button>
-                    <button class="btn-rej" onclick="handleAction(${i}, 'REJECT', '${displayID}')">Tolak</button>
+                    <button class="btn-acc" onclick="handleAction(${realIndex}, 'ACC', '${displayID}')">SETUJU</button>
+                    <button class="btn-rej" onclick="handleAction(${realIndex}, 'REJECT', '${displayID}')">TOLAK</button>
                 </div>
             </div>`;
-        }).reverse().join("");
+        }).join("");
     }
 
     function handleAction(index, tipe, orderID) {
+        // 1. Ambil data terbaru dari storage
         let orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
-        let realIndex = orders.length - 1 - index;
-        let item = orders[realIndex];
-        
-        let note = document.getElementById(`note-${index}`).value || "Silahkan hubungi admin.";
         let logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
+        
+        // 2. Ambil item yang mau diproses
+        let item = orders[index];
+        if (!item) return; // Proteksi kalau data sudah hilang
 
-        // VALIDASI TARGET USERNAME
-        if(!item.user) {
-            alert("Username user tidak ditemukan di data order!");
-            return;
-        }
+        let note = document.getElementById(`note-${index}`).value || (tipe === 'ACC' ? "Pesanan Aktif" : "Ditolak Admin");
 
-        // Simpan Log ke database Aktivitas User
+        // 3. Masukkan ke LOG AKTIVITAS (Biar muncul di aktivitas.html user)
         logs.unshift({
-            owner: item.user, // Sesuai Winz_session di aktivitas.html
+            owner: item.user,
             orderID: orderID,
-            teks: tipe === 'ACC' ? `🚀 VPS AKTIF: ${item.paket} \nDetail: ${note}` : `❌ DITOLAK: ${item.paket} \nAlasan: ${note}`,
+            teks: tipe === 'ACC' ? `🚀 SUCCESS: ${item.paket} | Note: ${note}` : `❌ REJECTED: ${item.paket} | Alasan: ${note}`,
             waktu: new Date().toLocaleString('id-ID'),
             status: tipe === 'ACC' ? 'sukses' : 'gagal'
         });
 
+        // 4. HAPUS PERMANEN DARI ANTRIAN
+        orders.splice(index, 1);
+
+        // 5. UPDATE SEMUA KE LOCAL STORAGE (INI YANG PENTING!)
         localStorage.setItem("aktivitasLogs", JSON.stringify(logs));
-        
-        // Hapus dari antrian Admin
-        orders.splice(realIndex, 1);
         localStorage.setItem("vpsOrders", JSON.stringify(orders));
 
-        alert(`SUKSES! Data terkirim ke log: ${item.user}`);
+        // 6. Refresh tampilan
+        alert(`Order #${orderID} Berhasil di-${tipe} dan dihapus dari antrian.`);
         loadOrders();
-    }
-
-    function copyText(txt) {
-        navigator.clipboard.writeText(txt);
-        alert("Copied: " + txt);
     }
 
     function filterOrders() {
@@ -194,10 +152,12 @@
     }
 
     loadOrders();
-    setInterval(loadOrders, 8000); // Auto-update tiap 8 detik
+    // Refresh otomatis tiap 10 detik biar sinkron
+    setInterval(loadOrders, 10000);
 </script>
 </body>
 </html>
+
 
 
 
