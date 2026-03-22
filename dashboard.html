@@ -304,233 +304,164 @@ menus.forEach(menu => {
 
 
 </script>
+
+
+
+
 <script>
 const content = document.getElementById("content");
 
-// contoh saldo user (nanti bisa dari API / database)
-let saldoUser = 1000;
-
 /* ======================
-   HTML VPS
+   HTML VPS (USER SIDE)
 ====================== */
 const vpsHTML = `
 <style>
-/* ===== BODY ===== */
-body {
-  font-family: Arial, sans-serif;
-  background: #0f0f0f; /* full gelap */
-  color: #fff;
-  margin: 0;
-  padding: 0;
-}
+  .menu-box { max-width: 420px; margin: 30px auto; background: #121212; padding: 25px; border-radius: 16px; border: 1px solid #333; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Rajdhani', sans-serif; }
+  .menu-box h2 { text-align: center; color: #38bdf8; margin-bottom: 20px; letter-spacing: 2px; }
+  
+  .qris-container { text-align: center; background: #fff; padding: 12px; border-radius: 12px; margin-bottom: 20px; }
+  .qris-container img { width: 100%; max-width: 180px; border-radius: 8px; }
+  .qris-container p { color: #000; font-weight: bold; font-size: 11px; margin-top: 5px; }
 
-/* ===== MENU BOX ===== */
-.menu-box {
-  max-width: 400px;
-  margin: 40px auto;
-  background: #121212; /* gelap */
-  padding: 20px;
-  border-radius: 12px;
-  font-size: 12px;
-  color: #fff;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
+  label { display: block; margin-top: 15px; font-size: 13px; color: #94a3b8; font-family: 'JetBrains Mono', monospace; }
+  input, select { width: 100%; padding: 12px; margin-top: 6px; background: #1e1e1e; border: 1px solid #333; border-radius: 8px; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s; }
+  input:focus { border-color: #38bdf8; }
+  
+  #previewBukti { width: 100%; margin-top: 15px; border-radius: 10px; display: none; border: 1px solid #38bdf8; }
+  .harga-tag { text-align: center; margin-top: 15px; font-size: 18px; font-weight: bold; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(56,189,248,0.2); }
+  
+  .status-box { margin-top: 15px; background: rgba(0,0,0,0.3); border: 1px dashed #38bdf8; border-radius: 8px; padding: 15px; font-size: 13px; text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+  
+  .btn-kirim { width: 100%; margin-top: 20px; padding: 14px; border: none; border-radius: 8px; background: linear-gradient(135deg, #2563eb, #38bdf8); color: white; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+  .btn-kirim:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 0 15px rgba(56,189,248,0.4); }
+  .btn-kirim:disabled { background: #444; cursor: not-allowed; opacity: 0.6; }
 
-/* ===== TITLE ===== */
-.menu-box h2 {
-  text-align: center;
-  margin-bottom: 15px;
-  color: #38bdf8; /* biru terang */
-}
-
-/* ===== FORM ===== */
-label {
-  display: block;
-  margin-top: 12px;
-  font-size: 14px;
-  color: #cbd5f5;
-}
-
-input,
-select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 6px;
-  background: #1e1e1e; /* gelap */
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 14px;
-}
-
-/* ===== HARGA ===== */
-.harga {
-  margin-top: 12px;
-  text-align: center;
-  font-weight: bold;
-  color: #38bdf8;
-}
-
-/* ===== ORDER BOX ===== */
-.order-box {
-  margin-top: 12px;
-  background: #1a1a1a; /* gelap */
-  border: 1px dashed #38bdf8;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 13px;
-  color: #fff;
-}
-
-/* ===== BUTTON ===== */
-button {
-  width: 100%;
-  margin-top: 15px;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background: #2563eb; /* biru */
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-button:hover {
-  opacity: 0.85;
-}
-
-/* ===== FOOT INFO ===== */
-.info {
-  margin-top: 15px;
-  font-size: 13px;
-  text-align: center;
-  color: #cbd5f5;
-  line-height: 1.6;
-}
+  .loading-dots:after { content: ' .'; animation: dots 1s steps(5, end) infinite;}
+  @keyframes dots { 0%, 20% { color: rgba(0,0,0,0); text-shadow: .5em 0 0 rgba(0,0,0,0), 1em 0 0 rgba(0,0,0,0); } 40% { color: #38bdf8; text-shadow: .5em 0 0 rgba(0,0,0,0), 1em 0 0 rgba(0,0,0,0); } 60% { text-shadow: .5em 0 0 #38bdf8, 1em 0 0 rgba(0,0,0,0); } 80%, 100% { text-shadow: .5em 0 0 #38bdf8, 1em 0 0 #38bdf8; } }
 </style>
-<div class="menu-box" id="orderForm">
 
+<div class="menu-box">
   <h2>🖥️ MENU VPS</h2>
 
-  <label>Masukkan Nomor Tujuan panel krim pastikan masih pakai WhatsApp</label>
-  <input type="number" class="nomor" placeholder="08xxxxxxxxxx">
+  <div class="qris-container">
+    <img src="https://files.catbox.moe/1txtmf.jpeg" alt="QRIS">
+    <p>SILAHKAN SCAN UNTUK PEMBAYARAN</p>
+  </div>
+
+  <label>WhatsApp / Email Tujuan</label>
+  <input type="text" id="kontakUser" placeholder="Contoh: 08123456789">
 
   <label>Pilih Paket VPS</label>
-  <select class="paket">
+  <select id="paketVps" onchange="updateHargaDisplay()">
     <option value="">-- Pilih Paket --</option>
-    <option value="1 GB|500">1 GB - 500</option>
-    <option value="2 GB|1000">2 GB - 1000</option>
-    <option value="3 GB|2000">3 GB - 2000</option>
-    <option value="4 GB|2500">4 GB - 2500</option>
-    <option value="5 GB|5000">5 GB - 5000</option>
-    <option value="6 GB|5200">6 GB - 5200</option>
-    <option value="Unlimited|7000">Unlimited - 7000</option>
+    <option value="1 GB|500">1 GB - Rp 500</option>
+    <option value="2 GB|1000">2 GB - Rp 1.000</option>
+    <option value="3 GB|2000">3 GB - Rp 2.000</option>
+    <option value="4 GB|2500">4 GB - Rp 2.500</option>
+    <option value="Unlimited|7000">Unlimited - Rp 7.000</option>
   </select>
 
-  <div class="harga">Harga: -</div>
+  <div class="harga-tag" id="hargaLabel">Harga: -</div>
 
-  <div class="order-box">
-    📦 Pesanan akan tampil di sini
+  <label>Upload Bukti Pembayaran</label>
+  <input type="file" id="fileBukti" accept="image/*" onchange="handlePreview(this)">
+  <img id="previewBukti">
+
+  <div class="status-box" id="statusBox">
+    <span style="opacity:0.6">Siap menerima pesanan...</span>
   </div>
 
-  <button onclick="kirimOrder()">📤 PESAN</button>
-
-  <div class="info">
-    ✔️ Pul Garansi<br>
-    ✔️ Sampai Masa Aktif Habis<br>
-    ✔️ VPS Aktif & Siap Pakai<br>
-    ✔️ Aman & Terpercaya<br>
-    ✔️ Kalau panel-nya di-sos langsung hubungi aku, pergi ke story di profilmu
-  </div>
-
+  <button class="btn-kirim" id="btnProses" onclick="prosesOrder()">📤 KIRIM PESANAN</button>
 </div>
 `;
 
+// Tampilkan Menu ke Content Utama
 document.getElementById("menu-vps").addEventListener("click", () => {
   content.innerHTML = vpsHTML;
 });
 
-// ===== UPDATE HARGA =====
-let hargaPaket = 0;
+let currentHarga = 0;
+let imgBase64 = "";
 
-function updateHarga() {
-  const paket = document.getElementById("paket").value;
-  const hargaEl = document.getElementById("harga");
-
-  if (!paket) {
-    hargaEl.innerText = "Harga: -";
-    hargaPaket = 0;
-    return;
-  }
-
-  hargaPaket = parseInt(paket.split("|")[1]);
-  hargaEl.innerText = "Harga: " + hargaPaket;
+function updateHargaDisplay() {
+  const p = document.getElementById("paketVps").value;
+  const h = document.getElementById("hargaLabel");
+  if (p) {
+    currentHarga = p.split("|")[1];
+    h.innerText = "Harga: Rp " + parseInt(currentHarga).toLocaleString();
+  } else { h.innerText = "Harga: -"; }
 }
 
-// ===== KIRIM ORDER =====
-function kirimOrder() {
-  const nomor = document.getElementById("nomor").value;
-  const paket = document.getElementById("paket").value;
-  const orderBox = document.getElementById("orderBox");
+function handlePreview(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const prev = document.getElementById('previewBukti');
+      prev.src = e.target.result;
+      prev.style.display = "block";
+      imgBase64 = e.target.result; 
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
 
-  if (!nomor || !paket) {
-    orderBox.innerHTML = "⚠️ Lengkapi data dulu kk";
-    return;
+function prosesOrder() {
+  const kontak = document.getElementById("kontakUser").value;
+  const paket = document.getElementById("paketVps").value;
+  const status = document.getElementById("statusBox");
+  const btn = document.getElementById("btnProses");
+
+  if (!kontak || !paket || !imgBase64) {
+      status.innerHTML = "<span style='color:#ff4d4d; font-weight:bold;'>⚠️ DATA BELUM LENGKAP!</span>";
+      return;
   }
 
-  // ❌ SALDO TIDAK CUKUP
-  if (saldo < hargaPaket) {
-    orderBox.innerHTML = `
-      ❌ <b>Saldo kamu tidak cukup</b><br>
-      💰 Saldo: ${saldo}<br>
-      📦 Harga Paket: ${hargaPaket}<br><br>
-      👉 Silakan <b>top up dulu kk</b>
+  // Tampilkan Efek Loading
+  btn.disabled = true;
+  status.innerHTML = "<span class='loading-dots' style='color:#38bdf8; font-weight:bold;'>PROSES MOHON TUNGGU</span>";
+
+  // Simulasi Pengiriman (1.5 detik)
+  setTimeout(() => {
+    const orderData = {
+      nomor: kontak,
+      paket: paket.split("|")[0],
+      harga: currentHarga,
+      bukti: imgBase64,
+      waktu: new Date().toLocaleString()
+    };
+
+    // Simpan ke LocalStorage
+    let listOrder = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+    listOrder.push(orderData);
+    localStorage.setItem("vpsOrders", JSON.stringify(listOrder));
+
+    // Update Status Berhasil
+    status.innerHTML = `
+      <div style="color:#00ff9d; font-weight:bold;">
+        ✅ PESANAN BERHASIL DIKIRIM!<br>
+        <span style="font-size:11px; color:#fff; font-weight:normal;">Silahkan tunggu konfirmasi via WA/Email.</span>
+      </div>
     `;
-    return;
-  }
 
-  // ✅ SALDO CUKUP → PROSES
-  orderBox.innerHTML = "⏳ Sedang mengirim order ke admin...";
+    // Reset Input
+    document.getElementById("kontakUser").value = "";
+    document.getElementById("paketVps").value = "";
+    document.getElementById("previewBukti").style.display = "none";
+    imgBase64 = "";
+    btn.disabled = false;
 
-  // POTONG SALDO
-  saldo -= hargaPaket;
-
-  // DATA ORDER
-  const order = {
-    nomor,
-    paket: paket.split("|")[0],
-    harga: hargaPaket,
-    waktu: new Date().toLocaleString()
-  };
-
-  // SIMPAN KE ADMIN
-  let adminOrders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
-  adminOrders.push(order);
-  localStorage.setItem("vpsOrders", JSON.stringify(adminOrders));
-
-  // HASIL AKHIR
-  orderBox.innerHTML = `
-    ✅ <b>ORDER BERHASIL</b><br><br>
-    📦 Paket: ${order.paket}<br>
-    💰 Harga: ${order.harga}<br>
-    💳 Sisa Saldo: ${saldo}<br><br>
-
-    📨 Pesanan masuk antrian ya kk<br>
-    ⏳ VPS akan diproses admin<br><br>
-
-    ✔️ Pul Garansi<br>
-    ✔️ Sampai Masa Aktif Habis<br>
-    ✔️ VPS Aktif & Siap Pakai<br>
-    ✔️ Aman & Terpercaya<br><br>
-
-    📌 Untuk akses:
-    masuk ke <b>Profil → Support</b><br>
-    kirim <b>domain / web / username / password</b> sedetail mungkin
-  `;
+  }, 1500);
 }
-
 </script>
+  
+
+
+
+
+
+  
+  
+    
 <script>
   document.getElementById("nav-deposit")?.addEventListener("click", () => {
   window.location.href = "deposit.html";
