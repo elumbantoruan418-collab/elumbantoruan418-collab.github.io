@@ -12,10 +12,12 @@
         :root {
             --brand-primary: #6366f1; 
             --brand-secondary: #8b5cf6;
-            --bg-body: #0f172a;
-            --card-bg: #1e293b;
-            --input-bg: #0f172a;
+            --bg-body: #030712;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --input-bg: rgba(15, 23, 42, 0.8);
             --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --success: #10b981;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -27,166 +29,185 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
-            background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent),
-                              radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.15), transparent);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
         }
 
         /* TOAST NOTIFICATION */
         #toast { 
             position: fixed; top: 20px; right: 20px; 
-            background: #10b981; color: white; padding: 16px 24px; border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            padding: 16px 24px; border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
             transform: translateX(150%); transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            z-index: 1000; font-weight: 600; display: flex; align-items: center; gap: 10px;
+            z-index: 1000; font-weight: 600; display: flex; align-items: center; gap: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         #toast.visible { transform: translateX(0); }
 
         /* AUTH CARD */
         .auth-card {
             background: var(--card-bg);
-            padding: 40px;
-            border-radius: 28px;
+            backdrop-filter: blur(20px);
+            padding: 45px 40px;
+            border-radius: 32px;
             width: 100%;
-            max-width: 420px;
-            border: 1px solid rgba(255,255,255,0.05);
+            max-width: 400px;
+            border: 1px solid rgba(255,255,255,0.08);
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.6s ease-out;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .brand-logo {
-            width: 64px; height: 64px;
+            width: 70px; height: 70px;
             background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
-            border-radius: 18px; margin: 0 auto 24px;
+            border-radius: 22px; margin: 0 auto 24px;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+            transform: rotate(-5deg);
         }
-        .brand-logo i { color: white; font-size: 26px; }
+        .brand-logo i { color: white; font-size: 28px; }
 
-        h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; margin-bottom: 8px; letter-spacing: -0.5px; }
-        p { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; }
+        h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 26px; margin-bottom: 8px; letter-spacing: -1px; font-weight: 800; }
+        p { color: var(--text-muted); font-size: 14px; margin-bottom: 35px; }
 
         /* FORM STYLING */
-        .form-group { text-align: left; margin-bottom: 22px; }
-        label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-group { text-align: left; margin-bottom: 24px; }
+        label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
         
         .input-wrapper { position: relative; }
-        .input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #475569; transition: 0.3s; }
+        .input-wrapper i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #475569; transition: 0.3s; }
 
         .form-control {
-            width: 100%; padding: 14px 16px 14px 48px;
-            background: var(--input-bg); border: 1px solid #334155;
-            border-radius: 14px; color: white; outline: none; transition: 0.3s;
-            font-size: 15px;
+            width: 100%; padding: 16px 16px 16px 52px;
+            background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px; color: white; outline: none; transition: 0.3s;
+            font-size: 15px; font-family: 'Inter', sans-serif;
         }
-        .form-control:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); }
+        .form-control:focus { border-color: var(--brand-primary); background: rgba(15, 23, 42, 1); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
         .form-control:focus + i { color: var(--brand-primary); }
 
         .btn-reg {
-            width: 100%; padding: 16px; background: var(--brand-primary);
-            color: white; border: none; border-radius: 14px;
-            font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s;
-            font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 18px; background: linear-gradient(to right, var(--brand-primary), var(--brand-secondary));
+            color: white; border: none; border-radius: 16px;
+            font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.4s;
+            font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 12px;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
         }
-        .btn-reg:hover { background: var(--brand-secondary); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2); }
-        .btn-reg:active { transform: translateY(0); }
+        .btn-reg:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4); filter: brightness(1.1); }
+        .btn-reg:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         .back-link {
-            display: block; margin-top: 25px; color: var(--text-muted);
+            display: block; margin-top: 30px; color: var(--text-muted);
             text-decoration: none; font-size: 14px; transition: 0.3s;
         }
-        .back-link b { color: var(--brand-primary); transition: 0.3s; }
-        .back-link:hover b { color: var(--brand-secondary); text-shadow: 0 0 8px rgba(139, 92, 246, 0.4); }
+        .back-link b { color: var(--brand-primary); text-decoration: underline; text-underline-offset: 4px; }
+        .back-link:hover b { color: var(--brand-secondary); }
     </style>
 </head>
 <body>
 
-<div id="toast"><i class="fas fa-check-circle"></i> Akun Berhasil Dibuat!</div>
+<div id="toast"></div>
 
 <div class="auth-card">
     <div class="brand-logo">
-        <i class="fas fa-user-plus"></i>
+        <i class="fas fa-shield-halved"></i>
     </div>
     <h1>Create Account</h1>
-    <p>Join Winz Cloud Infrastructure</p>
+    <p>Sign up to Winz Cloud Infrastructure</p>
 
     <form id="regForm">
         <div class="form-group">
             <label>Username</label>
             <div class="input-wrapper">
-                <i class="fas fa-user"></i>
-                <input type="text" id="username" class="form-control" placeholder="Choose username" required autocomplete="off">
+                <i class="fas fa-at"></i>
+                <input type="text" id="username" class="form-control" placeholder="New username" required autocomplete="off">
             </div>
         </div>
 
         <div class="form-group">
-            <label>Security Password</label>
+            <label>Access Password</label>
             <div class="input-wrapper">
-                <i class="fas fa-lock"></i>
+                <i class="fas fa-key"></i>
                 <input type="password" id="password" class="form-control" placeholder="••••••••" required>
             </div>
         </div>
 
-        <button type="submit" class="btn-reg">
-            <span>Daftar Sekarang</span>
+        <button type="submit" id="btnSubmit" class="btn-reg">
+            <span>Register Account</span>
             <i class="fas fa-arrow-right"></i>
         </button>
 
-        <a href="index.html" class="back-link">Sudah punya akun? <b>Login</b></a>
+        <a href="index.html" class="back-link">Already have an account? <b>Log In</b></a>
     </form>
 </div>
 
-<script src="users.js"></script>
-
 <script>
-    document.getElementById('regForm').addEventListener('submit', function(e) {
+    const toast = document.getElementById('toast');
+    const regForm = document.getElementById('regForm');
+    const btnSubmit = document.getElementById('btnSubmit');
+
+    function showToast(msg, type = 'success') {
+        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-triangle-exclamation'}"></i> ${msg}`;
+        toast.style.background = type === 'success' ? 'rgba(16, 185, 129, 0.9)' : 'rgba(239, 68, 68, 0.9)';
+        toast.classList.add('visible');
+        setTimeout(() => toast.classList.remove('visible'), 3000);
+    }
+
+    regForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         const userVal = document.getElementById('username').value.trim();
         const passVal = document.getElementById('password').value.trim();
 
-        // 1. Validasi Engine
-        if (typeof UserDB === "undefined") {
-            alert("Sistem Error: users.js tidak ditemukan!");
+        // 1. Ambil Database Terkini
+        let userDB = JSON.parse(localStorage.getItem('UserDB')) || [];
+
+        // 2. PROTEKSI DUPLIKAT (Case Insensitive)
+        const isDuplicate = userDB.some(u => u.username.toLowerCase() === userVal.toLowerCase());
+
+        if (isDuplicate) {
+            showToast("Username '" + userVal + "' sudah ada!", "error");
+            document.getElementById('username').focus();
             return;
         }
 
-        // 2. Cek Duplikasi
-        if (UserDB.find(userVal)) {
-            alert("Username '" + userVal + "' sudah ada, cari yang lain Winz!");
-            return;
-        }
+        // 3. Loading State
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Processing...`;
 
-        // 3. Generate User Data
+        // 4. Proses Simpan
         const newUser = {
-            id: Date.now(),
+            id: "WNZ-" + Date.now(),
             username: userVal,
             password: passVal,
-            apiKey: "WINZ_" + Math.random().toString(36).substring(2, 12).toUpperCase(),
             role: "USER",
-            createdAt: new Date().toISOString().split('T')[0]
+            saldo: 0,
+            createdAt: new Date().toLocaleDateString('id-ID')
         };
 
-        // 4. Save to LocalDB
-        UserDB.save(newUser);
+        userDB.push(newUser);
+        localStorage.setItem('UserDB', JSON.stringify(userDB));
 
-        // 5. Success Feedback
-        const toast = document.getElementById('toast');
-        toast.classList.add('visible');
-        
-        // Pindah ke Login setelah 1.5 detik
+        // 5. Sukses
         setTimeout(() => {
-            window.location.href = "index.html"; 
-        }, 1500);
+            showToast("Registrasi Berhasil!");
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 1200);
+        }, 800);
     });
 </script>
 
 </body>
 </html>
+
 
 
 
