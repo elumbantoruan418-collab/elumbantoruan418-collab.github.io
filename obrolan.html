@@ -19,101 +19,115 @@
 
         .screen { position: fixed; inset: 0; background: var(--bg); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .box { background: var(--card); padding: 30px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; border: 1px solid rgba(56, 189, 248, 0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        
         input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #2d3748; background: #0b0f19; color: white; margin-bottom: 15px; outline: none; }
         .btn { background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 10px; transition: 0.2s; font-family: 'Rajdhani'; letter-spacing: 1px; }
-        
+
         #app { display: none; flex-direction: column; height: 100vh; width: 100%; }
         .header-ui { padding: 15px; background: var(--card); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .search-box { display: flex; background: #0b0f19; border-radius: 12px; border: 1px solid #2d3748; align-items: center; padding: 0 10px; }
         .search-box input { border: none; margin-bottom: 0; padding: 12px; flex: 1; background: transparent; }
-        
+
         #listView { flex: 1; overflow-y: auto; }
         .user-list-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; }
-        .user-avatar { width: 50px; height: 50px; background: var(--primary); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; font-size: 20px; overflow: hidden; }
-        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-avatar { width: 45px; height: 45px; background: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; font-size: 18px; overflow: hidden; }
 
         #chatView { position: fixed; inset: 0; background: var(--bg); z-index: 50; display: none; flex-direction: column; }
         .chat-header { background: var(--card); padding: 15px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         #msgArea { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: radial-gradient(circle, #1e293b55 1px, transparent 1px); background-size: 25px 25px; }
-        
-        .msg { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 14px; line-height: 1.5; position: relative; }
+
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.5; position: relative; }
         .msg.me { align-self: flex-end; background: var(--msg-me-bg); color: var(--msg-me-text); border-bottom-right-radius: 2px; }
         .msg.others { align-self: flex-start; background: var(--msg-others-bg); color: var(--msg-others-text); border: 1px solid #065f46; border-bottom-left-radius: 2px; }
 
         .input-bar { padding: 15px; background: var(--card); display: flex; gap: 12px; align-items: center; }
-        .nav-bottom { background: var(--card); display: flex; border-top: 1px solid rgba(255,255,255,0.05); padding: 10px 0; }
+        .nav-bottom { background: var(--card); display: flex; border-top: 1px solid rgba(255,255,255,0.05); padding: 10px 0; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
         .nav-item { flex: 1; text-align: center; color: var(--dim); font-size: 11px; cursor: pointer; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
         .hidden { display: none !important; }
+        .badge { font-size: 9px; background: var(--accent); color: #000; padding: 1px 5px; border-radius: 4px; margin-left: 5px; vertical-align: middle; }
     </style>
 </head>
 <body>
 
     <div id="loginScreen" class="screen">
         <div class="box">
-            <h2 style="font-family:'Rajdhani';">WINZ XTR LOGIN</h2>
-            <input type="text" id="idIn" placeholder="User ID">
-            <button class="btn" onclick="register()">BUKA TERMINAL</button>
+            <i class="fas fa-microchip" style="font-size: 40px; color: var(--primary); margin-bottom: 15px;"></i>
+            <h2 style="font-family:'Rajdhani';">XTR GATEWAY</h2>
+            <p style="color:var(--dim); font-size:11px; margin-bottom:20px;">Masukkan ID untuk akses terminal unik Anda</p>
+            <input type="text" id="idIn" placeholder="User ID...">
+            <button class="btn" onclick="register()">SIGN IN / REGISTER</button>
         </div>
     </div>
 
     <div id="dashScreen" class="screen hidden">
         <div class="box">
-            <div id="profAva" class="user-avatar" style="width:100px; height:100px; border-radius:50%; margin:0 auto 15px;">?</div>
-            <h3 id="displayName">USER</h3>
-            <button class="btn" onclick="openApp()">MASUK SEKARANG</button>
-            <button class="btn" style="background:#1e293b; color:white;" onclick="logout()">LOGOUT</button>
+            <div id="profAva" class="user-avatar" style="width:80px; height:80px; border-radius:50%; margin:0 auto 15px; font-size: 30px;">?</div>
+            <h3 id="displayName" style="font-family:'Rajdhani';">USER</h3>
+            <p style="font-size: 10px; color: var(--accent); margin-bottom: 20px;">ID AKTIF & TERENKRIPSI</p>
+            <button class="btn" onclick="openApp()">MASUK TERMINAL</button>
         </div>
     </div>
 
     <div id="app">
         <div id="searchView" class="header-ui hidden">
             <div class="search-box">
-                <input type="text" id="searchIn" placeholder="Ketik ID Teman...">
-                <button onclick="findUser()" style="background:none; border:none; color:var(--primary); padding:10px;"><i class="fas fa-user-plus"></i></button>
+                <input type="text" id="searchIn" placeholder="Tambah ID Teman...">
+                <button onclick="findUser()" style="background:none; border:none; color:var(--primary); padding:10px;"><i class="fas fa-plus-circle"></i></button>
             </div>
         </div>
         <div id="listView"></div>
+
         <div id="chatView">
             <div class="chat-header">
-                <i class="fas fa-chevron-left" onclick="closeChat()"></i>
-                <div id="chatTargetName" style="margin-left:10px; font-family:'Rajdhani';">Username</div>
+                <i class="fas fa-arrow-left" onclick="closeChat()" style="padding:10px; cursor:pointer;"></i>
+                <div id="chatTargetName" style="margin-left:5px; font-family:'Rajdhani'; font-size:18px;">Username</div>
+                <div id="targetBadge"></div>
             </div>
             <div id="msgArea"></div>
             <div class="input-bar">
-                <input type="text" id="msgIn" placeholder="Ketik pesan...">
-                <button onclick="sendText()" style="background:none; border:none; color:var(--primary);"><i class="fas fa-paper-plane"></i></button>
+                <input type="text" id="msgIn" placeholder="Ketik pesan aman...">
+                <button onclick="sendText()" style="background:none; border:none; color:var(--primary); font-size:22px;"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
+
         <div class="nav-bottom">
-            <div id="nav-chats" class="nav-item active" onclick="showSection('chats')"><i class="fas fa-comments"></i><br>Obrolan</div>
-            <div id="nav-contacts" class="nav-item" onclick="showSection('contacts')"><i class="fas fa-address-book"></i><br>Kontak</div>
-            <div id="nav-profile" class="nav-item" onclick="showSection('profile')"><i class="fas fa-user-gear"></i><br>Profil</div>
+            <div id="nav-chats" class="nav-item active" onclick="showSection('chats')"><i class="fas fa-comment-dots"></i><br>Chat</div>
+            <div id="nav-contacts" class="nav-item" onclick="showSection('contacts')"><i class="fas fa-users"></i><br>Kontak</div>
+            <div id="nav-logout" class="nav-item" onclick="logout()"><i class="fas fa-power-off"></i><br>Keluar</div>
         </div>
     </div>
 
 <script>
-    const ADMIN_ID = "Winz_Dev";
-    let myID = localStorage.getItem("xtr_user_id") || "";
+    const ADMIN_ID = "Winz_Dev"; // Owner
+    let myID = localStorage.getItem("xtr_current_session") || ""; // Ambil session aktif
     let activeChat = "";
 
-    window.onload = () => { if(myID) { openApp(); } };
+    window.onload = () => {
+        // Jika sudah pernah login, langsung masuk tanpa minta ID
+        if(myID) {
+            openApp();
+        }
+    };
 
     function register() {
-        const val = document.getElementById('idIn').value.trim();
-        if(!val) return alert("ID Kosong!");
-        myID = val;
-        localStorage.setItem("xtr_user_id", myID);
+        const val = document.getElementById('idIn').value.trim().toLowerCase();
+        if(!val) return alert("ID wajib diisi!");
         
-        let contacts = JSON.parse(localStorage.getItem("xtr_contacts")) || [];
-        if(!contacts.includes(ADMIN_ID) && myID !== ADMIN_ID) {
-            contacts.unshift(ADMIN_ID);
-            localStorage.setItem("xtr_contacts", JSON.stringify(contacts));
+        myID = val;
+        localStorage.setItem("xtr_current_session", myID); // Simpan session aktif
+        
+        // Inisialisasi kontak khusus untuk akun ini
+        let myContacts = JSON.parse(localStorage.getItem(`contacts_${myID}`)) || [];
+        if(!myContacts.includes(ADMIN_ID) && myID !== ADMIN_ID.toLowerCase()) {
+            myContacts.unshift(ADMIN_ID);
+            localStorage.setItem(`contacts_${myID}`, JSON.stringify(myContacts));
         }
         
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('dashScreen').classList.remove('hidden');
-        document.getElementById('displayName').innerText = myID;
+        document.getElementById('displayName').innerText = myID.toUpperCase();
+        document.getElementById('profAva').innerText = myID[0].toUpperCase();
     }
 
     function openApp() {
@@ -124,13 +138,8 @@
     }
 
     function showSection(sec) {
-        if(sec === 'profile') { 
-            document.getElementById('app').style.display = 'none'; 
-            document.getElementById('dashScreen').classList.remove('hidden'); 
-            return; 
-        }
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('nav-'+sec).classList.add('active');
+        if(document.getElementById('nav-'+sec)) document.getElementById('nav-'+sec).classList.add('active');
         
         const sView = document.getElementById('searchView');
         if(sec === 'contacts') sView.classList.remove('hidden');
@@ -140,79 +149,97 @@
     }
 
     function findUser() {
-        const target = document.getElementById('searchIn').value.trim();
-        if(!target) return alert("Masukkan ID!");
-        if(target === myID) return alert("Itu ID lu sendiri!");
+        const target = document.getElementById('searchIn').value.trim().toLowerCase();
+        if(!target || target === myID) return alert("ID tidak valid!");
 
-        let contacts = JSON.parse(localStorage.getItem("xtr_contacts")) || [];
-        if(!contacts.includes(target)) {
-            contacts.push(target);
-            localStorage.setItem("xtr_contacts", JSON.stringify(contacts));
-            alert("Kontak Berhasil Ditambah!");
-        } else {
-            alert("Kontak sudah ada.");
+        let myContacts = JSON.parse(localStorage.getItem(`contacts_${myID}`)) || [];
+        if(!myContacts.includes(target)) {
+            myContacts.push(target);
+            localStorage.setItem(`contacts_${myID}`, JSON.stringify(myContacts));
+            alert("Kontak ditambahkan!");
         }
         document.getElementById('searchIn').value = "";
-        renderList('contacts'); // Refresh list setelah nambah
+        renderList('contacts');
     }
 
     function renderList(type) {
         const listArea = document.getElementById('listView');
-        const contacts = JSON.parse(localStorage.getItem("xtr_contacts")) || [];
+        const myContacts = JSON.parse(localStorage.getItem(`contacts_${myID}`)) || [];
         
         let html = "";
-        contacts.forEach(id => {
-            const logs = JSON.parse(localStorage.getItem(`chat_with_${id}`)) || [];
+        myContacts.forEach(targetID => {
+            // Kunci unik: chat_from_[SAYA]_to_[DIA]
+            const chatKey = `chat_${myID}_with_${targetID}`;
+            const logs = JSON.parse(localStorage.getItem(chatKey)) || [];
             
-            // Filter: di tab Obrolan cuma muncul yang udah ada pesan
-            if(type === 'chats' && logs.length === 0 && id !== ADMIN_ID) return;
+            if(type === 'chats' && logs.length === 0 && targetID !== ADMIN_ID) return;
 
-            const lastMsg = logs.length > 0 ? logs[logs.length-1].content : "Koneksi Tersedia";
+            const lastMsg = logs.length > 0 ? logs[logs.length-1].content : "Klik untuk memulai chat...";
+            const isOwner = targetID.toLowerCase() === ADMIN_ID.toLowerCase();
+
             html += `
-                <div class="user-list-item" onclick="startChat('${id}')">
-                    <div class="user-avatar">${id[0].toUpperCase()}</div>
+                <div class="user-list-item" onclick="startChat('${targetID}')">
+                    <div class="user-avatar" style="${isOwner ? 'background:var(--accent)' : ''}">${targetID[0].toUpperCase()}</div>
                     <div style="flex:1">
-                        <strong>${id}</strong>
-                        <p style="font-size:12px; color:var(--dim);">${lastMsg}</p>
+                        <strong>${targetID} ${isOwner ? '<span class="badge">OWNER</span>' : ''}</strong>
+                        <p style="font-size:11px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:200px;">${lastMsg}</p>
                     </div>
                 </div>`;
         });
         
-        listArea.innerHTML = html || `<p style="text-align:center; padding:50px; opacity:0.3;">Belum ada ${type === 'chats' ? 'obrolan' : 'kontak'}.</p>`;
+        listArea.innerHTML = html || `<p style="text-align:center; padding:50px; opacity:0.3; font-size:12px;">Tidak ada data.</p>`;
     }
 
     function startChat(id) {
         activeChat = id;
         document.getElementById('chatView').style.display = 'flex';
         document.getElementById('chatTargetName').innerText = id;
+        document.getElementById('targetBadge').innerHTML = (id.toLowerCase() === ADMIN_ID.toLowerCase()) ? '<span class="badge">OWNER</span>' : '';
         loadMessages();
     }
 
-    function closeChat() { document.getElementById('chatView').style.display = 'none'; }
+    function closeChat() { 
+        document.getElementById('chatView').style.display = 'none'; 
+        renderList('chats');
+    }
 
     function sendText() {
         const el = document.getElementById('msgIn');
         if(!el.value.trim()) return;
-        const key = `chat_with_${activeChat}`;
-        let logs = JSON.parse(localStorage.getItem(key)) || [];
-        logs.push({ sender: myID, content: el.value.trim(), time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) });
-        localStorage.setItem(key, JSON.stringify(logs));
+        
+        const chatKey = `chat_${myID}_with_${activeChat}`;
+        let logs = JSON.parse(localStorage.getItem(chatKey)) || [];
+        
+        logs.push({ 
+            sender: myID, 
+            content: el.value.trim(), 
+            time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) 
+        });
+        
+        localStorage.setItem(chatKey, JSON.stringify(logs));
         el.value = "";
         loadMessages();
     }
 
     function loadMessages() {
         const area = document.getElementById('msgArea');
-        const logs = JSON.parse(localStorage.getItem(`chat_with_${activeChat}`)) || [];
+        const chatKey = `chat_${myID}_with_${activeChat}`;
+        const logs = JSON.parse(localStorage.getItem(chatKey)) || [];
+        
         area.innerHTML = logs.map(m => `
             <div class="msg ${m.sender === myID ? 'me' : 'others'}">
                 ${m.content}
-                <div style="font-size:9px; text-align:right; opacity:0.5;">${m.time}</div>
+                <div style="font-size:9px; text-align:right; opacity:0.4; margin-top:4px;">${m.time}</div>
             </div>`).join("");
         area.scrollTop = area.scrollHeight;
     }
 
-    function logout() { localStorage.clear(); location.reload(); }
+    function logout() {
+        if(confirm("Keluar dari session ini?")) {
+            localStorage.removeItem("xtr_current_session"); // Hapus session aktif saja
+            location.reload();
+        }
+    }
 </script>
 </body>
 </html>
