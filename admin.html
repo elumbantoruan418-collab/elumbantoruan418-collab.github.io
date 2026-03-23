@@ -2,163 +2,108 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Winz // XTR COMMAND CENTER</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --bg: #0b1118; --sidebar: #151d27; --hover: #1c2733; 
-            --active: #2b5278; --text: #ffffff; --primary: #38bdf8; 
-            --accent: #22c55e; --danger: #ef4444; 
+            --bg: #0b1118; --card: #151d27; --primary: #38bdf8; 
+            --text: #ffffff; --dim: #94a3b8; --accent: #22c55e; 
         }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        textarea, input { user-select: text !important; }
-
         body { 
             background: var(--bg); color: var(--text); 
-            font-family: 'Inter', sans-serif; display: flex; 
-            height: 100vh; width: 100vw; overflow: hidden; position: fixed;
+            font-family: 'Inter', sans-serif; margin: 0; padding: 0;
         }
 
-        /* --- SIDEBAR LEFT --- */
+        /* --- SIDEBAR STANDAR --- */
         .sidebar { 
-            width: 320px; min-width: 320px; background: var(--sidebar); 
-            border-right: 1px solid rgba(255,255,255,0.05); 
-            display: flex; flex-direction: column; height: 100vh; 
+            background: var(--card); border-bottom: 1px solid rgba(255,255,255,0.1); 
+            padding: 15px;
         }
 
         .section-label { 
-            padding: 15px; background: rgba(56, 189, 248, 0.05); 
             color: var(--primary); font-family: 'Rajdhani'; 
-            font-weight: bold; font-size: 13px; letter-spacing: 1px; 
-            border-bottom: 1px solid rgba(56, 189, 248, 0.1); 
-            display: flex; justify-content: space-between; align-items: center; 
+            font-weight: bold; font-size: 14px; margin: 15px 0 10px;
+            display: flex; justify-content: space-between;
         }
-
-        .list-container { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .list-container::-webkit-scrollbar { width: 3px; }
-        .list-container::-webkit-scrollbar-thumb { background: var(--primary); }
 
         .item-card { 
-            background: #1e293b; border-left: 4px solid #475569; 
-            padding: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; 
+            background: #1e293b; padding: 12px; border-radius: 8px; 
+            margin-bottom: 8px; border-left: 4px solid #475569;
         }
-        .item-card:hover { background: var(--hover); }
-        .item-card.active { background: var(--active); border-left-color: var(--primary); }
-        .item-card.order-active { border-left-color: var(--accent); animation: pulse-border 2s infinite; }
+        .item-card.active { border-left-color: var(--primary); background: #2b5278; }
 
-        @keyframes pulse-border { 0% { border-left-color: #22c55e; } 50% { border-left-color: #15803d; } 100% { border-left-color: #22c55e; } }
-
-        .item-card h5 { font-size: 13px; margin-bottom: 4px; display: flex; justify-content: space-between; font-family: 'Rajdhani'; }
-        .item-card p { font-size: 11px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-        /* --- MAIN AREA --- */
-        .main { flex: 1; display: flex; flex-direction: column; background: var(--bg); position: relative; }
+        /* --- AREA CHAT STANDAR --- */
+        .main-chat { padding: 15px; padding-bottom: 120px; } /* Jarak bawah biar gak kena input */
+        
         .chat-header { 
-            height: 70px; padding: 0 20px; background: var(--sidebar); 
-            display: flex; align-items: center; gap: 12px; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            background: var(--card); padding: 15px; border-radius: 12px;
+            display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
         }
 
-        .avatar { width: 42px; height: 42px; background: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; font-family: 'Rajdhani'; font-size: 18px; }
-
-        #msgArea { 
-            flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; 
-            background: radial-gradient(circle, #1e293b33 1px, transparent 1px); background-size: 25px 25px; 
+        .msg { 
+            max-width: 85%; padding: 12px; border-radius: 12px; 
+            margin-bottom: 10px; font-size: 14px; line-height: 1.4;
         }
+        .msg.admin { align-self: flex-end; background: #0284c7; margin-left: auto; }
+        .msg.user { align-self: flex-start; background: #1e293b; }
 
-        /* --- BUBBLES --- */
-        .msg { max-width: 75%; padding: 12px 16px; border-radius: 18px; font-size: 14px; position: relative; line-height: 1.5; }
-        .msg.user { align-self: flex-start; background: #1e293b; border-bottom-left-radius: 2px; }
-        .msg.admin { align-self: flex-end; background: #0284c7; color: #fff; border-bottom-right-radius: 2px; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.2); }
-        .msg-tools { position: absolute; top: -25px; right: 0; display: none; gap: 10px; background: #0f172a; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--primary); z-index: 10; }
-        .msg:hover .msg-tools { display: flex; }
-
-        /* --- FIX INPUT AREA (Gede & Anti Meleset) --- */
-        .input-bar { 
-            padding: 15px 20px; background: var(--sidebar); display: flex; gap: 12px; align-items: center; 
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: calc(15px + env(safe-area-inset-bottom)); /* Aman buat navigasi gesture HP */
+        /* --- TOMBOL KIRIM DINAIKKAN (ABSOLUTE BOTTOM) --- */
+        .input-container {
+            position: fixed;
+            bottom: 20px; /* GW NAIKKAN JARAKNYA DARI BAWAH */
+            left: 10px;
+            right: 10px;
+            background: var(--card);
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            z-index: 999;
         }
 
         textarea { 
-            flex: 1; background: #0b1118; border: 2px solid #2d3748; border-radius: 12px; 
-            color: white; padding: 12px 15px; height: 50px; resize: none; outline: none; 
-            font-family: 'Inter'; font-size: 14px; transition: 0.3s;
+            flex: 1; background: #0b1118; border: 1px solid #2d3748; 
+            border-radius: 8px; color: white; padding: 10px; height: 45px;
+            outline: none; resize: none;
         }
-        textarea:focus { border-color: var(--primary); background: #111a27; }
 
         .btn-send { 
-            background: var(--primary); border: none; width: 65px; height: 50px; 
-            border-radius: 12px; cursor: pointer; color: #000; font-size: 20px; 
-            display: flex; align-items: center; justify-content: center; transition: 0.2s;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+            background: var(--primary); border: none; width: 55px; 
+            border-radius: 8px; color: #000; font-size: 18px; font-weight: bold;
         }
-        .btn-send:active { transform: scale(0.92); background: #7dd3fc; }
 
-        /* --- ADMIN BUTTONS --- */
-        .admin-controls { 
-            padding: 15px; background: #0f172a; border-top: 1px solid rgba(255,255,255,0.1); 
-            display: flex; gap: 10px; padding-bottom: calc(15px + env(safe-area-inset-bottom));
-        }
-        .btn-action { flex: 1; padding: 14px; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 13px; font-family: 'Rajdhani'; letter-spacing: 1.5px; transition: 0.2s; }
-        .btn-acc { background: var(--accent); color: #052e16; }
-        .btn-rej { background: var(--danger); color: #fff; }
-        .btn-action:active { transform: scale(0.95); opacity: 0.8; }
-
-        .hidden { display: none !important; }
+        .hidden { display: none; }
     </style>
 </head>
-<body oncontextmenu="return false">
+<body>
 
     <div class="sidebar">
+        <div class="section-label"><span><i class="fas fa-comments"></i> CHAT</span></div>
+        <div id="chatUsersList"></div>
+        
         <div class="section-label">
-            <span><i class="fas fa-comments"></i> ACTIVE SESSIONS</span>
+            <span><i class="fas fa-shopping-cart"></i> ORDERS</span>
+            <span id="orderCount" style="background:red; padding:0 6px; border-radius:10px; font-size:10px;">0</span>
         </div>
-        <div class="list-container" id="chatUsersList"></div>
-
-        <div class="section-label">
-            <span><i class="fas fa-shopping-cart"></i> ORDER QUEUE</span>
-            <span id="orderCount" style="background:var(--danger); font-size:10px; padding:2px 8px; border-radius:12px; color: white; font-family:'Inter'">0</span>
-        </div>
-        <div class="list-container" id="orderQueueList"></div>
-
-        <div class="admin-controls">
-            <button class="btn-action btn-acc" onclick="processOrder('ACC')">APPROVE</button>
-            <button class="btn-action btn-rej" onclick="processOrder('REJ')">REJECT</button>
-        </div>
+        <div id="orderQueueList"></div>
     </div>
 
-    <div class="main">
-        <div id="noSelect" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0.15;">
-            <i class="fas fa-terminal fa-5x"></i>
-            <h2 style="margin-top:20px; font-family:'Rajdhani'; letter-spacing:3px;">XTR COMMAND CENTER</h2>
-            <p style="font-size:12px;">WAITING FOR SELECTION...</p>
+    <div class="main-chat" id="mainChatArea">
+        <div id="chatHeader" class="chat-header hidden">
+            <div style="background:var(--primary); color:#000; width:35px; height:35px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:bold;" id="headAva">?</div>
+            <h4 id="headName" style="font-family:'Rajdhani'">PILIH USER</h4>
         </div>
 
-        <div id="chatContent" class="hidden" style="height:100%; display:flex; flex-direction:column;">
-            <div class="chat-header">
-                <div class="avatar" id="headAva">W</div>
-                <div style="flex:1">
-                    <h4 id="headName" style="font-size:15px; font-family:'Rajdhani'; letter-spacing:1px; text-transform:uppercase;">USER ID</h4>
-                    <small style="color:var(--accent); font-size:10px; display:flex; align-items:center; gap:5px;">
-                        <i class="fas fa-circle" style="font-size:7px;"></i> SESSION ACTIVE
-                    </small>
-                </div>
-                <i class="fas fa-trash-alt" onclick="clearChat()" style="cursor:pointer; color:var(--danger); padding:10px; opacity:0.6;"></i>
-            </div>
-            
-            <div id="msgArea"></div>
-            
-            <div class="input-bar">
-                <textarea id="replyMsg" placeholder="Type command or reply..."></textarea>
-                <button class="btn-send" onclick="sendAdminMsg()">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
+        <div id="msgArea"></div>
+    </div>
+
+    <div id="inputBar" class="input-container hidden">
+        <textarea id="replyMsg" placeholder="Balas pesan..."></textarea>
+        <button class="btn-send" onclick="sendAdminMsg()"><i class="fas fa-paper-plane"></i></button>
     </div>
 
 <script>
@@ -167,33 +112,26 @@
     function renderLists() {
         const chatList = document.getElementById('chatUsersList');
         const orderList = document.getElementById('orderQueueList');
-        
         const contacts = JSON.parse(localStorage.getItem("xtr_contacts")) || [];
         const orders = JSON.parse(localStorage.getItem("xtr_orders")) || [];
 
         document.getElementById('orderCount').innerText = orders.length;
 
-        chatList.innerHTML = contacts.map(id => {
-            const logs = JSON.parse(localStorage.getItem(`chat_with_${id}`)) || [];
-            const last = logs.length > 0 ? logs[logs.length-1].content : "No transmission data";
-            return `
-                <div class="item-card ${activeUser === id ? 'active' : ''}" onclick="selectUser('${id}', 'chat')">
-                    <h5>${id}</h5>
-                    <p>${last}</p>
-                </div>`;
-        }).join("") || `<p style="text-align:center; padding:20px; opacity:0.2; font-size:11px;">No chats</p>`;
+        chatList.innerHTML = contacts.map(id => `
+            <div class="item-card ${activeUser === id ? 'active' : ''}" onclick="selectUser('${id}')">
+                <h5 style="margin:0; font-size:13px;">${id}</h5>
+            </div>`).join("");
 
         orderList.innerHTML = orders.map(id => `
-            <div class="item-card order-active ${activeUser === id ? 'active' : ''}" onclick="selectUser('${id}', 'order')">
-                <h5 style="color:var(--accent)">${id} <i class="fas fa-bolt"></i></h5>
-                <p>Awaiting Admin Authorization...</p>
-            </div>`).join("") || `<p style="text-align:center; padding:20px; opacity:0.2; font-size:11px;">No pending orders</p>`;
+            <div class="item-card active" onclick="selectUser('${id}')">
+                <h5 style="margin:0; font-size:13px; color:var(--accent)">${id} (ORDER)</h5>
+            </div>`).join("");
     }
 
-    function selectUser(id, type) {
+    function selectUser(id) {
         activeUser = id;
-        document.getElementById('noSelect').classList.add('hidden');
-        document.getElementById('chatContent').classList.remove('hidden');
+        document.getElementById('chatHeader').classList.remove('hidden');
+        document.getElementById('inputBar').classList.remove('hidden');
         document.getElementById('headName').innerText = id;
         document.getElementById('headAva').innerText = id[0].toUpperCase();
         renderChat();
@@ -204,26 +142,18 @@
         if(!activeUser) return;
         const area = document.getElementById('msgArea');
         const logs = JSON.parse(localStorage.getItem(`chat_with_${activeUser}`)) || [];
-        area.innerHTML = logs.map((m, i) => `
+        area.innerHTML = logs.map(m => `
             <div class="msg ${m.sender === 'ADMIN_WINZ' ? 'admin' : 'user'}">
-                <div class="msg-tools">
-                    <i class="fas fa-edit" style="color:var(--primary)" onclick="editChat(${i})"></i>
-                    <i class="fas fa-trash" style="color:var(--danger)" onclick="deleteChat(${i})"></i>
-                </div>
                 ${m.content}
-                <div style="font-size:9px; opacity:0.5; margin-top:6px; text-align:right;">${m.time}</div>
+                <div style="font-size:8px; opacity:0.5; margin-top:4px; text-align:right;">${m.time}</div>
             </div>`).join("");
-        area.scrollTop = area.scrollHeight;
+        window.scrollTo(0, document.body.scrollHeight);
     }
 
     function sendAdminMsg() {
         const txt = document.getElementById('replyMsg').value.trim();
         if(!txt || !activeUser) return;
-        pushMsg(txt);
-        document.getElementById('replyMsg').value = "";
-    }
-
-    function pushMsg(txt) {
+        
         const key = `chat_with_${activeUser}`;
         let logs = JSON.parse(localStorage.getItem(key)) || [];
         logs.push({ 
@@ -232,54 +162,13 @@
             time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) 
         });
         localStorage.setItem(key, JSON.stringify(logs));
+        document.getElementById('replyMsg').value = "";
         renderChat();
     }
 
-    function processOrder(type) {
-        if(!activeUser) return;
-        let input = (type === 'ACC') ? prompt("ENTER ACCOUNT DATA (User/Pass/IP):") : prompt("REJECTION REASON:");
-        if(input === null) return;
-        
-        let resMsg = (type === 'ACC') ? `✅ ORDER APPROVED!\n\n${input}\n\nOperation completed.` : `❌ ORDER REJECTED!\n\nReason: ${input}`;
-        pushMsg(resMsg);
-
-        let orders = JSON.parse(localStorage.getItem("xtr_orders")) || [];
-        const idx = orders.indexOf(activeUser);
-        if (idx > -1) {
-            orders.splice(idx, 1);
-            localStorage.setItem("xtr_orders", JSON.stringify(orders));
-        }
-
-        renderLists();
-        alert(`User ${activeUser} ${type === 'ACC' ? 'Approved' : 'Rejected'}.`);
-    }
-
-    function deleteChat(idx) {
-        let logs = JSON.parse(localStorage.getItem(`chat_with_${activeUser}`));
-        logs.splice(idx, 1);
-        localStorage.setItem(`chat_with_${activeUser}`, JSON.stringify(logs));
-        renderChat();
-    }
-
-    function editChat(idx) {
-        let logs = JSON.parse(localStorage.getItem(`chat_with_${activeUser}`));
-        let up = prompt("Update Transmission:", logs[idx].content);
-        if(up) {
-            logs[idx].content = up;
-            localStorage.setItem(`chat_with_${activeUser}`, JSON.stringify(logs));
-            renderChat();
-        }
-    }
-
-    function clearChat() {
-        if(confirm("WIPE ENTIRE HISTORY?")) {
-            localStorage.removeItem(`chat_with_${activeUser}`);
-            renderChat();
-        }
-    }
-
-    setInterval(() => { renderLists(); if(activeUser) renderChat(); }, 4000);
+    setInterval(() => { renderLists(); if(activeUser) renderChat(); }, 5000);
     window.onload = renderLists;
 </script>
 </body>
 </html>
+
