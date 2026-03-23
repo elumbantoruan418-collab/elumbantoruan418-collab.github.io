@@ -3,207 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winz Cloud // Secure Registration</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <title>Winz // SUPPORT CENTER</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-
     <style>
         :root {
-            --brand-primary: #6366f1; 
-            --brand-secondary: #8b5cf6;
-            --bg-body: #030712;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --input-bg: rgba(15, 23, 42, 0.8);
-            --text-muted: #94a3b8;
-            --danger: #ef4444;
-            --success: #10b981;
+            --bg: #030305;
+            --card-bg: #0d0d1a;
+            --primary: #38bdf8;
+            --instagram: #e1306c;
+            --telegram: #0088cc;
+            --owner-chat: #facc15;
+            --font-display: 'Rajdhani', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; }
-        
-        body {
-            background-color: var(--bg-body);
-            color: #f8fafc;
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: var(--bg); 
+            color: #fff; 
+            font-family: var(--font-display); 
             min-height: 100vh;
-            overflow: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
         }
 
-        /* TOAST NOTIFICATION */
-        #toast { 
-            position: fixed; top: 20px; right: 20px; 
-            padding: 16px 24px; border-radius: 16px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            transform: translateX(150%); transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            z-index: 1000; font-weight: 600; display: flex; align-items: center; gap: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
+        /* Tombol Kembali Pojok Kiri Atas */
+        .back-nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-family: var(--font-mono);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+            z-index: 100;
         }
-        #toast.visible { transform: translateX(0); }
 
-        /* AUTH CARD */
-        .auth-card {
+        .back-nav:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .support-card {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            padding: 45px 40px;
-            border-radius: 32px;
             width: 100%;
             max-width: 400px;
-            border: 1px solid rgba(255,255,255,0.08);
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
             text-align: center;
-            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
-            animation: fadeIn 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            animation: fadeIn 0.5s ease-out;
+            position: relative;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        .brand-logo {
-            width: 70px; height: 70px;
-            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
-            border-radius: 22px; margin: 0 auto 24px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+        .icon-box {
+            width: 70px;
+            height: 70px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--primary);
+            font-size: 30px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
             transform: rotate(-5deg);
         }
-        .brand-logo i { color: white; font-size: 28px; }
 
-        h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 26px; margin-bottom: 8px; letter-spacing: -1px; font-weight: 800; }
-        p { color: var(--text-muted); font-size: 14px; margin-bottom: 35px; }
+        h2 { letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; font-size: 24px; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
 
-        /* FORM STYLING */
-        .form-group { text-align: left; margin-bottom: 24px; }
-        label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
-        
-        .input-wrapper { position: relative; }
-        .input-wrapper i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #475569; transition: 0.3s; }
-
-        .form-control {
-            width: 100%; padding: 16px 16px 16px 52px;
-            background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px; color: white; outline: none; transition: 0.3s;
-            font-size: 15px; font-family: 'Inter', sans-serif;
+        .btn-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        .form-control:focus { border-color: var(--brand-primary); background: rgba(15, 23, 42, 1); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
-        .form-control:focus + i { color: var(--brand-primary); }
 
-        .btn-reg {
-            width: 100%; padding: 18px; background: linear-gradient(to right, var(--brand-primary), var(--brand-secondary));
-            color: white; border: none; border-radius: 16px;
-            font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.4s;
-            font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 12px;
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-        }
-        .btn-reg:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4); filter: brightness(1.1); }
-        .btn-reg:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .owner { background: var(--owner-chat); color: #000; }
+        .ig { background: #1a1a2e; color: #fff; border: 1px solid var(--instagram); }
+        .tg { background: #1a1a2e; color: #fff; border: 1px solid var(--telegram); }
 
-        .back-link {
-            display: block; margin-top: 30px; color: var(--text-muted);
-            text-decoration: none; font-size: 14px; transition: 0.3s;
-        }
-        .back-link b { color: var(--brand-primary); text-decoration: underline; text-underline-offset: 4px; }
-        .back-link:hover b { color: var(--brand-secondary); }
+        .btn-link:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .owner:hover { filter: brightness(1.2); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div id="toast"></div>
+    <a href="index.html" class="back-nav">
+        <i class="fas fa-arrow-left"></i> KEMBALI
+    </a>
 
-<div class="auth-card">
-    <div class="brand-logo">
-        <i class="fas fa-shield-halved"></i>
+    <div class="support-card">
+        <div class="icon-box">
+            <i class="fas fa-headset"></i>
+        </div>
+        <h2>XTR CENTER</h2>
+        <p>Butuh bantuan teknis atau info layanan? Hubungi owner atau join channel kami.</p>
+
+        <a href="obrolan.html" class="btn-link owner">
+            <i class="fas fa-comment-dots"></i> CHAT OWNER (ONLINE)
+        </a>
+
+        <a href="https://www.instagram.com/erwin__shbg" target="_blank" class="btn-link ig">
+            <i class="fab fa-instagram"></i> erwin__shbg
+        </a>
+
+        <a href="https://t.me/Winz_ofcial" target="_blank" class="btn-link tg">
+            <i class="fab fa-telegram-plane"></i> CHANNEL TELEGRAM
+        </a>
+
+        <div style="margin-top: 25px; font-size: 10px; opacity: 0.3; font-family: var(--font-mono); letter-spacing: 1px;">
+            WINZ PROJECT // INFRASTRUCTURE ACCESS
+        </div>
     </div>
-    <h1>Create Account</h1>
-    <p>Sign up to Winz Cloud Infrastructure</p>
-
-    <form id="regForm">
-        <div class="form-group">
-            <label>Username</label>
-            <div class="input-wrapper">
-                <i class="fas fa-at"></i>
-                <input type="text" id="username" class="form-control" placeholder="New username" required autocomplete="off">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>Access Password</label>
-            <div class="input-wrapper">
-                <i class="fas fa-key"></i>
-                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
-            </div>
-        </div>
-
-        <button type="submit" id="btnSubmit" class="btn-reg">
-            <span>Register Account</span>
-            <i class="fas fa-arrow-right"></i>
-        </button>
-
-        <a href="index.html" class="back-link">Already have an account? <b>Log In</b></a>
-    </form>
-</div>
-
-<script>
-    const toast = document.getElementById('toast');
-    const regForm = document.getElementById('regForm');
-    const btnSubmit = document.getElementById('btnSubmit');
-
-    function showToast(msg, type = 'success') {
-        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-triangle-exclamation'}"></i> ${msg}`;
-        toast.style.background = type === 'success' ? 'rgba(16, 185, 129, 0.9)' : 'rgba(239, 68, 68, 0.9)';
-        toast.classList.add('visible');
-        setTimeout(() => toast.classList.remove('visible'), 3000);
-    }
-
-    regForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const userVal = document.getElementById('username').value.trim();
-        const passVal = document.getElementById('password').value.trim();
-
-        // 1. Ambil Database Terkini
-        let userDB = JSON.parse(localStorage.getItem('UserDB')) || [];
-
-        // 2. PROTEKSI DUPLIKAT (Case Insensitive)
-        const isDuplicate = userDB.some(u => u.username.toLowerCase() === userVal.toLowerCase());
-
-        if (isDuplicate) {
-            showToast("Username '" + userVal + "' sudah ada!", "error");
-            document.getElementById('username').focus();
-            return;
-        }
-
-        // 3. Loading State
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Processing...`;
-
-        // 4. Proses Simpan
-        const newUser = {
-            id: "WNZ-" + Date.now(),
-            username: userVal,
-            password: passVal,
-            role: "USER",
-            saldo: 0,
-            createdAt: new Date().toLocaleDateString('id-ID')
-        };
-
-        userDB.push(newUser);
-        localStorage.setItem('UserDB', JSON.stringify(userDB));
-
-        // 5. Sukses
-        setTimeout(() => {
-            showToast("Registrasi Berhasil!");
-            setTimeout(() => {
-                window.location.href = "index.html";
-            }, 1200);
-        }, 800);
-    });
-</script>
 
 </body>
 </html>
