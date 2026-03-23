@@ -2,246 +2,253 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Winz // ADMIN XTR MESSENGER PRO</title>
+    <title>Winz // XTR COMMAND CENTER</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0e1621; --sidebar: #17212b; --hover: #202b36; --active: #2b5278; --text: #ffffff; --primary: #38bdf8; --accent: #22c55e; --danger: #ef4444; }
+        :root { --bg: #0b1118; --sidebar: #151d27; --hover: #1c2733; --active: #2b5278; --text: #ffffff; --primary: #38bdf8; --accent: #22c55e; --danger: #ef4444; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sidebar */
-        .sidebar { width: 350px; background: var(--sidebar); border-right: 1px solid #000; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 15px; border-bottom: 1px solid #0e1621; }
-        .search-container { background: #242f3d; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; }
-        .search-container input { background: transparent; border: none; color: white; margin-left: 10px; outline: none; width: 100%; font-size: 14px; }
-        .chat-list { flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #242f3d transparent; }
+        /* Sidebar Structure */
+        .sidebar { width: 350px; background: var(--sidebar); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; height: 100vh; }
+        .section-label { padding: 12px 15px; background: rgba(56, 189, 248, 0.1); color: var(--primary); font-family: 'Rajdhani'; font-weight: bold; font-size: 13px; letter-spacing: 1px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); display: flex; justify-content: space-between; align-items: center; }
+
+        /* List Container */
+        .list-container { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .list-container::-webkit-scrollbar { width: 3px; }
+        .list-container::-webkit-scrollbar-thumb { background: var(--primary); }
+
+        /* Card Design */
+        .item-card { 
+            background: #1e293b; border-left: 4px solid #475569; padding: 12px; border-radius: 6px; 
+            cursor: pointer; transition: 0.3s; position: relative;
+        }
+        .item-card:hover { background: var(--hover); transform: translateX(5px); }
+        .item-card.active { background: var(--active); border-left-color: var(--primary); }
+        .item-card.order-active { border-left-color: var(--accent); }
         
-        .chat-item { padding: 12px 15px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; border-bottom: 1px solid #0e1621; position: relative; }
-        .chat-item:hover { background: var(--hover); }
-        .chat-item.active { background: var(--active); }
-        .avatar { width: 45px; height: 45px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; color: #000; margin-right: 15px; position: relative; }
-        
-        /* Badge Pending */
-        .pending-dot { position: absolute; right: -2px; bottom: -2px; width: 14px; height: 14px; background: var(--accent); border: 2px solid var(--sidebar); border-radius: 50%; }
+        .item-card h5 { font-size: 13px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .item-card p { font-size: 11px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* Main Chat Area */
-        .main-chat { flex: 1; display: flex; flex-direction: column; background: #0e1621; position: relative; }
-        .chat-header { padding: 10px 20px; background: var(--sidebar); display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; }
-        .message-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
-        
-        /* Bubbles */
-        .msg { max-width: 80%; padding: 12px; border-radius: 12px; font-size: 14px; position: relative; line-height: 1.4; animation: slideUp 0.2s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .msg.user { align-self: flex-start; background: var(--sidebar); border-bottom-left-radius: 2px; }
-        .msg.admin { align-self: flex-end; background: var(--active); border-bottom-right-radius: 2px; }
-        
-        .order-box { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px; margin-top: 8px; border: 1px solid rgba(56, 189, 248, 0.2); }
-        .order-img { width: 100%; border-radius: 6px; margin-bottom: 8px; cursor: pointer; border: 1px solid #333; transition: 0.3s; }
-        .order-img:hover { filter: brightness(1.2); }
-        
-        .order-actions { display: flex; gap: 8px; margin-top: 10px; }
-        .btn-acc { background: var(--accent); color: black; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-rej { background: var(--danger); color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-acc:hover { background: #1eb050; transform: scale(1.02); }
-        .btn-rej:hover { background: #d63d3d; transform: scale(1.02); }
+        .main { flex: 1; display: flex; flex-direction: column; background: #0b1118; border-left: 1px solid rgba(255,255,255,0.05); }
+        .chat-header { padding: 15px 20px; background: var(--sidebar); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .avatar { width: 38px; height: 38px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
 
-        .input-area { padding: 15px; background: var(--sidebar); display: flex; gap: 10px; align-items: center; border-top: 1px solid #000; }
-        .input-area textarea { flex: 1; background: #242f3d; border: none; border-radius: 12px; color: white; padding: 12px; outline: none; resize: none; height: 45px; font-family: inherit; }
-        .btn-send { background: var(--primary); color: #000; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 20px; transition: 0.3s; }
-        .btn-send:hover { transform: rotate(-15deg) scale(1.1); }
+        #msgArea { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; background: radial-gradient(circle at top right, #1e293b33, transparent); }
+        .msg { max-width: 75%; padding: 10px 14px; border-radius: 12px; font-size: 13px; position: relative; line-height: 1.5; }
+        .msg.user { align-self: flex-start; background: #1e293b; color: #f8fafc; border-bottom-left-radius: 2px; }
+        .msg.admin { align-self: flex-end; background: #0284c7; color: #fff; border-bottom-right-radius: 2px; }
 
-        .msg-time { font-size: 10px; color: #7f91a4; margin-top: 5px; display: block; text-align: right; }
+        /* Tools */
+        .msg-tools { position: absolute; top: -20px; right: 0; display: none; gap: 8px; background: #0f172a; padding: 4px 8px; border-radius: 5px; border: 1px solid var(--primary); }
+        .msg:hover .msg-tools { display: flex; }
+        .tool-btn { cursor: pointer; font-size: 10px; color: var(--primary); }
+
+        /* Controls */
+        .admin-controls { padding: 12px; background: #0f172a; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; }
+        .btn-action { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 11px; font-family: 'Rajdhani'; transition: 0.3s; }
+        .btn-acc { background: var(--accent); color: #052e16; }
+        .btn-rej { background: var(--danger); color: #fff; }
+
+        .input-bar { padding: 15px; background: var(--sidebar); display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+        textarea { flex: 1; background: #0b1118; border: 1px solid #2d3748; border-radius: 10px; color: white; padding: 12px; height: 45px; resize: none; outline: none; }
+        .btn-send { background: var(--primary); border: none; width: 45px; border-radius: 10px; cursor: pointer; color: #000; }
+
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
-
     <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchUser" placeholder="Search ID Target..." onkeyup="renderUserList()">
-            </div>
+        <div class="section-label">
+            <span><i class="fas fa-comments"></i> CHAT USERS</span>
         </div>
-        <div class="chat-list" id="userList"></div>
+        <div class="list-container" id="chatUsersList"></div>
+
+        <div class="section-label">
+            <span><i class="fas fa-shopping-cart"></i> ORDER QUEUE</span>
+            <span id="orderCount" style="background:var(--danger); font-size:9px; padding:2px 6px; border-radius:10px;">0</span>
+        </div>
+        <div class="list-container" id="orderQueueList"></div>
+
+        <div class="admin-controls">
+            <button class="btn-action btn-acc" onclick="processOrder('ACC')"><i class="fas fa-check"></i> ACC</button>
+            <button class="btn-action btn-rej" onclick="processOrder('REJ')"><i class="fas fa-times"></i> REJECT</button>
+        </div>
     </div>
 
-    <div class="main-chat">
-        <div id="noChat" style="flex:1; display:flex; align-items:center; justify-content:center; color:#7f91a4; flex-direction: column;">
-            <i class="fas fa-comments-alt fa-3x" style="margin-bottom: 15px; opacity: 0.5;"></i>
-            <h3>Select chat to start process</h3>
+    <div class="main">
+        <div id="noSelect" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0.3;">
+            <i class="fas fa-terminal fa-3x"></i>
+            <h4 style="margin-top:10px; font-family:'Rajdhani'">XTR ADMIN TERMINAL</h4>
         </div>
 
         <div id="chatContent" class="hidden" style="height:100%; display:flex; flex-direction:column;">
             <div class="chat-header">
-                <div class="avatar" id="currentAvatar">W</div>
-                <div style="flex: 1;">
-                    <h4 id="currentUserName">User</h4>
-                    <span style="font-size:11px; color:var(--primary);"><i class="fas fa-shield-check"></i> XTR Verified Admin</span>
+                <div class="avatar" id="headAva">W</div>
+                <div style="flex:1">
+                    <h4 id="headName" style="font-size:14px; font-family:'Rajdhani';">USER ID</h4>
+                    <small id="statusLabel" style="font-size:10px; color:var(--accent);">Active Session</small>
                 </div>
+                <i class="fas fa-trash-alt" onclick="clearChat()" style="cursor:pointer; color:var(--danger); opacity:0.6;"></i>
             </div>
-
-            <div class="message-area" id="msgArea"></div>
-
-            <div class="input-area">
-                <textarea id="replyText" placeholder="Write a reply or notes..."></textarea>
-                <button class="btn-send" onclick="sendReply()"><i class="fas fa-paper-plane"></i></button>
+            <div id="msgArea"></div>
+            <div class="input-bar">
+                <textarea id="replyMsg" placeholder="Type message..."></textarea>
+                <button class="btn-send" onclick="sendAdminMsg()"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
 
 <script>
-    let activeUser = null;
-    let lastOrderCount = (JSON.parse(localStorage.getItem("vpsOrders")) || []).length;
+    let activeUser = "";
 
-    function renderUserList() {
-        const list = document.getElementById('userList');
-        const searchTerm = document.getElementById('searchUser').value.toLowerCase();
-        const allOrders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
-        const allLogs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
+    function renderLists() {
+        const chatList = document.getElementById('chatUsersList');
+        const orderList = document.getElementById('orderQueueList');
         
-        // Gabungkan list user dari antrian dan riwayat
-        const users = [...new Set([...allOrders.map(o => o.nomor), ...allLogs.map(l => l.owner)])];
-        const filtered = users.filter(u => u.toLowerCase().includes(searchTerm));
+        const contacts = JSON.parse(localStorage.getItem("xtr_contacts")) || [];
+        const orders = JSON.parse(localStorage.getItem("xtr_orders")) || [];
 
-        list.innerHTML = filtered.map(u => {
-            const hasPending = allOrders.some(o => o.nomor === u);
+        document.getElementById('orderCount').innerText = orders.length;
+
+        chatList.innerHTML = contacts.map(id => {
+            const logs = JSON.parse(localStorage.getItem(`chat_with_${id}`)) || [];
+            const last = logs.length > 0 ? logs[logs.length-1].content : "No messages";
             return `
-            <div class="chat-item ${activeUser === u ? 'active' : ''}" onclick="selectUser('${u}')">
-                <div class="avatar">
-                    ${u.charAt(0).toUpperCase()}
-                    ${hasPending ? '<div class="pending-dot"></div>' : ''}
-                </div>
-                <div class="chat-info">
-                    <h4>${u}</h4>
-                    <p style="color:${hasPending ? 'var(--primary)' : '#7f91a4'}">${hasPending ? 'Pending Order' : 'History Cleared'}</p>
-                </div>
-            </div>`;
+                <div class="item-card ${activeUser === id ? 'active' : ''}" onclick="selectUser('${id}', 'chat')">
+                    <h5>${id}</h5>
+                    <p>${last}</p>
+                </div>`;
         }).join("");
+
+        orderList.innerHTML = orders.map(id => `
+            <div class="item-card order-active ${activeUser === id ? 'active' : ''}" onclick="selectUser('${id}', 'order')">
+                <h5 style="color:var(--accent)">${id} <i class="fas fa-clock"></i></h5>
+                <p>Waiting for approval...</p>
+            </div>`).join("");
     }
 
-    function selectUser(user) {
-        activeUser = user;
-        document.getElementById('noChat').classList.add('hidden');
+    function selectUser(id, type) {
+        activeUser = id;
+        document.getElementById('noSelect').classList.add('hidden');
         document.getElementById('chatContent').classList.remove('hidden');
-        document.getElementById('currentUserName').innerText = user;
-        document.getElementById('currentAvatar').innerText = user.charAt(0).toUpperCase();
-        renderMessages();
-        renderUserList();
+        document.getElementById('headName').innerText = id;
+        document.getElementById('headAva').innerText = id[0].toUpperCase();
+        document.getElementById('statusLabel').innerText = (type === 'order') ? 'Awaiting Approval' : 'Active Chat';
+        renderChat();
+        renderLists();
     }
 
-    function renderMessages() {
-        if (!activeUser) return;
-        const msgArea = document.getElementById('msgArea');
-        const allOrders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
-        const allLogs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
+    function renderChat() {
+        if(!activeUser) return;
+        const area = document.getElementById('msgArea');
+        const logs = JSON.parse(localStorage.getItem(`chat_with_${activeUser}`)) || [];
+        area.innerHTML = logs.map((m, i) => `
+            <div class="msg ${m.sender === 'ADMIN_WINZ' ? 'admin' : 'user'}">
+                <div class="msg-tools">
+                    <i class="fas fa-pen tool-btn" onclick="editChat(${i})"></i>
+                    <i class="fas fa-trash tool-btn" onclick="deleteChat(${i})"></i>
+                </div>
+                ${m.content}
+                <div style="font-size:8px; opacity:0.4; margin-top:5px; text-align:right;">${m.time}</div>
+            </div>`).join("");
+        area.scrollTop = area.scrollHeight;
+    }
 
-        let history = [];
+    // LOGIKA PROSES ORDER (Sinkron ke aktivitas.html)
+    function processOrder(type) {
+        if(!activeUser) return alert("Pilih user dulu Winz!");
         
-        // Filter Order User
-        allOrders.filter(o => o.nomor === activeUser).forEach((o, i) => {
-            history.push({ 
-                type: 'user', 
-                text: o.isiPesan || `Order Produk: ${o.paket}`, 
-                bukti: o.bukti,
-                orderID: o.orderID || 'XTR-AUTO',
-                time: o.waktu, 
-                id: i, 
-                isOrder: !o.paket.includes("💬")
-            });
+        let input = (type === 'ACC') ? prompt("Detail Login (VPS/User/Pass):") : prompt("Alasan Penolakan:");
+        if(input === null) return;
+
+        let resMsg = (type === 'ACC') ? `✅ ORDER APPROVED!\nInfo: ${input}` : `❌ ORDER REJECTED!\nAlasan: ${input}`;
+        
+        // 1. Kirim pesan ke chat history
+        pushMsg(resMsg);
+
+        // 2. Simpan ke database aktivitas (xtr_aktivitas)
+        let aktivitas = JSON.parse(localStorage.getItem("xtr_aktivitas")) || [];
+        aktivitas.unshift({
+            waktu: new Date().toLocaleString('id-ID'),
+            user: activeUser,
+            tipe: type,
+            detail: input,
+            status: type === 'ACC' ? 'Selesai' : 'Dibatalkan'
         });
+        localStorage.setItem("xtr_aktivitas", JSON.stringify(aktivitas));
 
-        // Filter Balasan Admin
-        allLogs.filter(l => l.owner === activeUser).forEach((l, i) => {
-            history.push({ type: 'admin', text: l.teks, time: l.waktu, id: i });
+        // 3. Hapus dari Order Queue biar gak double
+        let orders = JSON.parse(localStorage.getItem("xtr_orders")) || [];
+        const orderIdx = orders.indexOf(activeUser);
+        if (orderIdx > -1) {
+            orders.splice(orderIdx, 1);
+            localStorage.setItem("xtr_orders", JSON.stringify(orders));
+        }
+
+        // 4. Pastikan masuk ke Chat Users list
+        let contacts = JSON.parse(localStorage.getItem("xtr_contacts")) || [];
+        if (!contacts.includes(activeUser)) {
+            contacts.push(activeUser);
+            localStorage.setItem("xtr_contacts", JSON.stringify(contacts));
+        }
+
+        alert(`User ${activeUser} berhasil di-${type}! Log masuk ke aktivitas.`);
+        renderLists();
+    }
+
+    function sendAdminMsg() {
+        const txt = document.getElementById('replyMsg').value.trim();
+        if(!txt || !activeUser) return;
+        pushMsg(txt);
+        document.getElementById('replyMsg').value = "";
+    }
+
+    function pushMsg(txt) {
+        const key = `chat_with_${activeUser}`;
+        let logs = JSON.parse(localStorage.getItem(key)) || [];
+        logs.push({ 
+            sender: "ADMIN_WINZ", 
+            content: txt, 
+            time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) 
         });
+        localStorage.setItem(key, JSON.stringify(logs));
+        renderChat();
+    }
 
-        history.sort((a, b) => new Date(a.time) - new Date(b.time));
+    function deleteChat(index) {
+        let logs = JSON.parse(localStorage.getItem(`chat_with_${activeUser}`));
+        logs.splice(index, 1);
+        localStorage.setItem(`chat_with_${activeUser}`, JSON.stringify(logs));
+        renderChat();
+    }
 
-        const newContent = history.map((m) => `
-            <div class="msg ${m.type}">
-                ${m.text}
-                ${m.isOrder ? `
-                    <div class="order-box">
-                        <img src="${m.bukti}" class="order-img" title="Klik Lihat Bukti" onclick="window.open(this.src)">
-                        <div class="order-actions">
-                            <button class="btn-acc" onclick="processHybrid(${m.id}, 'ACC', '${m.orderID}')">SETUJUI</button>
-                            <button class="btn-rej" onclick="processHybrid(${m.id}, 'REJECT', '${m.orderID}')">TOLAK</button>
-                        </div>
-                    </div>
-                ` : ''}
-                <span class="msg-time">${m.time}</span>
-            </div>
-        `).join("");
-
-        // Cek jika ada pesan baru sebelum scroll
-        if (msgArea.innerHTML !== newContent) {
-            msgArea.innerHTML = newContent;
-            msgArea.scrollTop = msgArea.scrollHeight;
+    function editChat(index) {
+        let logs = JSON.parse(localStorage.getItem(`chat_with_${activeUser}`));
+        let up = prompt("Edit Pesan:", logs[index].content);
+        if(up) {
+            logs[index].content = up;
+            localStorage.setItem(`chat_with_${activeUser}`, JSON.stringify(logs));
+            renderChat();
         }
     }
 
-    function processHybrid(index, tipe, orderID) {
-        let orders = JSON.parse(localStorage.getItem("vpsOrders"));
-        let item = orders[index];
-        let note = prompt(`Konfirmasi ${tipe}: Masukkan IP/Username atau Alasan:`, tipe === 'ACC' ? "Aktif (XTR-V1)" : "Data Tidak Valid");
-        
-        if (note === null) return; 
-
-        let logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
-        logs.push({
-            owner: item.nomor,
-            orderID: orderID,
-            teks: tipe === 'ACC' ? `✅ DISETUJUI: ${item.paket} | Login Info: ${note}` : `❌ DITOLAK: ${item.paket} | Alasan: ${note}`,
-            waktu: new Date().toLocaleString('id-ID'),
-            status: tipe === 'ACC' ? 'sukses' : 'gagal'
-        });
-
-        localStorage.setItem("aktivitasLogs", JSON.stringify(logs));
-        orders.splice(index, 1);
-        localStorage.setItem("vpsOrders", JSON.stringify(orders));
-        
-        renderMessages();
-        renderUserList();
-    }
-
-    function sendReply() {
-        const textInput = document.getElementById('replyText');
-        const text = textInput.value.trim();
-        if (!text || !activeUser) return;
-
-        let logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
-        logs.push({
-            owner: activeUser,
-            teks: text,
-            waktu: new Date().toLocaleString('id-ID'),
-            status: 'sukses'
-        });
-
-        localStorage.setItem("aktivitasLogs", JSON.stringify(logs));
-        textInput.value = "";
-        renderMessages();
-    }
-
-    // Auto Refresh & Notifikasi
-    setInterval(() => {
-        const currentOrders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
-        if (currentOrders.length > lastOrderCount) {
-            document.getElementById('notifSound').play();
-            lastOrderCount = currentOrders.length;
+    function clearChat() {
+        if(confirm("Hapus history user ini?")) {
+            localStorage.removeItem(`chat_with_${activeUser}`);
+            renderChat();
         }
-        renderUserList();
-        renderMessages();
-    }, 4000);
+    }
 
-    renderUserList();
+    setInterval(() => { renderLists(); if(activeUser) renderChat(); }, 3000);
+    window.onload = renderLists;
 </script>
 </body>
 </html>
+
 
 
 
