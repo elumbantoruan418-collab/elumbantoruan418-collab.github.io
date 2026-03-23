@@ -38,34 +38,40 @@
 
     <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" id="adminSearch" class="search-input" placeholder="Cari ID, Target, atau Produk..." onkeyup="loadOrders()">
+        <input type="text" id="adminSearch" class="search-input" placeholder="Cari ID asli atau Target..." onkeyup="loadOrders()">
     </div>
 
     <div id="orderList"></div>
 </div>
 
 <script>
-    // Fungsi Generate ID Unik (Bisa dipakai di sini atau pas user checkout)
+    // Pastikan ID unik tetap konsisten untuk pencarian admin
     function getOrderID(order) {
-        if (order.orderID) return order.orderID; // Pakai ID lama kalau sudah ada
-        const randomID = Math.floor(1000 + Math.random() * 9000); // 4 digit random
-        return `WNZ-${randomID}XTR`;
+        if (order.orderID) return order.orderID;
+        // Jika belum ada ID, buat baru dan simpan ke objek aslinya
+        const randomID = Math.floor(1000 + Math.random() * 9000);
+        order.orderID = `WNZ-${randomID}XTR`;
+        return order.orderID;
     }
 
     function loadOrders() {
         const container = document.getElementById("orderList");
-        const searchTerm = document.getElementById("adminSearch").value.toLowerCase();
+        const searchTerm = document.getElementById("adminSearch").value.toLowerCase().trim();
         const allOrders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
         
+        // Perbaikan Filter: Memastikan admin bisa mencari data TANPA SENSOR
         const filteredOrders = allOrders.filter(o => {
-            const tempID = getOrderID(o).toLowerCase();
-            return o.nomor.toLowerCase().includes(searchTerm) || 
-                   o.paket.toLowerCase().includes(searchTerm) ||
-                   tempID.includes(searchTerm);
+            const currentID = getOrderID(o).toLowerCase();
+            const currentNomor = o.nomor.toLowerCase();
+            const currentPaket = o.paket.toLowerCase();
+            
+            return currentID.includes(searchTerm) || 
+                   currentNomor.includes(searchTerm) ||
+                   currentPaket.includes(searchTerm);
         });
 
         if (filteredOrders.length === 0) { 
-            container.innerHTML = "<center style='opacity:0.5; margin-top:50px;'>TIDAK ADA PESANAN</center>"; 
+            container.innerHTML = "<center style='opacity:0.5; margin-top:50px;'>TIDAK ADA ANTRIAN PESANAN</center>"; 
             return; 
         }
 
@@ -100,10 +106,10 @@
         let note = document.getElementById(`note-${index}`).value || (tipe === 'ACC' ? "Proses Selesai" : "Data Tidak Valid");
         let logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
         
-        // Simpan Log Aktivitas dengan ID yang sama
+        // Admin menyimpan data ASLI ke Log, biar aktivitas.html yang bertugas menyensor tampilan
         logs.unshift({
             owner: item.nomor, 
-            orderID: orderID, // ID PESANAN MASUK KE LOG
+            orderID: orderID,
             teks: tipe === 'ACC' ? `🚀 AKTIF: ${item.paket} | Note: ${note}` : `❌ DITOLAK: ${item.paket} | Alasan: ${note}`,
             waktu: new Date().toLocaleString('id-ID'),
             status: tipe === 'ACC' ? 'sukses' : 'gagal'
@@ -113,15 +119,16 @@
         orders.splice(index, 1);
         localStorage.setItem("vpsOrders", JSON.stringify(orders));
 
-        alert(`ID ${orderID} Berhasil diproses!`);
+        alert(`ID ${orderID} Telah Di-${tipe}!`);
         loadOrders();
     }
 
     loadOrders();
-    setInterval(loadOrders, 15000);
+    setInterval(loadOrders, 10000); // Sinkronisasi tiap 10 detik
 </script>
 </body>
 </html>
+
 
 
 
