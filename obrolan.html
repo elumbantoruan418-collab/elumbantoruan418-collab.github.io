@@ -3,196 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winz // PRIVATE TERMINAL</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <title>Winz // XTR CHAT CLIENT</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #030305;
-            --card: #0d0d1a;
-            --primary: #38bdf8;
-            --font-display: 'Rajdhani', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
+        :root { --bg: #0e1621; --card: #17212b; --primary: #38bdf8; --text: #ffffff; --admin-msg: #2b5278; --user-msg: #182533; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: var(--bg); color: white; 
-            font-family: var(--font-display); 
-            display: flex; align-items: center; justify-content: center; 
-            min-height: 100vh; padding: 20px;
-            background-image: radial-gradient(circle at 50% 50%, #111122 0%, #030305 100%);
-        }
+        /* Login Screen */
+        #loginScreen { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 1px solid #242f3d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .login-box h2 { font-family: 'Rajdhani'; font-size: 28px; margin-bottom: 10px; color: var(--primary); }
+        .login-box input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #2b3949; background: #0e1621; color: white; margin-bottom: 15px; outline: none; text-align: center; font-size: 16px; transition: 0.3s; }
+        .login-box input:focus { border-color: var(--primary); }
+        .btn-login { background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-login:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4); }
 
-        .container {
-            background: var(--card); width: 100%; max-width: 400px;
-            padding: 35px; border-radius: 24px; border: 1px solid rgba(56, 189, 248, 0.15);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            text-align: center;
-        }
-
-        .header i { font-size: 35px; color: var(--primary); margin-bottom: 10px; }
-        h2 { letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
-
-        .input-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; font-size: 11px; color: var(--primary); font-family: var(--font-mono); margin-bottom: 5px; text-transform: uppercase; }
+        /* Chat Screen */
+        #chatScreen { flex: 1; display: none; flex-direction: column; height: 100vh; }
+        .chat-header { background: var(--card); padding: 12px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #000; z-index: 10; }
+        .avatar { width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; font-size: 18px; }
         
-        input, textarea {
-            width: 100%; background: #000; border: 1px solid #1e293b;
-            padding: 14px; border-radius: 12px; color: white;
-            font-family: var(--font-mono); font-size: 14px; outline: none; transition: 0.3s;
-        }
-        input:focus, textarea:focus { border-color: var(--primary); }
-        textarea { height: 150px; resize: none; }
+        .message-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; background-color: #0e1117; scroll-behavior: smooth; }
+        
+        /* Message Bubbles */
+        .msg { max-width: 80%; padding: 10px 14px; border-radius: 15px; font-size: 14px; line-height: 1.5; position: relative; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .btn-main {
-            width: 100%; background: var(--primary); color: black;
-            border: none; padding: 16px; border-radius: 12px;
-            font-weight: 800; font-family: var(--font-display);
-            font-size: 16px; cursor: pointer; transition: 0.3s;
-            text-transform: uppercase; margin-top: 10px;
-        }
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
+        .msg.admin { align-self: flex-start; background: var(--admin-msg); border-bottom-left-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+        .msg.user { align-self: flex-end; background: var(--user-msg); border-bottom-right-radius: 2px; border: 1px solid rgba(255,255,255,0.05); }
+        
+        /* Status Info untuk User (Hanya Teks) */
+        .status-badge { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 4px; margin-bottom: 6px; display: inline-block; letter-spacing: 0.5px; }
+        .status-sukses { background: #22c55e; color: #000; }
+        .status-gagal { background: #ef4444; color: #fff; }
 
-        .switch-mode { margin-top: 20px; font-size: 12px; color: #64748b; font-family: var(--font-mono); }
-        .switch-mode span { color: var(--primary); cursor: pointer; text-decoration: underline; }
+        .msg-time { font-size: 10px; color: #7f91a4; margin-top: 5px; display: block; text-align: right; opacity: 0.7; }
 
-        .hidden { display: none !important; }
-        .status-tag { background: rgba(56, 189, 248, 0.1); padding: 5px 12px; border-radius: 20px; font-size: 11px; color: var(--primary); margin-bottom: 20px; display: inline-block; }
+        .input-area { padding: 15px; background: var(--card); display: flex; gap: 10px; border-top: 1px solid #000; }
+        .input-area input { flex: 1; background: #242f3d; border: none; border-radius: 25px; color: white; padding: 0 20px; outline: none; height: 45px; }
+        .btn-send { background: var(--primary); color: #000; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
+        .btn-send:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div id="authSection">
-            <div class="header">
-                <i class="fas fa-user-lock"></i>
-                <h2 id="authTitle">XTR LOGIN</h2>
-            </div>
-            
-            <div class="input-group">
-                <label>Username</label>
-                <input type="text" id="userIn" placeholder="Enter ID..." autocomplete="off">
-            </div>
-            <div class="input-group">
-                <label>Security Key</label>
-                <input type="password" id="passIn" placeholder="••••••••">
-            </div>
-
-            <button class="btn-main" onclick="handleAuth()" id="btnAuth">EXECUTE LOGIN</button>
-            
-            <div class="switch-mode" id="modeSwitcher">
-                New identity? <span onclick="toggleMode()">Create Account</span>
-            </div>
-        </div>
-
-        <div id="chatSection" class="hidden">
-            <div class="header">
-                <i class="fas fa-comments"></i>
-                <h2>PRIVATE MESSAGE</h2>
-                <div class="status-tag" id="activeTag">OPERATOR: ---</div>
-            </div>
-
-            <div class="input-group">
-                <label>Message Content</label>
-                <textarea id="msgContent" placeholder="Describe your issue..."></textarea>
-            </div>
-
-            <button class="btn-main" onclick="sendMsg()">SEND TO ADMIN</button>
-            
-            <div class="switch-mode">
-                <span onclick="logout()">Terminate Session</span>
-            </div>
+    <div id="loginScreen">
+        <div class="login-box">
+            <i class="fas fa-user-shield fa-3x" style="color: var(--primary); margin-bottom: 15px;"></i>
+            <h2>XTR ACCESS</h2>
+            <p style="font-size: 13px; color: #7f91a4; margin-bottom: 25px;">Masukkan ID untuk melihat status order & chat</p>
+            <input type="text" id="userIdInput" placeholder="User ID / No. WhatsApp">
+            <button class="btn-login" onclick="startChat()">Buka Obrolan</button>
         </div>
     </div>
 
-    <script>
-        let isLogin = true;
+    <div id="chatScreen">
+        <div class="chat-header">
+            <div class="avatar" id="headerAvatar">U</div>
+            <div style="flex: 1;">
+                <h4 id="displayUserId" style="font-size: 15px;">User</h4>
+                <span style="font-size: 11px; color: var(--primary); font-weight: 600;">Winz Project Support</span>
+            </div>
+            <button onclick="location.reload()" style="background:none; border:none; color:#7f91a4; cursor:pointer; font-size: 18px;"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
 
-        // Inisialisasi Database User agar tidak "Invalid" di awal
-        if (!localStorage.getItem("UserDB")) {
-            localStorage.setItem("UserDB", JSON.stringify([]));
-        }
+        <div class="message-area" id="msgArea"></div>
 
-        window.onload = function() {
-            const session = localStorage.getItem("currentUser");
-            if (session) {
-                showChat(session);
-            }
-        };
+        <div class="input-area">
+            <input type="text" id="userMsgInput" placeholder="Tulis pesan anda..." onkeypress="if(event.key==='Enter') sendToAdmin()">
+            <button class="btn-send" onclick="sendToAdmin()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
 
-        function toggleMode() {
-            isLogin = !isLogin;
-            document.getElementById('authTitle').innerText = isLogin ? "XTR LOGIN" : "XTR REGISTER";
-            document.getElementById('btnAuth').innerText = isLogin ? "EXECUTE LOGIN" : "CREATE ACCOUNT";
-            document.getElementById('modeSwitcher').innerHTML = isLogin ? 
-                'New identity? <span onclick="toggleMode()">Create Account</span>' : 
-                'Have account? <span onclick="toggleMode()">Login Access</span>';
-        }
+<script>
+    let myID = "";
 
-        function handleAuth() {
-            const u = document.getElementById('userIn').value.trim();
-            const p = document.getElementById('passIn').value.trim();
-            
-            if(!u || !p) return alert("Fill all fields!");
+    function startChat() {
+        const input = document.getElementById('userIdInput').value.trim();
+        if (!input) return alert("Wajib isi User ID!");
+        
+        myID = input;
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('chatScreen').style.display = 'flex';
+        document.getElementById('displayUserId').innerText = myID;
+        document.getElementById('headerAvatar').innerText = myID.charAt(0).toUpperCase();
+        
+        renderMessages();
+        setInterval(renderMessages, 4000); 
+    }
 
-            let users = JSON.parse(localStorage.getItem("UserDB")) || [];
+    function renderMessages() {
+        if (!myID) return;
+        const msgArea = document.getElementById('msgArea');
+        const allOrders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+        const allLogs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
 
-            if(isLogin) {
-                // SINKRONISASI LOGIN: Cek keberadaan user
-                const user = users.find(x => x.username.toLowerCase() === u.toLowerCase() && x.password === p);
-                if(user) {
-                    localStorage.setItem("currentUser", u);
-                    showChat(u);
-                } else {
-                    alert("ACCESS DENIED: Invalid Credentials!");
-                }
-            } else {
-                // SINKRONISASI REGISTER: Proteksi duplikat
-                if(users.some(x => x.username.toLowerCase() === u.toLowerCase())) {
-                    return alert("IDENTITY TAKEN: Choose another ID!");
-                }
-                
-                users.push({username: u, password: p});
-                localStorage.setItem("UserDB", JSON.stringify(users));
-                
-                // AUTO LOGIN SETELAH REGISTER
-                localStorage.setItem("currentUser", u);
-                alert("IDENTITY CREATED: Access Granted!");
-                showChat(u);
-            }
-        }
+        let history = [];
 
-        function showChat(user) {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('chatSection').classList.remove('hidden');
-            document.getElementById('activeTag').innerText = "OPERATOR: " + user.toUpperCase();
-        }
-
-        function sendMsg() {
-            const msg = document.getElementById('msgContent').value.trim();
-            const user = localStorage.getItem("currentUser");
-            if(!msg) return alert("Message empty!");
-
-            let db = JSON.parse(localStorage.getItem("vpsOrders")) || [];
-            db.unshift({
-                nomor: user, // Menandai pesan per akun
-                paket: "💬 MESSAGE: " + msg.substring(0, 15) + "...",
-                waktu: new Date().toLocaleString('id-ID'),
-                isiPesan: msg,
-                orderID: "MSG-" + Math.floor(Math.random() * 9000) + "XTR"
+        // Ambil Data Order (Pending)
+        allOrders.filter(o => o.nomor === myID).forEach(o => {
+            history.push({ 
+                type: 'user', 
+                text: o.isiPesan || `📦 Memesan: ${o.paket}`, 
+                time: o.waktu || 'Proses...'
             });
-            
-            localStorage.setItem("vpsOrders", JSON.stringify(db));
-            alert("Sent to Terminal Admin!");
-            document.getElementById('msgContent').value = "";
-        }
+        });
 
-        function logout() {
-            localStorage.removeItem("currentUser");
-            location.reload();
+        // Ambil Balasan Admin (Sukses/Gagal)
+        allLogs.filter(l => l.owner === myID).forEach(l => {
+            history.push({ 
+                type: 'admin', 
+                text: l.teks, 
+                time: l.waktu,
+                status: l.status 
+            });
+        });
+
+        history.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+        const htmlContent = history.map(m => `
+            <div class="msg ${m.type}">
+                ${m.status ? `<span class="status-badge status-${m.status}">${m.status.toUpperCase()}</span><br>` : ''}
+                ${m.text}
+                <span class="msg-time">${m.time}</span>
+            </div>
+        `).join("");
+
+        if (msgArea.innerHTML !== htmlContent) {
+            msgArea.innerHTML = htmlContent;
+            msgArea.scrollTop = msgArea.scrollHeight;
         }
-    </script>
+    }
+
+    function sendToAdmin() {
+        const input = document.getElementById('userMsgInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        let orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+        
+        orders.push({
+            nomor: myID,
+            paket: "💬 CHAT",
+            isiPesan: text,
+            waktu: new Date().toLocaleString('id-ID'),
+            bukti: "https://cdn-icons-png.flaticon.com/512/219/219983.png" // Icon Default
+        });
+
+        localStorage.setItem("vpsOrders", JSON.stringify(orders));
+        input.value = "";
+        renderMessages();
+    }
+</script>
 </body>
-  </html>
-  
+</html>
+
