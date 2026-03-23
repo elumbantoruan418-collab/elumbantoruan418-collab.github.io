@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winz // PRIVATE TERMINAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030305;
+            --card: #0d0d1a;
+            --primary: #38bdf8;
+            --font-display: 'Rajdhani', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: var(--bg); color: white; 
+            font-family: var(--font-display); 
+            display: flex; align-items: center; justify-content: center; 
+            min-height: 100vh; padding: 20px;
+            background-image: radial-gradient(circle at 50% 50%, #111122 0%, #030305 100%);
+        }
+
+        .container {
+            background: var(--card); width: 100%; max-width: 400px;
+            padding: 35px; border-radius: 24px; border: 1px solid rgba(56, 189, 248, 0.15);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+
+        .header i { font-size: 35px; color: var(--primary); margin-bottom: 10px; }
+        h2 { letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+
+        .input-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; font-size: 11px; color: var(--primary); font-family: var(--font-mono); margin-bottom: 5px; text-transform: uppercase; }
+        
+        input, textarea {
+            width: 100%; background: #000; border: 1px solid #1e293b;
+            padding: 14px; border-radius: 12px; color: white;
+            font-family: var(--font-mono); font-size: 14px; outline: none; transition: 0.3s;
+        }
+        input:focus, textarea:focus { border-color: var(--primary); }
+        textarea { height: 150px; resize: none; }
+
+        .btn-main {
+            width: 100%; background: var(--primary); color: black;
+            border: none; padding: 16px; border-radius: 12px;
+            font-weight: 800; font-family: var(--font-display);
+            font-size: 16px; cursor: pointer; transition: 0.3s;
+            text-transform: uppercase; margin-top: 10px;
+        }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
+
+        .switch-mode { margin-top: 20px; font-size: 12px; color: #64748b; font-family: var(--font-mono); }
+        .switch-mode span { color: var(--primary); cursor: pointer; text-decoration: underline; }
+
+        .hidden { display: none !important; }
+        .status-tag { background: rgba(56, 189, 248, 0.1); padding: 5px 12px; border-radius: 20px; font-size: 11px; color: var(--primary); margin-bottom: 20px; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="authSection">
+            <div class="header">
+                <i class="fas fa-user-lock"></i>
+                <h2 id="authTitle">XTR LOGIN</h2>
+            </div>
+            
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="userIn" placeholder="Enter ID..." autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>Security Key</label>
+                <input type="password" id="passIn" placeholder="••••••••">
+            </div>
+
+            <button class="btn-main" onclick="handleAuth()" id="btnAuth">EXECUTE LOGIN</button>
+            
+            <div class="switch-mode" id="modeSwitcher">
+                New identity? <span onclick="toggleMode()">Create Account</span>
+            </div>
+        </div>
+
+        <div id="chatSection" class="hidden">
+            <div class="header">
+                <i class="fas fa-comments"></i>
+                <h2>PRIVATE MESSAGE</h2>
+                <div class="status-tag" id="activeTag">OPERATOR: ---</div>
+            </div>
+
+            <div class="input-group">
+                <label>Message Content</label>
+                <textarea id="msgContent" placeholder="Describe your issue..."></textarea>
+            </div>
+
+            <button class="btn-main" onclick="sendMsg()">SEND TO ADMIN</button>
+            
+            <div class="switch-mode">
+                <span onclick="logout()">Terminate Session</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isLogin = true;
+
+        // Inisialisasi Database User agar tidak "Invalid" di awal
+        if (!localStorage.getItem("UserDB")) {
+            localStorage.setItem("UserDB", JSON.stringify([]));
+        }
+
+        window.onload = function() {
+            const session = localStorage.getItem("currentUser");
+            if (session) {
+                showChat(session);
+            }
+        };
+
+        function toggleMode() {
+            isLogin = !isLogin;
+            document.getElementById('authTitle').innerText = isLogin ? "XTR LOGIN" : "XTR REGISTER";
+            document.getElementById('btnAuth').innerText = isLogin ? "EXECUTE LOGIN" : "CREATE ACCOUNT";
+            document.getElementById('modeSwitcher').innerHTML = isLogin ? 
+                'New identity? <span onclick="toggleMode()">Create Account</span>' : 
+                'Have account? <span onclick="toggleMode()">Login Access</span>';
+        }
+
+        function handleAuth() {
+            const u = document.getElementById('userIn').value.trim();
+            const p = document.getElementById('passIn').value.trim();
+            
+            if(!u || !p) return alert("Fill all fields!");
+
+            let users = JSON.parse(localStorage.getItem("UserDB")) || [];
+
+            if(isLogin) {
+                // SINKRONISASI LOGIN: Cek keberadaan user
+                const user = users.find(x => x.username.toLowerCase() === u.toLowerCase() && x.password === p);
+                if(user) {
+                    localStorage.setItem("currentUser", u);
+                    showChat(u);
+                } else {
+                    alert("ACCESS DENIED: Invalid Credentials!");
+                }
+            } else {
+                // SINKRONISASI REGISTER: Proteksi duplikat
+                if(users.some(x => x.username.toLowerCase() === u.toLowerCase())) {
+                    return alert("IDENTITY TAKEN: Choose another ID!");
+                }
+                
+                users.push({username: u, password: p});
+                localStorage.setItem("UserDB", JSON.stringify(users));
+                
+                // AUTO LOGIN SETELAH REGISTER
+                localStorage.setItem("currentUser", u);
+                alert("IDENTITY CREATED: Access Granted!");
+                showChat(u);
+            }
+        }
+
+        function showChat(user) {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('chatSection').classList.remove('hidden');
+            document.getElementById('activeTag').innerText = "OPERATOR: " + user.toUpperCase();
+        }
+
+        function sendMsg() {
+            const msg = document.getElementById('msgContent').value.trim();
+            const user = localStorage.getItem("currentUser");
+            if(!msg) return alert("Message empty!");
+
+            let db = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+            db.unshift({
+                nomor: user, // Menandai pesan per akun
+                paket: "💬 MESSAGE: " + msg.substring(0, 15) + "...",
+                waktu: new Date().toLocaleString('id-ID'),
+                isiPesan: msg,
+                orderID: "MSG-" + Math.floor(Math.random() * 9000) + "XTR"
+            });
+            
+            localStorage.setItem("vpsOrders", JSON.stringify(db));
+            alert("Sent to Terminal Admin!");
+            document.getElementById('msgContent').value = "";
+        }
+
+        function logout() {
+            localStorage.removeItem("currentUser");
+            location.reload();
+        }
+    </script>
+</body>
+  </html>
+  
