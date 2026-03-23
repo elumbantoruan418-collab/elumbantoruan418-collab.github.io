@@ -7,61 +7,124 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0b1118; --sidebar: #151d27; --hover: #1c2733; --active: #2b5278; --text: #ffffff; --primary: #38bdf8; --accent: #22c55e; --danger: #ef4444; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Biar gak bisa digeser/select teks sembarangan */
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-drag: none; }
+        
+        /* Area input tetap bisa ngetik */
+        textarea, input { user-select: text !important; }
 
-        /* Sidebar Structure */
-        .sidebar { width: 350px; background: var(--sidebar); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; height: 100vh; }
-        .section-label { padding: 12px 15px; background: rgba(56, 189, 248, 0.1); color: var(--primary); font-family: 'Rajdhani'; font-weight: bold; font-size: 13px; letter-spacing: 1px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); display: flex; justify-content: space-between; align-items: center; }
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
+            display: flex; 
+            height: 100vh; 
+            width: 100vw;
+            overflow: hidden; /* Lock screen */
+            position: fixed;
+        }
 
-        /* List Container */
+        /* Sidebar Tetap di Kiri */
+        .sidebar { 
+            width: 350px; 
+            min-width: 350px;
+            background: var(--sidebar); 
+            border-right: 1px solid rgba(255,255,255,0.05); 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+        }
+
+        .section-label { 
+            padding: 15px; 
+            background: rgba(56, 189, 248, 0.05); 
+            color: var(--primary); 
+            font-family: 'Rajdhani'; 
+            font-weight: bold; 
+            font-size: 13px; 
+            letter-spacing: 1px; 
+            border-bottom: 1px solid rgba(56, 189, 248, 0.1); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
         .list-container { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
         .list-container::-webkit-scrollbar { width: 3px; }
         .list-container::-webkit-scrollbar-thumb { background: var(--primary); }
 
-        /* Card Design */
+        /* Card Style */
         .item-card { 
-            background: #1e293b; border-left: 4px solid #475569; padding: 12px; border-radius: 6px; 
-            cursor: pointer; transition: 0.3s; position: relative;
+            background: #1e293b; 
+            border-left: 4px solid #475569; 
+            padding: 12px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: 0.2s; 
         }
-        .item-card:hover { background: var(--hover); transform: translateX(5px); }
+        .item-card:hover { background: var(--hover); }
         .item-card.active { background: var(--active); border-left-color: var(--primary); }
         .item-card.order-active { border-left-color: var(--accent); }
         
-        .item-card h5 { font-size: 13px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .item-card h5 { font-size: 13px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; font-family: 'Rajdhani'; }
         .item-card p { font-size: 11px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Main Chat Area */
-        .main { flex: 1; display: flex; flex-direction: column; background: #0b1118; border-left: 1px solid rgba(255,255,255,0.05); }
-        .chat-header { padding: 15px 20px; background: var(--sidebar); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .avatar { width: 38px; height: 38px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+        /* Main Chat Area Tetap di Kanan */
+        .main { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            background: var(--bg); 
+            height: 100vh;
+            position: relative;
+        }
 
-        #msgArea { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; background: radial-gradient(circle at top right, #1e293b33, transparent); }
-        .msg { max-width: 75%; padding: 10px 14px; border-radius: 12px; font-size: 13px; position: relative; line-height: 1.5; }
-        .msg.user { align-self: flex-start; background: #1e293b; color: #f8fafc; border-bottom-left-radius: 2px; }
-        .msg.admin { align-self: flex-end; background: #0284c7; color: #fff; border-bottom-right-radius: 2px; }
+        .chat-header { 
+            height: 70px;
+            padding: 0 20px; 
+            background: var(--sidebar); 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+        }
 
-        /* Tools */
+        .avatar { width: 40px; height: 40px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; font-family: 'Rajdhani'; }
+
+        #msgArea { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            background-image: radial-gradient(circle at center, #1e293b22 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Bubble Chat */
+        .msg { max-width: 70%; padding: 10px 15px; border-radius: 15px; font-size: 13px; position: relative; line-height: 1.5; user-select: text; }
+        .msg.user { align-self: flex-start; background: #1e293b; border-bottom-left-radius: 2px; }
+        .msg.admin { align-self: flex-end; background: #0284c7; border-bottom-right-radius: 2px; }
+
         .msg-tools { position: absolute; top: -20px; right: 0; display: none; gap: 8px; background: #0f172a; padding: 4px 8px; border-radius: 5px; border: 1px solid var(--primary); }
         .msg:hover .msg-tools { display: flex; }
-        .tool-btn { cursor: pointer; font-size: 10px; color: var(--primary); }
 
-        /* Controls */
-        .admin-controls { padding: 12px; background: #0f172a; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; }
-        .btn-action { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 11px; font-family: 'Rajdhani'; transition: 0.3s; }
+        /* Controls Bottom */
+        .admin-controls { padding: 15px; background: #0f172a; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; }
+        .btn-action { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 12px; font-family: 'Rajdhani'; letter-spacing: 1px; }
         .btn-acc { background: var(--accent); color: #052e16; }
         .btn-rej { background: var(--danger); color: #fff; }
 
-        .input-bar { padding: 15px; background: var(--sidebar); display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
-        textarea { flex: 1; background: #0b1118; border: 1px solid #2d3748; border-radius: 10px; color: white; padding: 12px; height: 45px; resize: none; outline: none; }
-        .btn-send { background: var(--primary); border: none; width: 45px; border-radius: 10px; cursor: pointer; color: #000; }
+        .input-bar { padding: 20px; background: var(--sidebar); display: flex; gap: 12px; align-items: center; }
+        textarea { flex: 1; background: #0b1118; border: 1px solid #2d3748; border-radius: 10px; color: white; padding: 12px; height: 45px; resize: none; outline: none; font-family: 'Inter'; }
+        .btn-send { background: var(--primary); border: none; width: 50px; height: 45px; border-radius: 10px; cursor: pointer; color: #000; font-size: 18px; }
 
         .hidden { display: none !important; }
     </style>
 </head>
-<body>
-
-    <div class="sidebar">
+<body oncontextmenu="return false"> <div class="sidebar">
         <div class="section-label">
             <span><i class="fas fa-comments"></i> CHAT USERS</span>
         </div>
@@ -69,34 +132,36 @@
 
         <div class="section-label">
             <span><i class="fas fa-shopping-cart"></i> ORDER QUEUE</span>
-            <span id="orderCount" style="background:var(--danger); font-size:9px; padding:2px 6px; border-radius:10px;">0</span>
+            <span id="orderCount" style="background:var(--danger); font-size:10px; padding:2px 7px; border-radius:10px; color: white;">0</span>
         </div>
         <div class="list-container" id="orderQueueList"></div>
 
         <div class="admin-controls">
-            <button class="btn-action btn-acc" onclick="processOrder('ACC')"><i class="fas fa-check"></i> ACC</button>
-            <button class="btn-action btn-rej" onclick="processOrder('REJ')"><i class="fas fa-times"></i> REJECT</button>
+            <button class="btn-action btn-acc" onclick="processOrder('ACC')">APPROVE</button>
+            <button class="btn-action btn-rej" onclick="processOrder('REJ')">REJECT</button>
         </div>
     </div>
 
     <div class="main">
-        <div id="noSelect" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0.3;">
-            <i class="fas fa-terminal fa-3x"></i>
-            <h4 style="margin-top:10px; font-family:'Rajdhani'">XTR ADMIN TERMINAL</h4>
+        <div id="noSelect" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0.2;">
+            <i class="fas fa-terminal fa-4x"></i>
+            <h2 style="margin-top:15px; font-family:'Rajdhani'">WINZ XTR SYSTEM</h2>
         </div>
 
         <div id="chatContent" class="hidden" style="height:100%; display:flex; flex-direction:column;">
             <div class="chat-header">
                 <div class="avatar" id="headAva">W</div>
                 <div style="flex:1">
-                    <h4 id="headName" style="font-size:14px; font-family:'Rajdhani';">USER ID</h4>
-                    <small id="statusLabel" style="font-size:10px; color:var(--accent);">Active Session</small>
+                    <h4 id="headName" style="font-size:15px; font-family:'Rajdhani'; letter-spacing:1px;">USER ID</h4>
+                    <small style="color:var(--accent); font-size:10px;"><i class="fas fa-circle" style="font-size:7px;"></i> Online</small>
                 </div>
-                <i class="fas fa-trash-alt" onclick="clearChat()" style="cursor:pointer; color:var(--danger); opacity:0.6;"></i>
+                <i class="fas fa-trash-alt" onclick="clearChat()" style="cursor:pointer; color:var(--danger); opacity:0.5;"></i>
             </div>
+            
             <div id="msgArea"></div>
+            
             <div class="input-bar">
-                <textarea id="replyMsg" placeholder="Type message..."></textarea>
+                <textarea id="replyMsg" placeholder="Ketik pesan balasan..."></textarea>
                 <button class="btn-send" onclick="sendAdminMsg()"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
@@ -116,7 +181,7 @@
 
         chatList.innerHTML = contacts.map(id => {
             const logs = JSON.parse(localStorage.getItem(`chat_with_${id}`)) || [];
-            const last = logs.length > 0 ? logs[logs.length-1].content : "No messages";
+            const last = logs.length > 0 ? logs[logs.length-1].content : "Tidak ada pesan";
             return `
                 <div class="item-card ${activeUser === id ? 'active' : ''}" onclick="selectUser('${id}', 'chat')">
                     <h5>${id}</h5>
@@ -126,8 +191,8 @@
 
         orderList.innerHTML = orders.map(id => `
             <div class="item-card order-active ${activeUser === id ? 'active' : ''}" onclick="selectUser('${id}', 'order')">
-                <h5 style="color:var(--accent)">${id} <i class="fas fa-clock"></i></h5>
-                <p>Waiting for approval...</p>
+                <h5 style="color:var(--accent)">${id} <i class="fas fa-bolt"></i></h5>
+                <p>Menunggu konfirmasi admin...</p>
             </div>`).join("");
     }
 
@@ -137,7 +202,6 @@
         document.getElementById('chatContent').classList.remove('hidden');
         document.getElementById('headName').innerText = id;
         document.getElementById('headAva').innerText = id[0].toUpperCase();
-        document.getElementById('statusLabel').innerText = (type === 'order') ? 'Awaiting Approval' : 'Active Chat';
         renderChat();
         renderLists();
     }
@@ -149,8 +213,8 @@
         area.innerHTML = logs.map((m, i) => `
             <div class="msg ${m.sender === 'ADMIN_WINZ' ? 'admin' : 'user'}">
                 <div class="msg-tools">
-                    <i class="fas fa-pen tool-btn" onclick="editChat(${i})"></i>
-                    <i class="fas fa-trash tool-btn" onclick="deleteChat(${i})"></i>
+                    <i class="fas fa-edit" style="cursor:pointer; color:var(--primary)" onclick="editChat(${i})"></i>
+                    <i class="fas fa-trash" style="cursor:pointer; color:var(--danger)" onclick="deleteChat(${i})"></i>
                 </div>
                 ${m.content}
                 <div style="font-size:8px; opacity:0.4; margin-top:5px; text-align:right;">${m.time}</div>
@@ -158,19 +222,17 @@
         area.scrollTop = area.scrollHeight;
     }
 
-    // LOGIKA PROSES ORDER (Sinkron ke aktivitas.html)
     function processOrder(type) {
-        if(!activeUser) return alert("Pilih user dulu Winz!");
+        if(!activeUser) return alert("Pilih user dulu!");
         
-        let input = (type === 'ACC') ? prompt("Detail Login (VPS/User/Pass):") : prompt("Alasan Penolakan:");
+        let input = (type === 'ACC') ? prompt("Detail Akun (User/Pass/IP):") : prompt("Alasan Reject:");
         if(input === null) return;
 
-        let resMsg = (type === 'ACC') ? `✅ ORDER APPROVED!\nInfo: ${input}` : `❌ ORDER REJECTED!\nAlasan: ${input}`;
+        let resMsg = (type === 'ACC') ? `✅ ORDER BERHASIL!\n\n${input}\n\nTerima kasih sudah order.` : `❌ ORDER DITOLAK!\n\nAlasan: ${input}`;
         
-        // 1. Kirim pesan ke chat history
         pushMsg(resMsg);
 
-        // 2. Simpan ke database aktivitas (xtr_aktivitas)
+        // Catat ke Aktivitas
         let aktivitas = JSON.parse(localStorage.getItem("xtr_aktivitas")) || [];
         aktivitas.unshift({
             waktu: new Date().toLocaleString('id-ID'),
@@ -181,7 +243,7 @@
         });
         localStorage.setItem("xtr_aktivitas", JSON.stringify(aktivitas));
 
-        // 3. Hapus dari Order Queue biar gak double
+        // Hapus dari antrian
         let orders = JSON.parse(localStorage.getItem("xtr_orders")) || [];
         const orderIdx = orders.indexOf(activeUser);
         if (orderIdx > -1) {
@@ -189,14 +251,14 @@
             localStorage.setItem("xtr_orders", JSON.stringify(orders));
         }
 
-        // 4. Pastikan masuk ke Chat Users list
+        // Masuk ke daftar kontak
         let contacts = JSON.parse(localStorage.getItem("xtr_contacts")) || [];
         if (!contacts.includes(activeUser)) {
             contacts.push(activeUser);
             localStorage.setItem("xtr_contacts", JSON.stringify(contacts));
         }
 
-        alert(`User ${activeUser} berhasil di-${type}! Log masuk ke aktivitas.`);
+        alert(`User ${activeUser} Berhasil di-${type}!`);
         renderLists();
     }
 
@@ -237,7 +299,7 @@
     }
 
     function clearChat() {
-        if(confirm("Hapus history user ini?")) {
+        if(confirm("Hapus semua history user ini?")) {
             localStorage.removeItem(`chat_with_${activeUser}`);
             renderChat();
         }
@@ -248,11 +310,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
