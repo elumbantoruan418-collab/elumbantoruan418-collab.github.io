@@ -47,19 +47,17 @@
             text-shadow: 0 0 10px var(--blue-glow); 
         }
 
-        /* Log Card */
         .log-card { 
             background: var(--card-bg); 
             padding: 16px; 
             margin-bottom: 12px; 
             border-radius: 12px;
             position: relative;
-            border-left: 4px solid var(--blue-glow);
-            cursor: pointer;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: slideUp 0.4s ease-out;
             border: 1px solid rgba(56, 189, 248, 0.05);
             border-left: 4px solid var(--blue-glow);
+            cursor: pointer;
+            transition: 0.3s;
+            animation: slideUp 0.4s ease-out;
         }
 
         .log-card:hover { 
@@ -71,60 +69,30 @@
 
         .log-card.gagal { border-left-color: var(--red-glow); }
 
-        /* ID Tag */
         .order-id-tag { 
-            position: absolute; 
-            right: 15px; 
-            top: 15px; 
-            font-family: var(--font-mono); 
-            font-size: 10px; 
-            color: var(--blue-glow); 
-            opacity: 0.7;
-            background: rgba(56, 189, 248, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
+            position: absolute; right: 15px; top: 15px; 
+            font-family: var(--font-mono); font-size: 10px; 
+            color: var(--blue-glow); opacity: 0.7;
+            background: rgba(56, 189, 248, 0.1); padding: 2px 6px; border-radius: 4px;
         }
 
-        .time { 
-            color: #64748b; 
-            font-family: var(--font-mono); 
-            font-size: 10px; 
-            display: block; 
-            margin-bottom: 8px; 
-        }
+        .time { color: #64748b; font-family: var(--font-mono); font-size: 10px; display: block; margin-bottom: 8px; }
 
         .user-owner {
-            font-size: 11px;
-            color: #facc15;
-            font-family: var(--font-mono);
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            font-size: 11px; color: #facc15; font-family: var(--font-mono);
+            margin-bottom: 5px; display: flex; align-items: center; gap: 5px;
         }
 
-        .content { 
-            font-size: 14px; 
-            line-height: 1.4; 
-            color: #cbd5e1;
-            white-space: pre-wrap;
-        }
+        .content { font-size: 14px; line-height: 1.4; color: #cbd5e1; white-space: pre-wrap; }
 
-        /* Status Badge */
         .status-badge { 
-            font-size: 9px; 
-            padding: 2px 7px; 
-            border-radius: 4px; 
-            text-transform: uppercase; 
-            font-weight: bold; 
-            margin-bottom: 8px; 
-            display: inline-block; 
-            font-family: var(--font-mono);
+            font-size: 9px; padding: 2px 7px; border-radius: 4px; 
+            text-transform: uppercase; font-weight: bold; margin-bottom: 8px; 
+            display: inline-block; font-family: var(--font-mono); 
         }
         .badge-sukses { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
         .badge-gagal { background: rgba(239, 68, 68, 0.2); color: var(--red-glow); }
 
-        /* MODAL */
         .modal { 
             display: none; position: fixed; z-index: 999; 
             left: 0; top: 0; width: 100%; height: 100%; 
@@ -133,10 +101,8 @@
         }
 
         .modal-content { 
-            background: var(--card-bg); 
-            border: 1px solid var(--blue-glow); 
-            border-radius: 15px; 
-            width: 100%; max-width: 380px; 
+            background: var(--card-bg); border: 1px solid var(--blue-glow); 
+            border-radius: 15px; width: 100%; max-width: 380px; 
             padding: 25px; position: relative; 
             box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
         }
@@ -154,7 +120,6 @@
         <h2><i class="fas fa-microchip"></i> XTR LOGS</h2>
         <div style="font-size: 10px; opacity: 0.5;">LIVE MONITORING</div>
     </div>
-
     <div id="logList"></div>
 </div>
 
@@ -167,6 +132,15 @@
 </div>
 
 <script>
+    // FUNGSI SENSOR NOMOR (Contoh: 085******890)
+    function maskNumber(text) {
+        if (!text) return "UNKNOWN";
+        // Mencari pola angka minimal 10 digit (Nomor HP)
+        return text.replace(/(\d{3})(\d+)(\d{3})/g, (match, p1, p2, p3) => {
+            return p1 + "*".repeat(6) + p3;
+        });
+    }
+
     function loadLogs() {
         const container = document.getElementById("logList");
         const logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
@@ -182,17 +156,19 @@
             const badgeClass = isGagal ? 'badge-gagal' : 'badge-sukses';
             const badgeText = isGagal ? 'Rejected' : 'Success';
             
-            // Ambil ID pesanan kalau ada, kalau nggak pakai default
             const displayID = l.orderID || 'WNZ-SYS';
-            const owner = l.owner || 'UNKNOWN';
+            // Sensor Nama Owner/Nomor HP
+            const maskedOwner = maskNumber(l.owner);
+            // Sensor Nomor HP jika ada di dalam deskripsi teks
+            const maskedTeks = maskNumber(l.teks);
 
             return `
-                <div class="${cardClass}" onclick='showDetail(${JSON.stringify(l).replace(/'/g, "&apos;")})'>
+                <div class="${cardClass}" onclick='showDetail(${JSON.stringify({ ...l, owner: maskedOwner, teks: maskedTeks }).replace(/'/g, "&apos;")})'>
                     <span class="order-id-tag">#${displayID}</span>
-                    <div class="user-owner"><i class="fas fa-user-circle"></i> ${owner.toUpperCase()}</div>
+                    <div class="user-owner"><i class="fas fa-user-circle"></i> ${maskedOwner.toUpperCase()}</div>
                     <span class="status-badge ${badgeClass}">${badgeText}</span>
                     <span class="time"><i class="far fa-clock"></i> ${l.waktu}</span>
-                    <div class="content">${l.teks}</div>
+                    <div class="content">${maskedTeks}</div>
                 </div>
             `;
         }).join("");
@@ -214,7 +190,7 @@
             </div>
             <div style="margin-bottom:12px;">
                 <b style="color:#fff">USER:</b><br>
-                <span>${(data.owner || 'System').toUpperCase()}</span>
+                <span>${data.owner.toUpperCase()}</span>
             </div>
             <div style="padding:12px; background:rgba(0,0,0,0.5); border-radius:8px; border:1px solid #333;">
                 <b style="color:var(--blue-glow)">KETERANGAN:</b><br>
@@ -229,11 +205,11 @@
     }
 
     loadLogs();
-    // Auto refresh tiap 10 detik biar sinkron sama Admin Panel
     setInterval(loadLogs, 10000);
 </script>
 </body>
 </html>
+
 
 
 
