@@ -14,131 +14,103 @@
             --msg-others-bg: #061a14; --msg-others-text: #34d399;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; width: 100%; overflow: hidden; position: fixed; }
         
-        /* FIX: Body jangan pakai fixed biar scroll internal lancar */
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; width: 100%; overflow: hidden; }
+        .screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .box { background: var(--card); padding: 30px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; border: 1px solid rgba(56, 189, 248, 0.1); }
         
-        input { user-select: text !important; outline: none; }
+        input[type="text"] { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #2d3748; background: #0b0f19; color: white; margin-bottom: 15px; outline: none; }
+        .btn { background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer; font-family: 'Rajdhani'; letter-spacing: 1px; }
 
-        .screen { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .box { background: var(--card); padding: 30px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; border: 1px solid rgba(56, 189, 248, 0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
-        
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #2d3748; background: #0b0f19; color: white; margin-bottom: 15px; }
-        .btn { background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 10px; font-family: 'Rajdhani'; letter-spacing: 1px; }
-
-        /* FIX: Layout App Utama */
         #app { display: none; flex-direction: column; height: 100vh; width: 100%; position: relative; }
         
-        .header-ui { padding: 15px; background: var(--card); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .search-box { display: flex; background: #0b0f19; border-radius: 12px; border: 1px solid #2d3748; align-items: center; padding: 0 10px; }
-        .search-box input { border: none; margin-bottom: 0; padding: 12px; flex: 1; background: transparent; }
-
-        #listView { flex: 1; overflow-y: auto; padding-bottom: 80px; } /* Kasih space buat nav */
-        
-        .user-list-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; }
-        .user-avatar { width: 45px; height: 45px; background: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; font-size: 18px; }
-
-        /* FIX: Chat View Overlay */
-        #chatView { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; }
-        .chat-header { background: var(--card); padding: 15px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        
-        #msgArea { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        
-        .msg { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
-        .msg.me { align-self: flex-end; background: var(--msg-me-bg); color: var(--msg-me-text); border-bottom-right-radius: 2px; }
-        .msg.others { align-self: flex-start; background: var(--msg-others-bg); color: var(--msg-others-text); border: 1px solid #065f46; border-bottom-left-radius: 2px; }
-
-        .input-bar { padding: 15px; background: var(--card); display: flex; gap: 12px; align-items: center; padding-bottom: calc(15px + env(safe-area-inset-bottom)); }
-        
-        /* FIX: Navigation Bottom murni di bawah */
+        /* Navigasi Bawah Fix */
         .nav-bottom { 
             position: absolute; bottom: 0; left: 0; right: 0;
-            background: var(--card); display: flex; 
-            border-top: 1px solid rgba(255,255,255,0.05); 
-            padding: 10px 0; 
-            padding-bottom: calc(10px + env(safe-area-inset-bottom));
-            z-index: 100;
+            height: 70px; background: var(--card); display: flex; 
+            border-top: 1px solid rgba(255,255,255,0.05); z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-item { flex: 1; text-align: center; color: var(--dim); font-size: 11px; cursor: pointer; transition: 0.3s; }
-        .nav-item i { font-size: 18px; margin-bottom: 4px; }
-        .nav-item.active { color: var(--primary); }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--dim); font-size: 11px; cursor: pointer; }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
 
+        #listView { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+        .header-ui { padding: 15px; background: var(--card); }
+        
+        .user-list-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .user-avatar { width: 45px; height: 45px; background: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; }
+
+        /* Chat Window */
+        #chatView { position: fixed; inset: 0; background: var(--bg); z-index: 500; display: none; flex-direction: column; }
+        #msgArea { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 100px; }
+        
+        .msg { max-width: 80%; padding: 10px 14px; border-radius: 15px; font-size: 14px; position: relative; word-wrap: break-word; }
+        .msg img { max-width: 100%; border-radius: 10px; margin-top: 5px; display: block; }
+        .msg.me { align-self: flex-end; background: var(--msg-me-bg); color: var(--msg-me-text); }
+        .msg.others { align-self: flex-start; background: var(--msg-others-bg); color: var(--msg-others-text); }
+
+        .input-bar { position: absolute; bottom: 0; width: 100%; padding: 10px; background: var(--card); display: flex; gap: 10px; align-items: center; }
+        .file-label { color: var(--primary); font-size: 24px; cursor: pointer; }
+        
         .hidden { display: none !important; }
-        .badge { font-size: 9px; background: var(--accent); color: #000; padding: 2px 6px; border-radius: 4px; margin-left: 8px; font-weight: bold; }
+        .badge { font-size: 9px; background: var(--accent); color: #000; padding: 2px 5px; border-radius: 4px; margin-left: 5px; }
     </style>
 </head>
 <body>
 
     <div id="loginScreen" class="screen">
         <div class="box">
-            <i class="fas fa-terminal" style="font-size: 40px; color: var(--primary); margin-bottom: 15px;"></i>
-            <h2 style="font-family:'Rajdhani';">WINZ XTR GATE</h2>
-            <input type="text" id="idIn" placeholder="Enter Unique ID...">
-            <button class="btn" onclick="register()">INITIALIZE ACCESS</button>
+            <h2 style="font-family:'Rajdhani'; margin-bottom:20px;">WINZ XTR GATE</h2>
+            <input type="text" id="idIn" placeholder="Enter Your ID...">
+            <button class="btn" onclick="register()">LOGIN TERMINAL</button>
         </div>
     </div>
 
     <div id="app">
         <div id="searchView" class="header-ui hidden">
-            <div class="search-box">
-                <input type="text" id="searchIn" placeholder="ID Teman...">
-                <button onclick="findUser()" style="background:none; border:none; color:var(--primary); padding:10px;"><i class="fas fa-user-plus"></i></button>
-            </div>
+            <input type="text" id="searchIn" placeholder="Tambah ID Teman..." style="margin-bottom:0; padding:10px;">
+            <button class="btn" onclick="findUser()" style="margin-top:10px; padding:10px;">TAMBAH</button>
         </div>
 
         <div id="listView"></div>
 
         <div class="nav-bottom">
-            <div id="nav-chats" class="nav-item active" onclick="showSection('chats')">
-                <i class="fas fa-comment-alt"></i><br>Chats
-            </div>
-            <div id="nav-contacts" class="nav-item" onclick="showSection('contacts')">
-                <i class="fas fa-address-book"></i><br>Kontak
-            </div>
-            <div id="nav-logout" class="nav-item" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i><br>Logout
-            </div>
+            <div id="nav-chats" class="nav-item active" onclick="showSection('chats')"><i class="fas fa-comment"></i>Chats</div>
+            <div id="nav-contacts" class="nav-item" onclick="showSection('contacts')"><i class="fas fa-user-friends"></i>Kontak</div>
+            <div id="nav-logout" class="nav-item" onclick="logout()"><i class="fas fa-power-off"></i>Logout</div>
         </div>
     </div>
 
     <div id="chatView">
-        <div class="chat-header">
-            <i class="fas fa-chevron-left" onclick="closeChat()" style="padding:10px; font-size: 20px;"></i>
-            <div id="chatTargetName" style="flex:1; font-family:'Rajdhani'; font-size:18px;">Target</div>
+        <div class="header-ui" style="display:flex; align-items:center; gap:15px;">
+            <i class="fas fa-arrow-left" onclick="closeChat()"></i>
+            <div id="chatTargetName" style="font-family:'Rajdhani'; flex:1;">User</div>
             <div id="targetBadge"></div>
         </div>
         <div id="msgArea"></div>
         <div class="input-bar">
-            <input type="text" id="msgIn" placeholder="Type message...">
-            <button onclick="sendText()" style="background:none; border:none; color:var(--primary); font-size:20px;">
-                <i class="fas fa-paper-plane"></i>
-            </button>
+            <label class="file-label"><i class="fas fa-plus-circle"></i><input type="file" id="fileIn" class="hidden" onchange="sendFile()"></label>
+            <input type="text" id="msgIn" placeholder="Pesan..." style="margin-bottom:0;">
+            <i class="fas fa-paper-plane" onclick="sendText()" style="color:var(--primary); font-size:24px;"></i>
         </div>
     </div>
 
 <script>
-    const ADMIN_ID = "Winz_Dev"; 
-    let myID = localStorage.getItem("xtr_session_id") || "";
+    const ADMIN_ID = "Winz_Dev";
+    let myID = localStorage.getItem("xtr_session") || "";
     let activeChat = "";
 
-    // Auto-login logic
-    if(myID) {
-        window.addEventListener('DOMContentLoaded', () => {
-            openApp();
-        });
-    }
+    window.onload = () => { if(myID) openApp(); };
 
     function register() {
-        const val = document.getElementById('idIn').value.trim().toLowerCase();
-        if(!val) return alert("ID Kosong!");
+        let val = document.getElementById('idIn').value.trim().toLowerCase();
+        if(!val) return;
         myID = val;
-        localStorage.setItem("xtr_session_id", myID);
-        
+        localStorage.setItem("xtr_session", myID);
         let contacts = JSON.parse(localStorage.getItem(`contacts_${myID}`)) || [];
-        if(!contacts.includes(ADMIN_ID) && myID !== ADMIN_ID.toLowerCase()) {
-            contacts.unshift(ADMIN_ID);
-            localStorage.setItem(`contacts_${myID}`, JSON.stringify(contacts));
-        }
+        if(!contacts.includes(ADMIN_ID)) contacts.unshift(ADMIN_ID);
+        localStorage.setItem(`contacts_${myID}`, JSON.stringify(contacts));
         openApp();
     }
 
@@ -150,107 +122,88 @@
 
     function showSection(sec) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('nav-'+sec).classList.add('active');
-        
-        const sView = document.getElementById('searchView');
-        if(sec === 'contacts') sView.classList.remove('hidden');
-        else sView.classList.add('hidden');
-        
+        if(sec !== 'logout') document.getElementById('nav-'+sec).classList.add('active');
+        document.getElementById('searchView').classList.toggle('hidden', sec !== 'contacts');
         renderList(sec);
     }
 
     function findUser() {
-        const target = document.getElementById('searchIn').value.trim().toLowerCase();
-        if(!target || target === myID) return alert("ID Tidak Valid!");
-
-        let myContacts = JSON.parse(localStorage.getItem(`contacts_${myID}`)) || [];
-        if(!myContacts.includes(target)) {
-            myContacts.push(target);
-            localStorage.setItem(`contacts_${myID}`, JSON.stringify(myContacts));
-            alert("Kontak ditambahkan!");
+        let target = document.getElementById('searchIn').value.trim().toLowerCase();
+        let contacts = JSON.parse(localStorage.getItem(`contacts_${myID}`)) || [];
+        if(target && !contacts.includes(target)) {
+            contacts.push(target);
+            localStorage.setItem(`contacts_${myID}`, JSON.stringify(contacts));
+            renderList('contacts');
         }
         document.getElementById('searchIn').value = "";
-        renderList('contacts');
     }
 
     function renderList(type) {
-        const listArea = document.getElementById('listView');
-        const myContacts = JSON.parse(localStorage.getItem(`contacts_${myID}`)) || [];
-        
+        const area = document.getElementById('listView');
+        const contacts = JSON.parse(localStorage.getItem(`contacts_${myID}`)) || [];
         let html = "";
-        myContacts.forEach(id => {
-            const chatKey = `chat_${myID}_with_${id}`;
-            const logs = JSON.parse(localStorage.getItem(chatKey)) || [];
-            
+        contacts.forEach(id => {
+            const logs = JSON.parse(localStorage.getItem(`chat_${myID}_${id}`)) || [];
             if(type === 'chats' && logs.length === 0 && id !== ADMIN_ID) return;
-
-            const lastMsg = logs.length > 0 ? logs[logs.length-1].content : "No messages yet";
-            const isOwner = id.toLowerCase() === ADMIN_ID.toLowerCase();
-
-            html += `
-                <div class="user-list-item" onclick="startChat('${id}')">
-                    <div class="user-avatar" style="${isOwner ? 'background:var(--accent)' : ''}">${id[0].toUpperCase()}</div>
-                    <div style="flex:1">
-                        <strong>${id} ${isOwner ? '<span class="badge">OWNER</span>' : ''}</strong>
-                        <p style="font-size:11px; color:var(--dim);">${lastMsg}</p>
-                    </div>
-                </div>`;
+            const last = logs.length ? (logs[logs.length-1].type === 'file' ? '📁 File/Gambar' : logs[logs.length-1].content) : "No message";
+            html += `<div class="user-list-item" onclick="startChat('${id}')">
+                <div class="user-avatar">${id[0].toUpperCase()}</div>
+                <div style="flex:1"><strong>${id} ${id === ADMIN_ID.toLowerCase() ? '<span class="badge">OWNER</span>' : ''}</strong><p style="font-size:11px;color:var(--dim);">${last}</p></div>
+            </div>`;
         });
-        
-        listArea.innerHTML = html || `<p style="text-align:center; padding:50px; opacity:0.3;">Belum ada data.</p>`;
+        area.innerHTML = html || '<p style="text-align:center;padding:20px;opacity:0.5;">Kosong</p>';
     }
 
     function startChat(id) {
         activeChat = id;
         document.getElementById('chatView').style.display = 'flex';
         document.getElementById('chatTargetName').innerText = id;
-        document.getElementById('targetBadge').innerHTML = (id.toLowerCase() === ADMIN_ID.toLowerCase()) ? '<span class="badge">OWNER</span>' : '';
         loadMessages();
     }
 
-    function closeChat() { 
-        document.getElementById('chatView').style.display = 'none'; 
-        renderList('chats');
-    }
+    function closeChat() { document.getElementById('chatView').style.display = 'none'; renderList('chats'); }
 
     function sendText() {
-        const el = document.getElementById('msgIn');
-        if(!el.value.trim()) return;
-        
-        const chatKey = `chat_${myID}_with_${activeChat}`;
-        let logs = JSON.parse(localStorage.getItem(chatKey)) || [];
-        
-        logs.push({ 
-            sender: myID, 
-            content: el.value.trim(), 
-            time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) 
-        });
-        
-        localStorage.setItem(chatKey, JSON.stringify(logs));
-        el.value = "";
+        const val = document.getElementById('msgIn').value.trim();
+        if(!val) return;
+        saveMsg({ type: 'text', content: val });
+        document.getElementById('msgIn').value = "";
+    }
+
+    function sendFile() {
+        const file = document.getElementById('fileIn').files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            saveMsg({ type: 'file', content: e.target.result, fileName: file.name, isImg: file.type.startsWith('image/') });
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function saveMsg(obj) {
+        const key = `chat_${myID}_${activeChat}`;
+        let logs = JSON.parse(localStorage.getItem(key)) || [];
+        obj.sender = myID;
+        obj.time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        logs.push(obj);
+        localStorage.setItem(key, JSON.stringify(logs));
         loadMessages();
     }
 
     function loadMessages() {
         const area = document.getElementById('msgArea');
-        const chatKey = `chat_${myID}_with_${activeChat}`;
-        const logs = JSON.parse(localStorage.getItem(chatKey)) || [];
-        
+        const logs = JSON.parse(localStorage.getItem(`chat_${myID}_${activeChat}`)) || [];
         area.innerHTML = logs.map(m => `
             <div class="msg ${m.sender === myID ? 'me' : 'others'}">
-                ${m.content}
-                <div style="font-size:9px; text-align:right; opacity:0.4; margin-top:4px;">${m.time}</div>
+                ${m.type === 'file' ? (m.isImg ? `<img src="${m.content}">` : `📁 ${m.fileName}`) : m.content}
+                <div style="font-size:8px; opacity:0.5; text-align:right;">${m.time}</div>
             </div>`).join("");
         area.scrollTop = area.scrollHeight;
     }
 
-    function logout() {
-        if(confirm("Logout dari terminal?")) {
-            localStorage.removeItem("xtr_session_id");
-            location.reload();
-        }
-    }
+    function logout() { localStorage.removeItem("xtr_session"); location.reload(); }
 </script>
 </body>
 </html>
+
 
