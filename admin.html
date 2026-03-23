@@ -2,59 +2,110 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Winz // ADMIN TERMINAL</title>
+    <title>Winz // ADMIN TERMINAL XTR</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #070711; --card: #121220; --primary: #38bdf8; --accent: #22c55e; --danger: #ef4444; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: white; font-family: 'Rajdhani', sans-serif; padding: 20px; }
         .container { max-width: 500px; margin: auto; }
-        .header { text-align: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-        .order-card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
-        .bukti-img { width: 100%; border-radius: 8px; margin: 10px 0; border: 1px solid #333; }
-        .btn-acc { background: var(--accent); color: black; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 70%; }
-        .btn-rej { background: var(--danger); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 25%; }
-        textarea { width: 100%; background: #000; color: white; border: 1px solid #333; padding: 8px; border-radius: 5px; margin-bottom: 10px; }
+        .header { text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
+        
+        .search-box { position: relative; margin-bottom: 20px; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
+        .search-input { 
+            width: 100%; padding: 12px 15px 12px 45px; background: #000; border: 1px solid #1e293b; 
+            border-radius: 10px; color: white; outline: none; font-family: 'JetBrains Mono'; font-size: 13px;
+        }
+
+        .order-card { background: var(--card); border-radius: 15px; padding: 18px; margin-bottom: 15px; border-left: 4px solid var(--primary); position: relative; overflow: hidden; }
+        .order-id-tag { position: absolute; right: 15px; top: 15px; font-family: 'JetBrains Mono'; font-size: 10px; color: var(--primary); background: rgba(56, 189, 248, 0.1); padding: 2px 8px; border-radius: 4px; }
+        
+        .bukti-img { width: 100%; border-radius: 10px; margin: 12px 0; border: 1px solid #333; cursor: pointer; }
+        .btn-acc { background: var(--accent); color: black; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; flex: 3; }
+        .btn-rej { background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; flex: 1; }
+        textarea { width: 100%; background: #050510; color: white; border: 1px solid #333; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-family: 'JetBrains Mono'; font-size: 12px; resize: none; }
+        
+        .info-row { font-size: 14px; margin-bottom: 4px; font-family: 'JetBrains Mono'; }
+        .info-row b { color: var(--primary); }
     </style>
 </head>
 <body>
+
 <div class="container">
     <div class="header"><h2>ADMIN XTR TERMINAL</h2></div>
+
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="adminSearch" class="search-input" placeholder="Cari ID, Target, atau Produk..." onkeyup="loadOrders()">
+    </div>
+
     <div id="orderList"></div>
 </div>
 
 <script>
-    function loadOrders() {
-        const container = document.getElementById("orderList");
-        const orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
-        if (orders.length === 0) { container.innerHTML = "<center>NO PENDING ORDERS</center>"; return; }
-
-        container.innerHTML = orders.map((o, i) => `
-            <div class="order-card">
-                <b>Target:</b> ${o.nomor} <br>
-                <b>Produk:</b> ${o.paket} <br>
-                <b>Waktu:</b> ${o.waktu} <br>
-                <img src="${o.bukti}" class="bukti-img">
-                <textarea id="note-${i}" placeholder="Ulasan Admin..."></textarea>
-                <div style="display:flex; gap:5%">
-                    <button class="btn-acc" onclick="handleAction(${i}, 'ACC')">ACC</button>
-                    <button class="btn-rej" onclick="handleAction(${i}, 'REJECT')">REJECT</button>
-                </div>
-            </div>
-        `).join("");
+    // Fungsi Generate ID Unik (Bisa dipakai di sini atau pas user checkout)
+    function getOrderID(order) {
+        if (order.orderID) return order.orderID; // Pakai ID lama kalau sudah ada
+        const randomID = Math.floor(1000 + Math.random() * 9000); // 4 digit random
+        return `WNZ-${randomID}XTR`;
     }
 
-    function handleAction(index, tipe) {
+    function loadOrders() {
+        const container = document.getElementById("orderList");
+        const searchTerm = document.getElementById("adminSearch").value.toLowerCase();
+        const allOrders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+        
+        const filteredOrders = allOrders.filter(o => {
+            const tempID = getOrderID(o).toLowerCase();
+            return o.nomor.toLowerCase().includes(searchTerm) || 
+                   o.paket.toLowerCase().includes(searchTerm) ||
+                   tempID.includes(searchTerm);
+        });
+
+        if (filteredOrders.length === 0) { 
+            container.innerHTML = "<center style='opacity:0.5; margin-top:50px;'>TIDAK ADA PESANAN</center>"; 
+            return; 
+        }
+
+        container.innerHTML = filteredOrders.map((o) => {
+            const originalIndex = allOrders.findIndex(orig => orig === o);
+            const displayID = getOrderID(o);
+            
+            return `
+            <div class="order-card">
+                <span class="order-id-tag">#${displayID}</span>
+                <div class="info-row"><b>TARGET:</b> ${o.nomor}</div>
+                <div class="info-row"><b>PRODUK:</b> ${o.paket}</div>
+                <div class="info-row"><b>WAKTU:</b> ${o.waktu || 'Baru Saja'}</div>
+                
+                <img src="${o.bukti}" class="bukti-img" onclick="window.open(this.src)" title="Klik untuk perbesar">
+                
+                <textarea id="note-${originalIndex}" placeholder="Input IP/Login atau Alasan..."></textarea>
+                
+                <div style="display:flex; gap:10px">
+                    <button class="btn-acc" onclick="handleAction(${originalIndex}, 'ACC', '${displayID}')">SETUJUI</button>
+                    <button class="btn-rej" onclick="handleAction(${originalIndex}, 'REJECT', '${displayID}')">TOLAK</button>
+                </div>
+            </div>`;
+        }).join("");
+    }
+
+    function handleAction(index, tipe, orderID) {
         let orders = JSON.parse(localStorage.getItem("vpsOrders"));
         let item = orders[index];
-        let note = document.getElementById(`note-${index}`).value || "Proses Selesai";
+        if (!item) return;
 
+        let note = document.getElementById(`note-${index}`).value || (tipe === 'ACC' ? "Proses Selesai" : "Data Tidak Valid");
         let logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
         
-        // PRIVATISASI: Simpan owner berdasarkan nomor HP pengirim
+        // Simpan Log Aktivitas dengan ID yang sama
         logs.unshift({
             owner: item.nomor, 
+            orderID: orderID, // ID PESANAN MASUK KE LOG
             teks: tipe === 'ACC' ? `🚀 AKTIF: ${item.paket} | Note: ${note}` : `❌ DITOLAK: ${item.paket} | Alasan: ${note}`,
-            waktu: new Date().toLocaleString(),
+            waktu: new Date().toLocaleString('id-ID'),
             status: tipe === 'ACC' ? 'sukses' : 'gagal'
         });
 
@@ -62,13 +113,16 @@
         orders.splice(index, 1);
         localStorage.setItem("vpsOrders", JSON.stringify(orders));
 
-        alert("Action Berhasil!");
+        alert(`ID ${orderID} Berhasil diproses!`);
         loadOrders();
     }
+
     loadOrders();
+    setInterval(loadOrders, 15000);
 </script>
 </body>
 </html>
+
 
 
 
