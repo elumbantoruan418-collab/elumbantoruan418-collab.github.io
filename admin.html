@@ -2,108 +2,117 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winz // XTR COMMAND CENTER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Winz // XTR COMMAND</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --bg: #0b1118; --card: #151d27; --primary: #38bdf8; 
-            --text: #ffffff; --dim: #94a3b8; --accent: #22c55e; 
-        }
+        :root { --bg: #0b1118; --sidebar: #151d27; --primary: #38bdf8; --accent: #22c55e; --danger: #ef4444; --text: #fff; }
         
+        /* Reset Standar - Bisa Scroll */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             background: var(--bg); color: var(--text); 
-            font-family: 'Inter', sans-serif; margin: 0; padding: 0;
+            font-family: 'Inter', sans-serif; display: flex; 
+            height: 100vh; overflow: hidden; 
         }
 
-        /* --- SIDEBAR STANDAR --- */
+        /* Sidebar Standar - Scroll Aktif */
         .sidebar { 
-            background: var(--card); border-bottom: 1px solid rgba(255,255,255,0.1); 
-            padding: 15px;
+            width: 300px; min-width: 300px; background: var(--sidebar); 
+            display: flex; flex-direction: column; border-right: 1px solid #2d3748; 
         }
+        .list-wrapper { flex: 1; overflow-y: auto; padding: 10px; -webkit-overflow-scrolling: touch; }
 
         .section-label { 
-            color: var(--primary); font-family: 'Rajdhani'; 
-            font-weight: bold; font-size: 14px; margin: 15px 0 10px;
-            display: flex; justify-content: space-between;
+            padding: 12px 15px; background: rgba(56, 189, 248, 0.1); 
+            color: var(--primary); font-family: 'Rajdhani'; font-size: 13px; 
+            display: flex; justify-content: space-between; position: sticky; top: 0; z-index: 5;
         }
 
         .item-card { 
             background: #1e293b; padding: 12px; border-radius: 8px; 
-            margin-bottom: 8px; border-left: 4px solid #475569;
+            margin-bottom: 8px; cursor: pointer; border-left: 4px solid #475569;
         }
         .item-card.active { border-left-color: var(--primary); background: #2b5278; }
+        .item-card.order-active { border-left-color: var(--accent); }
 
-        /* --- AREA CHAT STANDAR --- */
-        .main-chat { padding: 15px; padding-bottom: 120px; } /* Jarak bawah biar gak kena input */
+        /* Main Area */
+        .main { flex: 1; display: flex; flex-direction: column; background: var(--bg); position: relative; }
+        #msgArea { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; }
+
+        /* Bubble Chat */
+        .msg { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 13px; position: relative; word-wrap: break-word; }
+        .msg.user { align-self: flex-start; background: #1e293b; color: #fff; }
+        .msg.admin { align-self: flex-end; background: #0284c7; color: #fff; }
+
+        /* INPUT AREA NAIK (Anti-Meleset) */
+        .input-container { 
+            padding: 15px; background: var(--sidebar); border-top: 1px solid #2d3748;
+            padding-bottom: 30px; /* POSISI DINAIKKAN KE ATAS */
+        }
+        .input-bar { display: flex; gap: 10px; align-items: center; }
         
-        .chat-header { 
-            background: var(--card); padding: 15px; border-radius: 12px;
-            display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
-        }
-
-        .msg { 
-            max-width: 85%; padding: 12px; border-radius: 12px; 
-            margin-bottom: 10px; font-size: 14px; line-height: 1.4;
-        }
-        .msg.admin { align-self: flex-end; background: #0284c7; margin-left: auto; }
-        .msg.user { align-self: flex-start; background: #1e293b; }
-
-        /* --- TOMBOL KIRIM DINAIKKAN (ABSOLUTE BOTTOM) --- */
-        .input-container {
-            position: fixed;
-            bottom: 20px; /* GW NAIKKAN JARAKNYA DARI BAWAH */
-            left: 10px;
-            right: 10px;
-            background: var(--card);
-            padding: 15px;
-            border-radius: 15px;
-            display: flex;
-            gap: 10px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
-            z-index: 999;
-        }
-
         textarea { 
-            flex: 1; background: #0b1118; border: 1px solid #2d3748; 
-            border-radius: 8px; color: white; padding: 10px; height: 45px;
-            outline: none; resize: none;
+            flex: 1; height: 55px; background: #0b1118; border: 2px solid #2d3748; 
+            border-radius: 12px; color: #fff; padding: 12px; resize: none; outline: none; font-size: 14px;
         }
+        textarea:focus { border-color: var(--primary); }
 
         .btn-send { 
-            background: var(--primary); border: none; width: 55px; 
-            border-radius: 8px; color: #000; font-size: 18px; font-weight: bold;
+            width: 70px; height: 55px; background: var(--primary); border: none; 
+            border-radius: 12px; cursor: pointer; font-size: 22px; color: #000;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        .hidden { display: none; }
+        /* Tombol ACC/REJ */
+        .admin-controls { padding: 10px; display: flex; gap: 8px; background: #0f172a; border-top: 1px solid #2d3748; }
+        .btn-action { flex: 1; padding: 15px; border: none; border-radius: 10px; font-weight: bold; font-family: 'Rajdhani'; cursor: pointer; font-size: 14px; letter-spacing: 1px; }
+        .btn-acc { background: var(--accent); color: #000; }
+        .btn-rej { background: var(--danger); color: #fff; }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="section-label"><span><i class="fas fa-comments"></i> CHAT</span></div>
-        <div id="chatUsersList"></div>
-        
+        <div class="section-label"><span><i class="fas fa-comments"></i> CHAT USERS</span></div>
+        <div class="list-wrapper" id="chatUsersList"></div>
+
         <div class="section-label">
-            <span><i class="fas fa-shopping-cart"></i> ORDERS</span>
-            <span id="orderCount" style="background:red; padding:0 6px; border-radius:10px; font-size:10px;">0</span>
+            <span><i class="fas fa-shopping-cart"></i> ORDER QUEUE</span>
+            <span id="orderCount" style="background:var(--danger); padding:0 6px; border-radius:10px;">0</span>
         </div>
-        <div id="orderQueueList"></div>
+        <div class="list-wrapper" id="orderQueueList"></div>
+
+        <div class="admin-controls">
+            <button class="btn-action btn-acc" onclick="processOrder('ACC')">APPROVE</button>
+            <button class="btn-action btn-rej" onclick="processOrder('REJ')">REJECT</button>
+        </div>
     </div>
 
-    <div class="main-chat" id="mainChatArea">
-        <div id="chatHeader" class="chat-header hidden">
-            <div style="background:var(--primary); color:#000; width:35px; height:35px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:bold;" id="headAva">?</div>
-            <h4 id="headName" style="font-family:'Rajdhani'">PILIH USER</h4>
+    <div class="main">
+        <div id="noSelect" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0.1;">
+            <i class="fas fa-terminal fa-5x"></i>
+            <h2 style="font-family:'Rajdhani'">WINZ XTR SYSTEM</h2>
         </div>
 
-        <div id="msgArea"></div>
-    </div>
-
-    <div id="inputBar" class="input-container hidden">
-        <textarea id="replyMsg" placeholder="Balas pesan..."></textarea>
-        <button class="btn-send" onclick="sendAdminMsg()"><i class="fas fa-paper-plane"></i></button>
+        <div id="chatContent" class="hidden" style="height:100%; display:flex; flex-direction:column;">
+            <div style="padding:15px; background:var(--sidebar); border-bottom:1px solid #2d3748; display:flex; justify-content:space-between; align-items:center;">
+                <strong id="headName" style="font-family:'Rajdhani'; font-size:18px; color:var(--primary)">USER</strong>
+                <i class="fas fa-trash-alt" onclick="clearChat()" style="color:var(--danger); cursor:pointer; padding:10px;"></i>
+            </div>
+            
+            <div id="msgArea"></div>
+            
+            <div class="input-container">
+                <div class="input-bar">
+                    <textarea id="replyMsg" placeholder="Tulis instruksi..."></textarea>
+                    <button class="btn-send" onclick="sendAdminMsg()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
     </div>
 
 <script>
@@ -119,21 +128,21 @@
 
         chatList.innerHTML = contacts.map(id => `
             <div class="item-card ${activeUser === id ? 'active' : ''}" onclick="selectUser('${id}')">
-                <h5 style="margin:0; font-size:13px;">${id}</h5>
-            </div>`).join("");
+                <h5>${id}</h5>
+            </div>`).join("") || '<p style="text-align:center; opacity:0.2; font-size:12px; margin-top:10px;">No Chats</p>';
 
         orderList.innerHTML = orders.map(id => `
-            <div class="item-card active" onclick="selectUser('${id}')">
-                <h5 style="margin:0; font-size:13px; color:var(--accent)">${id} (ORDER)</h5>
-            </div>`).join("");
+            <div class="item-card order-active ${activeUser === id ? 'active' : ''}" onclick="selectUser('${id}')">
+                <h5 style="color:var(--accent)">${id} <i class="fas fa-bolt"></i></h5>
+                <p style="font-size:10px; color:#94a3b8;">Menunggu Konfirmasi...</p>
+            </div>`).join("") || '<p style="text-align:center; opacity:0.2; font-size:12px; margin-top:10px;">Queue Empty</p>';
     }
 
     function selectUser(id) {
         activeUser = id;
-        document.getElementById('chatHeader').classList.remove('hidden');
-        document.getElementById('inputBar').classList.remove('hidden');
+        document.getElementById('noSelect').classList.add('hidden');
+        document.getElementById('chatContent').classList.remove('hidden');
         document.getElementById('headName').innerText = id;
-        document.getElementById('headAva').innerText = id[0].toUpperCase();
         renderChat();
         renderLists();
     }
@@ -142,33 +151,67 @@
         if(!activeUser) return;
         const area = document.getElementById('msgArea');
         const logs = JSON.parse(localStorage.getItem(`chat_with_${activeUser}`)) || [];
-        area.innerHTML = logs.map(m => `
+        area.innerHTML = logs.map((m, i) => `
             <div class="msg ${m.sender === 'ADMIN_WINZ' ? 'admin' : 'user'}">
                 ${m.content}
-                <div style="font-size:8px; opacity:0.5; margin-top:4px; text-align:right;">${m.time}</div>
             </div>`).join("");
-        window.scrollTo(0, document.body.scrollHeight);
+        area.scrollTop = area.scrollHeight;
+    }
+
+    function processOrder(type) {
+        if(!activeUser) return alert("Pilih user dulu!");
+        
+        let input = (type === 'ACC') ? prompt("Detail Akun (User/Pass/IP):") : prompt("Alasan Rejection:");
+        if(input === null) return;
+
+        let resMsg = (type === 'ACC') ? `✅ ORDER COMPLETED!\n\n${input}` : `❌ ORDER REJECTED!\n\nAlasan: ${input}`;
+        
+        // Simpan Pesan ke Chat
+        let key = `chat_with_${activeUser}`;
+        let logs = JSON.parse(localStorage.getItem(key)) || [];
+        logs.push({ sender: "ADMIN_WINZ", content: resMsg });
+        localStorage.setItem(key, JSON.stringify(logs));
+
+        // --- OTOMATIS HAPUS DARI ANTRIAN (SOLUSI BIAR GAK DOUBLE) ---
+        let orders = JSON.parse(localStorage.getItem("xtr_orders")) || [];
+        let newOrders = orders.filter(id => id !== activeUser);
+        localStorage.setItem("xtr_orders", JSON.stringify(newOrders));
+
+        // Tambahkan ke Kontak Chat Utama
+        let contacts = JSON.parse(localStorage.getItem("xtr_contacts")) || [];
+        if(!contacts.includes(activeUser)) {
+            contacts.push(activeUser);
+            localStorage.setItem("xtr_contacts", JSON.stringify(contacts));
+        }
+
+        alert(`User ${activeUser} Berhasil di-${type}!`);
+        renderLists();
+        renderChat();
     }
 
     function sendAdminMsg() {
         const txt = document.getElementById('replyMsg').value.trim();
         if(!txt || !activeUser) return;
-        
-        const key = `chat_with_${activeUser}`;
+        let key = `chat_with_${activeUser}`;
         let logs = JSON.parse(localStorage.getItem(key)) || [];
-        logs.push({ 
-            sender: "ADMIN_WINZ", 
-            content: txt, 
-            time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) 
-        });
+        logs.push({ sender: "ADMIN_WINZ", content: txt });
         localStorage.setItem(key, JSON.stringify(logs));
         document.getElementById('replyMsg').value = "";
         renderChat();
     }
 
-    setInterval(() => { renderLists(); if(activeUser) renderChat(); }, 5000);
+    function clearChat() {
+        if(confirm("Wipe history user ini?")) {
+            localStorage.removeItem(`chat_with_${activeUser}`);
+            renderChat();
+        }
+    }
+
+    // Refresh list sesekali biar sinkron
+    setInterval(renderLists, 5000);
     window.onload = renderLists;
 </script>
 </body>
 </html>
+
 
