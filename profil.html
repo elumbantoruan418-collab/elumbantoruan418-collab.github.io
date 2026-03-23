@@ -1,411 +1,149 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profil Akun</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-<style>
-  /* =========================
-   Root Variables
-========================= */
-:root {
-  --bg: #020617;
-  --card: #0b0b12;
-  --primary: #38bdf8;
-  --accent: #7dd3fc;
-  --text: #e5e7eb;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winz // SUPPORT CENTER</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030305;
+            --card-bg: #0d0d1a;
+            --primary: #38bdf8;
+            --instagram: #e1306c;
+            --telegram: #0088cc;
+            --owner-chat: #facc15;
+            --font-display: 'Rajdhani', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
 
-/* =========================
-   Global Styles
-========================= */
-* {
-  box-sizing: border-box;
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: var(--bg); 
+            color: #fff; 
+            font-family: var(--font-display); 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 18px;
-  transition: background 0.3s, color 0.3s;
-}
+        /* Tombol Kembali Pojok Kiri Atas */
+        .back-nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-family: var(--font-mono);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+            z-index: 100;
+        }
 
-/* =========================
-   Layout
-========================= */
-.container {
-  display: flex;
-  min-height: 100vh;
-}
+        .back-nav:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
 
-/* =========================
-   Sidebar
-========================= */
-.sidebar {
-  width: 260px;
-  background: var(--card);
-  padding: 30px 20px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
+        .support-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+            position: relative;
+        }
 
-.sidebar-header {
-  margin-bottom: 25px;
-}
+        .icon-box {
+            width: 70px;
+            height: 70px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--primary);
+            font-size: 30px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+            transform: rotate(-5deg);
+        }
 
-.sidebar-user h3 {
-  margin: 0 0 10px 0;
-  color: var(--primary);
-  font-size: 22px;
-}
+        h2 { letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; font-size: 24px; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
 
-.sidebar-user .user-tag {
-  font-size: 14px;
-  opacity: 0.8;
-}
+        .btn-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
 
-/* =========================
-   Sidebar Buttons Fixed Bawah
-========================= */
-.sidebar-bottom {
-  position: fixed;
-  bottom: 20px;
-  left: 30px;
-  display: flex;
-  gap: 12px;          /* Jarak antar tombol */
-  width: auto;
-  justify-content: center;
-}
+        .owner { background: var(--owner-chat); color: #000; }
+        .ig { background: #1a1a2e; color: #fff; border: 1px solid var(--instagram); }
+        .tg { background: #1a1a2e; color: #fff; border: 1px solid var(--telegram); }
 
-button {
-  border: none;
-  border-radius: 14px;      
-  padding: 14px 28px;       /* Lebih tinggi dan lebar */
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 18px;           /* Font default besar */
-  transition: 0.3s;
-  white-space: nowrap;       
-}
+        .btn-link:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .owner:hover { filter: brightness(1.2); }
 
-/* =========================
-   Responsif
-========================= */
-
-/* Untuk layar kecil (HP/Tablet) */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 200px;
-    padding: 20px 15px;
-  }
-
-  .sidebar-user h3 {
-    font-size: 18px;
-  }
-
-  button {
-    padding: 10px 20px;   /* tombol lebih kecil */
-    font-size: 14px;      /* font lebih kecil */
-  }
-
-  .sidebar-bottom {
-    gap: 8px;
-    left: 15px;
-  }
-}
-
-/* Untuk layar sangat kecil (HP) */
-@media (max-width: 480px) {
-  .sidebar {
-    width: 160px;
-    padding: 15px 10px;
-  }
-
-  .sidebar-user h3 {
-    font-size: 16px;
-  }
-
-  button {
-    padding: 8px 16px;   /* tombol lebih kecil lagi */
-    font-size: 12px;     /* font lebih kecil lagi */
-  }
-
-  .sidebar-bottom {
-    gap: 6px;
-    left: 10px;
-  }
-}
-
-.logout-btn {
-  background: var(--primary);
-  color: black;
-}
-.logout-btn:hover {
-  background: var(--accent);
-}
-
-.toggle-theme {
-  background: var(--primary);
-  color: black;
-}
-.toggle-theme:hover {
-  background: var(--accent);
-}
-
-.support-btn {
-  background: var(--accent);
-  color: black;
-}
-.support-btn:hover {
-  background: var(--primary);
-}
-
-/* =========================
-   Main Content
-========================= */
-.main {
-  flex: 1;
-  padding: 40px;
-}
-
-.profile-section {
-  background: var(--card);
-  padding: 35px;
-  border-radius: 20px;
-  box-shadow: 0 0 35px rgba(56,189,248,0.25);
-}
-
-.profile-section .section-title {
-  font-weight: bold;
-  font-size: 22px;
-  margin-bottom: 25px;
-  color: var(--primary);
-}
-
-.profile-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* =========================
-   Info Rows
-========================= */
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.info-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
-  opacity: 0.9;
-}
-
-.info-value {
-  font-size: 18px;
-  color: #fff;
-}
-
-/* =========================
-   Password Field
-========================= */
-.password-field {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.password-display {
-  background: var(--bg);
-  padding: 10px 15px;
-  border-radius: 8px;
-  font-family: monospace;
-  font-size: 18px;
-}
-
-.toggle-password {
-  cursor: pointer;
-  color: var(--primary);
-  font-size: 20px;
-}
-
-/* =========================
-   Status Badge
-========================= */
-.status-badge {
-  padding: 5px 12px;
-  border-radius: 10px;
-  font-size: 14px;
-  background: var(--accent);
-  font-weight: bold;
-  color: black;
-}
-
-/* =========================
-   Copy Note
-========================= */
-.copy-note {
-  font-size: 14px;
-  opacity: 0.8;
-  margin-top: 8px;
-}
-
-/* =========================
-   Light Theme
-========================= */
-.light-theme {
-  --bg: #f3f4f6;
-  --card: #ffffff;
-  --primary: #3b82f6;
-  --accent: #22c55e;
-  --text: #111827;
-}
-
-.light-theme .password-display {
-  background: #f3f4f6;
-  color: #111827;
-}
-</style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
 
-<div class="container">
+    <a href="index.html" class="back-nav">
+        <i class="fas fa-arrow-left"></i> KEMBALI
+    </a>
 
-  <!-- Sidebar -->
-
-  <!-- Main content -->
-  <div class="main">
-    <div class="profile-section">
-      <div class="section-title">Account Information</div>
-      <div class="profile-grid">
-
-        <!-- Username -->
-        <div class="info-row">
-          <div class="info-label"><i class="fas fa-user"></i> Username</div>
-          <div class="info-value" id="info-username">Loading...</div>
+    <div class="support-card">
+        <div class="icon-box">
+            <i class="fas fa-headset"></i>
         </div>
+        <h2>XTR CENTER</h2>
+        <p>Butuh bantuan teknis atau info layanan? Hubungi owner atau join channel kami.</p>
 
-        <!-- User ID -->
-        <div class="info-row">
-          <div class="info-label"><i class="fas fa-id-card"></i> User ID</div>
-          <div class="info-value" id="info-userid">#000</div>
+        <a href="obrolan.html" class="btn-link owner">
+            <i class="fas fa-comment-dots"></i> CHAT OWNER (ONLINE)
+        </a>
+
+        <a href="https://www.instagram.com/erwin__shbg" target="_blank" class="btn-link ig">
+            <i class="fab fa-instagram"></i> erwin__shbg
+        </a>
+
+        <a href="https://t.me/Winz_ofcial" target="_blank" class="btn-link tg">
+            <i class="fab fa-telegram-plane"></i> CHANNEL TELEGRAM
+        </a>
+
+        <div style="margin-top: 25px; font-size: 10px; opacity: 0.3; font-family: var(--font-mono); letter-spacing: 1px;">
+            WINZ PROJECT // INFRASTRUCTURE ACCESS
         </div>
-
-        <!-- Role -->
-        <div class="info-row">
-          <div class="info-label"><i class="fas fa-shield-alt"></i> Role</div>
-          <div class="info-value">
-            <span class="status-badge" id="info-role-badge">USER</span>
-          </div>
-        </div>
-
-        <!-- Password -->
-        <div class="info-row">
-          <div class="info-label"><i class="fas fa-key"></i> Password</div>
-          <div class="password-field">
-            <div class="password-display" id="password-display">••••••••</div>
-            <div class="toggle-password" id="toggle-password"><i class="fas fa-eye"></i></div>
-          </div>
-        </div>
-
-        <!-- CreatedAt -->
-        <div class="info-row">
-          <div class="info-label"><i class="fas fa-calendar-check"></i> Account Created</div>
-          <div class="info-value" id="info-created">Loading...</div>
-        </div>
-
-        <!-- API Key -->
-        <div class="info-row">
-          <div class="info-label"><i class="fas fa-key"></i> API Key</div>
-          <div class="info-value" id="info-api">Loading...</div>
-        </div>
-        <div class="copy-note">Klik API Key untuk menyalin</div>
-
-      </div>
     </div>
-  </div>
-</div>
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-user">
-        <h3 id="sidebar-username">Loading...</h3>
-        <div class="user-tag" id="sidebar-role">USER</div>
-      </div>
-    </div>
-
-    <!-- Tombol bawah sidebar -->
-    <div class="sidebar-bottom">
-      <button class="toggle-theme" id="theme-toggle">Toggle Dark/Light</button>
-      <button class="logout-btn" id="logout-btn">Logout</button>
-      <button class="support-btn" id="support-btn">Support / Bantuan</button>
-    </div>
-  </aside>
-
-<script>
-// Ambil currentUser dan data users
-const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-const users = JSON.parse(localStorage.getItem("users")) || [];
-
-if (currentUser) {
-  const user = users.find(u => u.username === currentUser.username);
-  if (user) {
-    // Sidebar
-    document.getElementById("sidebar-username").textContent = user.username;
-    document.getElementById("sidebar-role").textContent = "USER";
-
-    // Main info
-    document.getElementById("info-username").textContent = user.username;
-    document.getElementById("info-userid").textContent = `#${user.id}`;
-    document.getElementById("info-role-badge").textContent = "USER";
-
-    // Password toggle
-    const passDisplay = document.getElementById("password-display");
-    const toggleBtn = document.getElementById("toggle-password");
-    let isVisible = false;
-    passDisplay.textContent = "•".repeat(user.password.length);
-    toggleBtn.addEventListener("click", () => {
-      isVisible = !isVisible;
-      passDisplay.textContent = isVisible ? user.password : "•".repeat(user.password.length);
-      toggleBtn.innerHTML = isVisible ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
-    });
-
-    // CreatedAt
-    const createdBox = document.getElementById("info-created");
-    const date = new Date(user.createdAt);
-    createdBox.textContent = date.toLocaleDateString("id-ID", { day:"2-digit", month:"long", year:"numeric" });
-
-    // API Key
-    const apiBox = document.getElementById("info-api");
-    apiBox.textContent = user.apiKey || "-";
-    apiBox.addEventListener("click", () => {
-      if (!user.apiKey) return;
-      navigator.clipboard.writeText(user.apiKey).then(() => {
-        apiBox.textContent = "✅ Disalin!";
-        setTimeout(() => { apiBox.textContent = user.apiKey; }, 1200);
-      });
-    });
-  }
-}
-
-// Logout
-document.getElementById("logout-btn").addEventListener("click", () => {
-  localStorage.removeItem("currentUser");
-  window.location.href = "login.html";
-});
-
-// Dark/Light toggle
-document.getElementById("theme-toggle").addEventListener("click", () => {
-  document.body.classList.toggle("light-theme");
-});
-</script>
 
 </body>
 </html>
