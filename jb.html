@@ -3,152 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JB STORE - Raja MC</title>
+    <title>WINZ TERMINAL - JB & VPS</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --primary: #ff4500; --bg: #0f0f0f; --card: #1e1e1e; --green: #25D366; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: white; padding-bottom: 80px; }
-        nav { background: var(--primary); padding: 18px; text-align: center; font-weight: bold; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .container { padding: 15px; max-width: 900px; margin: auto; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #333; position: relative; }
-        .card img { width: 100%; height: 160px; object-fit: cover; cursor: pointer; }
+        :root { --primary: #ff4500; --bg: #070711; --card: #121220; --accent: #22c55e; --sky: #38bdf8; --buyer: #333; --seller: #38bdf8; --admin: #005c4b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
+        body { background: var(--bg); color: white; padding-bottom: 80px; overflow-x: hidden; }
+        
+        nav { background: var(--primary); padding: 15px; text-align: center; font-weight: bold; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-transform: uppercase; }
+        .container { padding: 15px; max-width: 600px; margin: auto; }
+
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Menu Bawah */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #111; display: flex; border-top: 1px solid #333; z-index: 1000; }
+        .nav-item { flex: 1; text-align: center; padding: 12px; color: #777; cursor: pointer; }
+        .nav-item.active { color: var(--primary); border-top: 3px solid var(--primary); background: rgba(255,69,0,0.1); }
+        .nav-item i { font-size: 18px; display: block; margin-bottom: 4px; }
+        .nav-item span { font-size: 10px; font-weight: bold; }
+
+        /* Card & Grid */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #333; }
+        .card img { width: 100%; height: 120px; object-fit: cover; }
         .info { padding: 10px; }
-        .price { color: var(--primary); font-weight: bold; font-size: 15px; }
-        .badge-foto { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px; font-size: 10px; z-index: 2; }
-        .btn-chat { display: block; background: var(--green); color: white; text-align: center; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; margin-top: 8px; cursor: pointer; border: none; width: 100%; }
-        .btn-wa { display: block; background: #008cff; color: white; text-align: center; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; margin-top: 5px; text-decoration: none; }
-        .btn-add { position: fixed; bottom: 20px; right: 20px; background: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; border: none; color: white; z-index: 99; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; }
-        .modal-header { background: #222; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
-        .modal-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
-        .bubble { padding: 10px 15px; border-radius: 15px; max-width: 85%; font-size: 14px; margin-bottom: 8px; }
-        .msg-mc { background: var(--primary); align-self: center; text-align: center; font-weight: bold; width: 90%; }
-        .msg-me { background: #005c4b; align-self: flex-end; }
-        .msg-them { background: #333; align-self: flex-start; }
-        .chat-galeri { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; }
-        .chat-galeri img { height: 150px; border-radius: 8px; flex-shrink: 0; border: 1px solid #555; }
-        .chat-footer { padding: 15px; background: #1e1e1e; display: flex; gap: 10px; }
-        .chat-footer input { flex: 1; padding: 12px; border-radius: 25px; border: none; background: #333; color: white; outline: none; }
+        .price { color: var(--primary); font-weight: bold; font-size: 14px; }
+
+        /* Chat List Style */
+        .chat-list-item { background: var(--card); padding: 12px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid var(--primary); display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .chat-list-item.admin-type { border-left-color: var(--accent); }
+        .chat-meta b { font-size: 14px; display: block; }
+        .chat-meta small { color: #888; font-size: 11px; }
+
+        /* Chat Bubbles */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; flex-direction: column; }
+        .chat-header { padding: 15px; background: #1a1a2e; border-bottom: 1px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        .bubble { padding: 8px 12px; border-radius: 12px; max-width: 80%; margin-bottom: 8px; font-size: 13px; }
+        .msg-buyer { background: var(--buyer); align-self: flex-start; color: white; }
+        .msg-seller { background: var(--seller); align-self: flex-start; color: black; font-weight: 500; }
+        .msg-admin { background: var(--admin); align-self: flex-end; color: white; border: 1px solid var(--accent); }
+        .msg-sys { background: rgba(255,255,255,0.1); align-self: center; font-size: 10px; color: #888; }
+
+        .chat-footer { padding: 10px; background: #111; display: flex; gap: 8px; border-top: 1px solid #333; }
+        .chat-footer input { flex: 1; padding: 12px; border-radius: 20px; border: none; background: #222; color: white; outline: none; }
+        .chat-footer button { background: var(--primary); border: none; padding: 0 15px; border-radius: 20px; color: white; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<nav>RAJA MC STORE</nav>
+<nav id="navTitle">JB STORE</nav>
 
 <div class="container">
-    <div class="grid" id="productGrid"></div>
+    <div id="page-store" class="page active">
+        <div class="grid" id="productGrid"></div>
+        <button onclick="openModal('uploadModal')" style="position:fixed; bottom:85px; right:20px; background:var(--primary); width:50px; height:50px; border-radius:50%; border:none; color:white; font-size:24px; z-index:99; shadow: 0 0 10px var(--primary);">+</button>
+    </div>
+
+    <div id="page-chats" class="page">
+        <h3 style="color: var(--accent); margin-bottom: 15px;"><i class="fas fa-handshake"></i> TRANSAKSI SAYA</h3>
+        <div id="chatListContainer"></div>
+    </div>
+
+    <div id="page-admin" class="page">
+        <h3 style="color: var(--sky); margin-bottom: 10px;"><i class="fas fa-user-shield"></i> ADMIN CENTRAL</h3>
+        
+        <div style="margin-bottom: 20px;">
+            <p style="font-size: 12px; color: #888; margin-bottom: 10px;">LOG CHAT & INTERNAL ADMIN:</p>
+            <div id="adminChatList"></div>
+        </div>
+
+        <hr style="opacity: 0.1; margin-bottom: 20px;">
+        
+        <p style="font-size: 12px; color: #888; margin-bottom: 10px;">PENDING ORDERS VPS:</p>
+        <div id="orderList"></div>
+    </div>
 </div>
 
-<button class="btn-add" onclick="openModal('uploadModal')">+</button>
-
-<div id="uploadModal" class="modal">
-    <div class="modal-header"><span>Upload Akun</span><button onclick="closeModal('uploadModal')" style="background:none; color:white; border:none; font-size:25px;">✕</button></div>
-    <div class="modal-body">
-        <input type="text" id="upJudul" placeholder="Judul Akun" style="width:100%; padding:12px; margin-bottom:10px; background:#222; color:white; border:1px solid #444; border-radius:8px;">
-        <input type="number" id="upHarga" placeholder="Harga (Rp)" style="width:100%; padding:12px; margin-bottom:10px; background:#222; color:white; border:1px solid #444; border-radius:8px;">
-        <label style="font-size:12px; color:#aaa;">Pilih Foto (Bisa lebih dari 1):</label>
-        <input type="file" id="upFotoFile" accept="image/*" multiple style="margin-bottom:15px; color:white;">
-        <textarea id="upSpek" rows="3" placeholder="Spek Akun" style="width:100%; padding:12px; margin-bottom:15px; background:#222; color:white; border:1px solid #444; border-radius:8px;"></textarea>
-        <button onclick="prosesUpload()" id="btnPost" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">POSTING SEKARANG</button>
+<div class="bottom-nav">
+    <div class="nav-item active" onclick="switchPage('store', 'JB STORE', this)">
+        <i class="fas fa-store"></i><span>STORE</span>
+    </div>
+    <div class="nav-item" onclick="switchPage('chats', 'CHAT PEMBELIAN', this)">
+        <i class="fas fa-comments"></i><span>CHATS</span>
+    </div>
+    <div class="nav-item" onclick="switchPage('admin', 'ADMIN PANEL', this)">
+        <i class="fas fa-user-shield"></i><span>ADMIN</span>
     </div>
 </div>
 
 <div id="chatModal" class="modal">
-    <div class="modal-header"><span id="chatTitle">Room</span><button onclick="closeModal('chatModal')" style="background:none; color:white; border:none; font-size:25px;">✕</button></div>
-    <div id="chatBox" class="modal-body"></div>
+    <div class="chat-header">
+        <span id="chatTitle">Room</span>
+        <button onclick="closeModal('chatModal')" style="background:none; color:white; border:none; font-size:20px;">✕</button>
+    </div>
+    <div id="chatBox" class="chat-box"></div>
     <div class="chat-footer">
         <input type="text" id="chatInput" placeholder="Ketik pesan...">
-        <button onclick="kirimPesan()" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:25px; font-weight:bold;">Kirim</button>
+        <button onclick="kirimPesan()">KIRIM</button>
+    </div>
+</div>
+
+<div id="uploadModal" class="modal">
+    <div class="chat-header"><b>UPLOAD PRODUK</b><button onclick="closeModal('uploadModal')" style="background:none; color:white; border:none;">✕</button></div>
+    <div style="padding:20px;">
+        <input type="text" id="upJudul" placeholder="Nama Akun" style="width:100%; padding:12px; margin-bottom:10px; background:#111; color:white; border:1px solid #333; border-radius:8px;">
+        <input type="number" id="upHarga" placeholder="Harga" style="width:100%; padding:12px; margin-bottom:10px; background:#111; color:white; border:1px solid #333; border-radius:8px;">
+        <input type="file" id="upFotoFile" style="margin-bottom:15px;">
+        <button onclick="prosesUploadJB()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">POSTING</button>
     </div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('raja_mc_db')) || [];
+    let dbJB = JSON.parse(localStorage.getItem('raja_mc_db')) || [];
     let chatDB = JSON.parse(localStorage.getItem('raja_mc_chats')) || {};
+    let adminChatDB = JSON.parse(localStorage.getItem('raja_admin_chats')) || { "ADMIN_LOG": [{sender: "System", text: "Admin Terminal Ready.", type: "sys"}] };
     let currentRoom = "";
+    let is_admin_room = false;
 
-    function renderProduk() {
+    function switchPage(pageId, title, el) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('page-' + pageId).classList.add('active');
+        document.getElementById('navTitle').innerText = title;
+        el.classList.add('active');
+        
+        if(pageId === 'store') renderStore();
+        if(pageId === 'chats') renderChatList();
+        if(pageId === 'admin') renderAdminPanel();
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    // --- RENDER STORE ---
+    function renderStore() {
         const grid = document.getElementById('productGrid');
-        if (db.length === 0) {
-            grid.innerHTML = "<p style='grid-column:1/-1; text-align:center; opacity:0.5;'>Belum ada stok.</p>";
-            return;
-        }
-        grid.innerHTML = db.map((p) => `
+        grid.innerHTML = dbJB.map(p => `
             <div class="card">
-                <span class="badge-foto">${p.fotos ? p.fotos.length : 0} Foto</span>
-                <img src="${p.fotos ? p.fotos[0] : ''}" onclick="bukaChat('${p.id}', '${p.judul}')">
+                <img src="${p.fotos[0]}">
                 <div class="info">
-                    <div style="font-size: 12px; font-weight: bold; height: 32px; overflow: hidden;">${p.judul}</div>
-                    <div class="price">Rp ${Number(p.harga).toLocaleString('id-ID')}</div>
-                    <button class="btn-chat" onclick="bukaChat('${p.id}', '${p.judul}')">Beli & Chat MC</button>
-                    <a href="https://wa.me/628123456789?text=Halo Raja MC, saya minat akun: ${p.judul}" class="btn-wa">Hubungi Penjual</a>
+                    <b>${p.judul}</b><br>
+                    <span class="price">Rp ${Number(p.harga).toLocaleString()}</span>
+                    <button style="width:100%; margin-top:5px; background:var(--accent); border:none; padding:5px; border-radius:4px; font-weight:bold;" onclick="bukaChat('${p.id}', '${p.judul}', false)">BELI</button>
                 </div>
             </div>
-        `).reverse().join('');
+        `).reverse().join('') || "<center style='grid-column:1/-1; margin-top:50px;'>STOK KOSONG</center>";
     }
 
-    function compressImage(file) {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (e) => {
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 500; canvas.height = img.height * (500 / img.width);
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.6));
-                }
-            }
-        });
+    // --- RENDER CHAT LIST (USER) ---
+    function renderChatList() {
+        const container = document.getElementById('chatListContainer');
+        const keys = Object.keys(chatDB);
+        container.innerHTML = keys.map(id => {
+            const lastMsg = chatDB[id][chatDB[id].length - 1];
+            return `<div class="chat-list-item" onclick="bukaChat('${id}', 'TRX: ${id}', false)"><i class="fas fa-receipt"></i><div class="chat-meta"><b>${id}</b><small>${lastMsg.sender}: ${lastMsg.text.substring(0,20)}</small></div></div>`;
+        }).join('') || "<center style='margin-top:50px;'>TIDAK ADA TRANSAKSI</center>";
     }
 
-    async function prosesUpload() {
-        const judul = document.getElementById('upJudul').value;
-        const harga = document.getElementById('upHarga').value;
-        const files = document.getElementById('upFotoFile').files;
-        const btn = document.getElementById('btnPost');
-        if(!judul || !harga || files.length === 0) return alert("Lengkapi data dan foto!");
-
-        btn.innerText = "Memproses..."; btn.disabled = true;
-
-        const fotoPromises = Array.from(files).map(f => compressImage(f));
-        const allFotos = await Promise.all(fotoPromises);
-        const id = "ID-" + Date.now();
-
-        db.push({ id, judul, harga, fotos: allFotos });
-        localStorage.setItem('raja_mc_db', JSON.stringify(db));
+    // --- RENDER ADMIN PANEL ---
+    function renderAdminPanel() {
+        // Render Chat Khusus Admin
+        const adminChatList = document.getElementById('adminChatList');
+        adminChatList.innerHTML = `<div class="chat-list-item admin-type" onclick="bukaChat('ADMIN_LOG', 'INTERNAL ADMIN CHAT', true)"><i class="fas fa-user-shield"></i><div class="chat-meta"><b>INTERNAL LOG</b><small>Klik untuk masuk room admin</small></div></div>`;
         
-        chatDB[id] = [
-            {sender: "SISTEM", text: `Room Transaksi: ${judul}`, type: "mc"},
-            {sender: "SISTEM", images: allFotos, isGaleri: true, type: "mc"}
-        ];
-        localStorage.setItem('raja_mc_chats', JSON.stringify(chatDB));
-        location.reload();
+        document.getElementById("orderList").innerHTML = "<center style='color:#444; margin-top:20px;'>NO VPS ORDERS</center>";
     }
 
-    function bukaChat(roomId, judul) {
-        currentRoom = roomId;
-        openModal('chatModal');
+    // --- CHAT LOGIC ---
+    function bukaChat(id, judul, isAdmin) {
+        currentRoom = id;
+        is_admin_room = isAdmin;
         document.getElementById('chatTitle').innerText = judul;
+        openModal('chatModal');
         loadMessages();
     }
 
     function loadMessages() {
         const box = document.getElementById('chatBox');
-        const messages = chatDB[currentRoom] || [];
-        box.innerHTML = messages.map(m => {
-            if(m.type === "mc") {
-                if(m.isGaleri) return `<div class="chat-galeri">${m.images.map(i => `<img src="${i}">`).join('')}</div>`;
-                return `<div class="bubble msg-mc">${m.text}</div>`;
-            }
-            let isMe = m.sender === "Saya" || m.sender === "Admin";
-            return `<div class="bubble ${isMe ? 'msg-me' : 'msg-them'}">
-                <small style="display:block; font-size:9px; opacity:0.6;">${m.sender}</small>${m.text}
-            </div>`;
+        const msgs = is_admin_room ? adminChatDB[currentRoom] : chatDB[currentRoom];
+        box.innerHTML = msgs.map(m => {
+            let cls = "msg-buyer";
+            if(m.type === "sys") cls = "msg-sys";
+            else if(m.sender === "Admin") cls = "msg-admin";
+            else if(m.sender === "Penjual") cls = "msg-seller";
+            return `<div class="bubble ${cls}"><small style="display:block; font-size:9px; opacity:0.6;">${m.sender}</small>${m.text}</div>`;
         }).join('');
         box.scrollTop = box.scrollHeight;
     }
@@ -157,18 +199,41 @@
         const input = document.getElementById('chatInput');
         let text = input.value.trim();
         if(!text) return;
-        let sender = text.startsWith("admin:") ? "Admin" : "Saya";
-        if(sender === "Admin") text = text.replace("admin:", "");
 
-        chatDB[currentRoom].push({ sender, text, type: "chat" });
-        localStorage.setItem('raja_mc_chats', JSON.stringify(chatDB));
+        let sender = "Pembeli";
+        if(text.startsWith("admin:")) { sender = "Admin"; text = text.replace("admin:",""); }
+        else if(text.startsWith("penjual:")) { sender = "Penjual"; text = text.replace("penjual:",""); }
+
+        if(is_admin_room) {
+            adminChatDB[currentRoom].push({sender, text});
+            localStorage.setItem('raja_admin_chats', JSON.stringify(adminChatDB));
+        } else {
+            chatDB[currentRoom].push({sender, text});
+            localStorage.setItem('raja_mc_chats', JSON.stringify(chatDB));
+        }
         input.value = "";
         loadMessages();
     }
 
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    window.onload = renderProduk;
+    async function prosesUploadJB() {
+        const judul = document.getElementById('upJudul').value;
+        const harga = document.getElementById('upHarga').value;
+        const file = document.getElementById('upFotoFile').files[0];
+        if(!judul || !harga || !file) return alert("Lengkapi data!");
+        const reader = new FileReader();
+        reader.onload = e => {
+            const id = "ID-" + Date.now();
+            dbJB.push({ id, judul, harga, fotos: [e.target.result] });
+            localStorage.setItem('raja_mc_db', JSON.stringify(dbJB));
+            chatDB[id] = [{sender: "System", text: `Room Transaksi ${judul} dibuka.`, type: "sys"}];
+            localStorage.setItem('raja_mc_chats', JSON.stringify(chatDB));
+            location.reload();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    renderStore();
 </script>
 </body>
 </html>
+
