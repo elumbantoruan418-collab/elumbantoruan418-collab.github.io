@@ -3,233 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WINZ ALL-IN-ONE TERMINAL</title>
+    <title>XTR // ADMIN TERMINAL</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --primary: #ff4500; --bg: #070711; --card: #121220; --accent: #22c55e; --sky: #38bdf8; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: white; padding-bottom: 80px; }
+        :root { --bg: #030305; --card: #0d0d1a; --primary: #38bdf8; --accent: #10b981; --red: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; }
+        body { background: var(--bg); color: white; padding: 20px; }
         
-        /* Navigasi Atas */
-        nav { background: var(--primary); padding: 15px; text-align: center; font-weight: bold; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .header { border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 20px; color: var(--primary); }
+
+        /* Search Box */
+        .search-box { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.3); margin-bottom: 25px; }
+        .search-box input { width: 100%; padding: 12px; background: #000; border: 1px solid #333; border-radius: 8px; color: var(--primary); font-weight: bold; margin-bottom: 10px; }
         
-        .container { padding: 15px; max-width: 600px; margin: auto; }
+        /* Result Card */
+        .item-card { background: var(--card); border-radius: 15px; border: 1px solid #1e293b; padding: 20px; margin-bottom: 15px; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TAB SYSTEM */
-        .page { display: none; }
-        .page.active { display: block; }
+        .sku-badge { background: var(--primary); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .detail-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 15px 0; }
+        .detail-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 5px 0; font-size: 13px; }
+        .label { color: #64748b; }
+        
+        /* Action Buttons */
+        .btn-wa { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; background: var(--accent); color: white; border: none; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .btn-wa:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+        .btn-del { width: 100%; padding: 10px; background: transparent; color: var(--red); border: 1px solid var(--red); border-radius: 10px; margin-top: 10px; cursor: pointer; font-size: 12px; }
 
-        /* Menu Bawah */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #111; display: flex; border-top: 1px solid #333; z-index: 1000; }
-        .nav-item { flex: 1; text-align: center; padding: 12px; color: #777; cursor: pointer; transition: 0.3s; }
-        .nav-item.active { color: var(--primary); border-top: 3px solid var(--primary); background: rgba(255,69,0,0.1); }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 2px; }
-        .nav-item span { font-size: 11px; font-weight: bold; }
-
-        /* Style JB STORE */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #333; position: relative; }
-        .card img { width: 100%; height: 140px; object-fit: cover; }
-        .info { padding: 10px; }
-        .price { color: var(--primary); font-weight: bold; font-size: 14px; }
-        .btn-chat { background: var(--accent); color: black; border: none; width: 100%; padding: 8px; border-radius: 5px; font-weight: bold; margin-top: 5px; font-size: 11px; cursor: pointer; }
-
-        /* Style ADMIN VPS */
-        .order-card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid var(--sky); }
-        .bukti-img { width: 100%; border-radius: 8px; margin: 10px 0; border: 1px solid #333; }
-        .btn-acc { background: var(--accent); color: black; border: none; padding: 10px; border-radius: 5px; flex: 3; font-weight: bold; cursor: pointer; }
-        .btn-rej { background: #ef4444; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; }
-        textarea { width: 100%; background: #000; color: white; border: 1px solid #333; padding: 8px; border-radius: 5px; margin: 10px 0; font-size: 12px; }
-
-        /* Modal Chat */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; }
-        .bubble { padding: 10px; border-radius: 10px; max-width: 80%; margin-bottom: 10px; font-size: 13px; }
-        .msg-me { background: #005c4b; align-self: flex-end; }
-        .msg-them { background: #333; align-self: flex-start; }
+        .empty { text-align: center; opacity: 0.4; padding: 50px 0; }
     </style>
 </head>
 <body>
 
-<nav id="navTitle">JB STORE - RAJA MC</nav>
-
-<div class="container">
-    
-    <div id="page-store" class="page active">
-        <div class="grid" id="productGrid"></div>
-        <button onclick="openModal('uploadModal')" style="position:fixed; bottom:85px; right:20px; background:var(--primary); width:50px; height:50px; border-radius:50%; border:none; color:white; font-size:24px; z-index:99;">+</button>
+    <div class="header">
+        <h1><i class="fas fa-user-shield"></i> WINZ ADMIN</h1>
+        <span style="font-size: 10px; opacity: 0.5;">v.2.0.6</span>
     </div>
 
-    <div id="page-admin" class="page">
-        <h3 style="color:var(--sky); margin-bottom:15px;"><i class="fas fa-terminal"></i> PENDING ORDERS VPS</h3>
-        <div id="orderList"></div>
+    <div class="search-box">
+        <label style="font-size: 11px; margin-bottom: 8px; display: block;">TRACKING BARANG / SKU</label>
+        <input type="text" id="searchInput" placeholder="Ketik Kode Unik (Contoh: XTR-12345)" onkeyup="searchProduct()">
     </div>
 
-</div>
+    <div id="adminList">
+        </div>
 
-<div class="bottom-nav">
-    <div class="nav-item active" onclick="switchPage('store', 'JB STORE - RAJA MC', this)">
-        <i class="fas fa-shopping-cart"></i>
-        <span>JB STORE</span>
-    </div>
-    <div class="nav-item" onclick="switchPage('admin', 'ADMIN VPS TERMINAL', this)">
-        <i class="fas fa-user-shield"></i>
-        <span>ADMIN VPS</span>
-    </div>
-</div>
+    <script>
+        function searchProduct() {
+            const input = document.getElementById('searchInput').value.toUpperCase();
+            const listJB = JSON.parse(localStorage.getItem("dataJB")) || [];
+            const container = document.getElementById('adminList');
+            
+            // Filter berdasarkan SKU atau Deskripsi
+            const filtered = listJB.filter(item => 
+                item.sku.toUpperCase().includes(input) || 
+                item.deskripsi.toLowerCase().includes(input.toLowerCase())
+            );
 
-<div id="uploadModal" class="modal">
-    <div style="padding:20px; border-bottom:1px solid #333; display:flex; justify-content:space-between;">
-        <span>Posting Akun</span>
-        <button onclick="closeModal('uploadModal')" style="background:none; color:white; border:none; font-size:20px;">✕</button>
-    </div>
-    <div style="padding:20px; overflow-y:auto;">
-        <input type="text" id="upJudul" placeholder="Judul Akun" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; border-radius:8px; margin-bottom:10px;">
-        <input type="number" id="upHarga" placeholder="Harga" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; border-radius:8px; margin-bottom:10px;">
-        <input type="file" id="upFotoFile" accept="image/*" multiple style="margin-bottom:15px;">
-        <button onclick="prosesUploadJB()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">POSTING SEKARANG</button>
-    </div>
-</div>
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty"><i class="fas fa-search"></i><p>Barang tidak ditemukan.</p></div>';
+                return;
+            }
 
-<div id="chatModal" class="modal">
-    <div style="padding:15px; background:#222; display:flex; justify-content:space-between;">
-        <span id="chatTitle">Chat</span>
-        <button onclick="closeModal('chatModal')" style="background:none; color:white; border:none; font-size:20px;">✕</button>
-    </div>
-    <div id="chatBox" style="flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column;"></div>
-    <div style="padding:15px; background:#111; display:flex; gap:10px;">
-        <input type="text" id="chatInput" placeholder="admin:Pesan atau Biasa..." style="flex:1; padding:12px; border-radius:20px; border:none; background:#222; color:white;">
-        <button onclick="kirimPesanJB()" style="background:var(--primary); padding:10px 20px; border:none; border-radius:20px; color:white;">Kirim</button>
-    </div>
-</div>
+            container.innerHTML = filtered.map(item => `
+                <div class="item-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="sku-badge">${item.sku}</span>
+                        <small style="font-size:10px; opacity:0.5;">${item.waktu}</small>
+                    </div>
+                    
+                    <div class="detail-grid">
+                        <div class="detail-row">
+                            <span class="label">Harga:</span>
+                            <span style="color:var(--primary)">Rp ${parseInt(item.harga).toLocaleString('id-ID')}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Deskripsi:</span>
+                            <span>${item.deskripsi.substring(0, 50)}...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Nomor Penjual:</span>
+                            <span style="color:var(--accent); font-weight:bold;">+${item.nomerPenjual}</span>
+                        </div>
+                    </div>
 
-<script>
-    // --- SYSTEM NAVIGATION ---
-    function switchPage(pageId, title, el) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('page-' + pageId).classList.add('active');
-        document.getElementById('navTitle').innerText = title;
-        el.classList.add('active');
-        
-        if(pageId === 'store') renderStore();
-        if(pageId === 'admin') loadVpsOrders();
-    }
+                    <a href="https://wa.me/${item.nomerPenjual}?text=Halo Penjual, ada yang nanya barang Kode: ${item.sku}. Apakah masih ada?" class="btn-wa">
+                        <i class="fab fa-whatsapp"></i> CHAT PENJUAL SEKARANG
+                    </a>
 
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    // --- JB STORE LOGIC ---
-    let dbJB = JSON.parse(localStorage.getItem('raja_mc_db')) || [];
-    let chatDB = JSON.parse(localStorage.getItem('raja_mc_chats')) || {};
-    let currentRoom = "";
-
-    function renderStore() {
-        const grid = document.getElementById('productGrid');
-        if (dbJB.length === 0) { grid.innerHTML = "<center style='grid-column:1/-1; margin-top:50px;'>NO STOCK</center>"; return; }
-        grid.innerHTML = dbJB.map((p) => `
-            <div class="card">
-                <img src="${p.fotos[0]}" onclick="bukaChat('${p.id}', '${p.judul}')">
-                <div class="info">
-                    <div style="font-size:11px; height:30px; overflow:hidden;">${p.judul}</div>
-                    <div class="price">Rp ${Number(p.harga).toLocaleString('id-ID')}</div>
-                    <button class="btn-chat" onclick="bukaChat('${p.id}', '${p.judul}')">DISKUSI MC</button>
+                    <button class="btn-del" onclick="deleteItem(${item.id})">Hapus Data</button>
                 </div>
-            </div>
-        `).reverse().join('');
-    }
+            `).join('');
+        }
 
-    async function prosesUploadJB() {
-        const judul = document.getElementById('upJudul').value;
-        const harga = document.getElementById('upHarga').value;
-        const files = document.getElementById('upFotoFile').files;
-        if(!judul || !harga || files.length === 0) return alert("Lengkapi Data!");
+        function deleteItem(id) {
+            if(confirm("Hapus postingan ini dari database?")) {
+                let listJB = JSON.parse(localStorage.getItem("dataJB")) || [];
+                listJB = listJB.filter(i => i.id !== id);
+                localStorage.setItem("dataJB", JSON.stringify(listJB));
+                searchProduct(); // Refresh list
+            }
+        }
 
-        const allFotos = await Promise.all(Array.from(files).map(f => {
-            return new Promise(res => {
-                const reader = new FileReader();
-                reader.onload = e => res(e.target.result);
-                reader.readAsDataURL(f);
-            });
-        }));
-
-        const id = "ID-" + Date.now();
-        dbJB.push({ id, judul, harga, fotos: allFotos });
-        localStorage.setItem('raja_mc_db', JSON.stringify(dbJB));
-        chatDB[id] = [{sender: "SISTEM", text: `Room Transaksi: ${judul}`, type: "mc"}];
-        localStorage.setItem('raja_mc_chats', JSON.stringify(chatDB));
-        location.reload();
-    }
-
-    function bukaChat(id, judul) {
-        currentRoom = id;
-        document.getElementById('chatTitle').innerText = judul;
-        openModal('chatModal');
-        loadMessagesJB();
-    }
-
-    function loadMessagesJB() {
-        const box = document.getElementById('chatBox');
-        const msgs = chatDB[currentRoom] || [];
-        box.innerHTML = msgs.map(m => {
-            let cls = m.sender === "Admin" ? "msg-me" : "msg-them";
-            return `<div class="bubble ${cls}"><small style="display:block; font-size:9px; opacity:0.6;">${m.sender}</small>${m.text}</div>`;
-        }).join('');
-        box.scrollTop = box.scrollHeight;
-    }
-
-    function kirimPesanJB() {
-        const input = document.getElementById('chatInput');
-        let text = input.value;
-        let sender = "User";
-        if(text.startsWith("admin:")) { sender = "Admin"; text = text.replace("admin:",""); }
-        chatDB[currentRoom].push({sender, text});
-        localStorage.setItem('raja_mc_chats', JSON.stringify(chatDB));
-        input.value = "";
-        loadMessagesJB();
-    }
-
-    // --- ADMIN VPS LOGIC ---
-    function loadVpsOrders() {
-        const container = document.getElementById("orderList");
-        const orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
-        if (orders.length === 0) { container.innerHTML = "<center>NO PENDING ORDERS</center>"; return; }
-        container.innerHTML = orders.map((o, i) => `
-            <div class="order-card">
-                <b>Target:</b> ${o.nomor} | <b>Paket:</b> ${o.paket} <br>
-                <img src="${o.bukti}" class="bukti-img">
-                <textarea id="note-${i}" placeholder="Note/Ulasan Admin..."></textarea>
-                <div style="display:flex; gap:10px">
-                    <button class="btn-acc" onclick="handleVps(${i}, 'ACC')">ACC</button>
-                    <button class="btn-rej" onclick="handleVps(${i}, 'REJECT')">REJECT</button>
-                </div>
-            </div>
-        `).join("");
-    }
-
-    function handleVps(index, type) {
-        let orders = JSON.parse(localStorage.getItem("vpsOrders"));
-        let item = orders[index];
-        let note = document.getElementById(`note-${index}`).value || "Selesai";
-        let logs = JSON.parse(localStorage.getItem("aktivitasLogs")) || [];
-        
-        logs.unshift({
-            owner: item.nomor,
-            teks: type === 'ACC' ? `🚀 AKTIF: ${item.paket} | Note: ${note}` : `❌ DITOLAK: ${item.paket} | Reason: ${note}`,
-            waktu: new Date().toLocaleString(),
-            status: type === 'ACC' ? 'sukses' : 'gagal'
-        });
-
-        localStorage.setItem("aktivitasLogs", JSON.stringify(logs));
-        orders.splice(index, 1);
-        localStorage.setItem("vpsOrders", JSON.stringify(orders));
-        alert("VPS Action Success!");
-        loadVpsOrders();
-    }
-
-    // Initial Load
-    renderStore();
-</script>
+        // Jalankan render awal
+        searchProduct();
+    </script>
 </body>
 </html>
+
 
 
