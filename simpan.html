@@ -107,12 +107,10 @@
             const modal = document.getElementById('productModal');
             const slider = document.getElementById('detailSlider');
             
-            // 1. Setup Slider & Reset Index
             slider.innerHTML = item.fotos.map(f => `<img src="${f}" onclick="toggleZoom(this)">`).join('');
             slider.scrollLeft = 0;
             slideIndex = 0;
 
-            // 2. Tampilkan Data
             const harga = parseInt(item.harga).toLocaleString('id-ID');
             document.getElementById('detailPrice').innerText = `Rp ${harga}`;
             document.getElementById('detailTitle').innerText = item.judul;
@@ -123,7 +121,7 @@
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
 
-            // 3. Jalankan Auto Slide (Diberi delay sedikit agar ClientWidth terbaca)
+            // Logika Auto Slide 5 Detik
             clearInterval(autoSlideInterval);
             if (item.fotos.length > 1) {
                 setTimeout(() => {
@@ -131,11 +129,14 @@
                     autoSlideInterval = setInterval(() => {
                         const isZoomed = slider.querySelector('.zoomed');
                         if (!isZoomed) {
+                            // Update index berdasarkan posisi scroll manual terakhir
+                            slideIndex = Math.round(slider.scrollLeft / width);
                             slideIndex++;
+                            
                             if (slideIndex >= item.fotos.length) slideIndex = 0;
                             slider.scrollTo({ left: width * slideIndex, behavior: 'smooth' });
                         }
-                    }, 3500);
+                    }, 5000); // 5000ms = 5 Detik
                 }, 100);
             }
         }
@@ -162,5 +163,3 @@
     </script>
 </body>
 </html>
-
-
