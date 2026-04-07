@@ -146,40 +146,114 @@
 
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
+const ADMIN_WA = "639319692180"; 
+let currentProducts = [];
+let autoSlideInterval;
 
-            // 4. AUTO SLIDE 3.5 DETIK
-            clearInterval(autoSlideInterval);
-            if (item.fotos.length > 1) {
-                let slideIdx = 0;
-                autoSlideInterval = setInterval(() => {
-                    // Cek jika user sedang men-zoom, hentikan slide sementara
-                    const isZoomed = slider.querySelector('.zoomed');
-                    if (!isZoomed) {
-                        slideIdx++;
-                        if (slideIdx >= item.fotos.length) slideIdx = 0;
-                        slider.scrollTo({ 
-                            left: slider.offsetWidth * slideIdx, 
-                            behavior: 'smooth' 
-                        });
-                    }
-                }, 3500);
+function renderMarket() {
+    const container = document.getElementById('marketList');
+    const rawData = JSON.parse(localStorage.getItem("dataJB")) || [];
+    currentProducts = [...rawData].reverse();
+
+    if(currentProducts.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-box-open fa-3x"></i>
+                <p style="margin-top:10px;">Belum ada produk tersedia.</p>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = currentProducts.map((item, index) => {
+        const cover = (item.fotos && item.fotos.length > 0) ? item.fotos[0] : 'https://via.placeholder.com/150';
+        return `
+        <div class="product-card" onclick="openDetail(${index})">
+            <div class="img-card">
+                <img src="${cover}" loading="lazy">
+            </div>
+            <div class="info">
+                <p class="p-title">${item.judul || 'Produk XTR'}</p>
+                <p class="p-price">Rp ${parseInt(item.harga).toLocaleString('id-ID')}</p>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
+function openDetail(index) {
+    const item = currentProducts[index];
+    const modal = document.getElementById('productModal');
+    const slider = document.getElementById('detailSlider');
+    const hargaFormatted = parseInt(item.harga).toLocaleString('id-ID');
+
+    // 1. Isi Foto Slider & Reset Zoom
+    slider.innerHTML = item.fotos.map(f => `<img src="${f}" onclick="toggleZoom(this)">`).join('');
+    slider.scrollLeft = 0;
+    
+    // 2. Isi Tulisan
+    document.getElementById('detailPrice').innerText = `Rp ${hargaFormatted}`;
+    document.getElementById('detailTitle').innerText = item.judul || 'Produk XTR';
+    document.getElementById('detailSKU').innerText = `KODE: ${item.sku || 'XTR-UNKNOWN'}`;
+    document.getElementById('detailDesc').innerText = item.deskripsi || '';
+
+    // 3. Link WhatsApp
+    const pesan = `Halo Admin, saya mau beli barang ini:%0A%0AKode: ${item.sku}%0AHarga: Rp ${hargaFormatted}%0A%0AHubungkan saya dengan penjual.`;
+    document.getElementById('btnBeli').href = `https://wa.me/${ADMIN_WA}?text=${pesan}`;
+
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+
+    // 4. LOGIKA AUTO SLIDE 3.5 DETIK (DIPERBAIKI)
+    clearInterval(autoSlideInterval);
+    if (item.fotos.length > 1) {
+        let slideIdx = 0;
+        autoSlideInterval = setInterval(() => {
+            // Cek apakah ada gambar yang sedang di-zoom
+            const isZoomed = slider.querySelector('.zoomed');
+            
+            if (!isZoomed) {
+                slideIdx++;
+                if (slideIdx >= item.fotos.length) slideIdx = 0;
+                
+                // Gunakan lebar slider saat ini untuk geser
+                const slideWidth = slider.clientWidth;
+                slider.scrollTo({ 
+                    left: slideWidth * slideIdx, 
+                    behavior: 'smooth' 
+                });
             }
-        }
+        }, 3500);
+    }
+}
 
-        // Fungsi Perbesar Gambar (Toggle)
-        function toggleZoom(img) { 
-            img.classList.toggle('zoomed'); 
-        }
+// FUNGSI ZOOM (DIPERBAIKI)
+function toggleZoom(img) { 
+    const slider = document.getElementById('detailSlider');
+    
+    if (img.classList.contains('zoomed')) {
+        // Jika sudah zoom, maka kecilkan
+        img.classList.remove('zoomed');
+        slider.style.overflowX = "auto"; // Kembalikan geser antar foto
+    } else {
+        // Jika belum zoom, maka besarkan
+        // Reset zoom gambar lain dulu
+        slider.querySelectorAll('img').forEach(i => i.classList.remove('zoomed'));
+        
+        img.classList.add('zoomed');
+        slider.style.overflowX = "hidden"; // Kunci geser foto agar fokus zoom
+    }
+}
 
-        function closeDetail() {
-            clearInterval(autoSlideInterval); // Stop slide saat modal tutup
-            document.getElementById('productModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+function closeDetail() {
+    clearInterval(autoSlideInterval); 
+    document.getElementById('productModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    // Reset semua zoom saat tutup
+    document.querySelectorAll('.detail-slider img').forEach(i => i.classList.remove('zoomed'));
+}
 
-        // Jalankan saat halaman dibuka
-        window.onload = renderMarket;
-    </script>
+window.onload = renderMarket;
+
 </body>
 </html>
 
