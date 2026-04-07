@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JB STORE - Raja MC</title>
+    <style>
+        :root { --primary: #ff4500; --bg: #0f0f0f; --card: #1e1e1e; --green: #25D366; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: white; padding-bottom: 80px; }
+        nav { background: var(--primary); padding: 18px; text-align: center; font-weight: bold; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .container { padding: 15px; max-width: 900px; margin: auto; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #333; position: relative; }
+        .card img { width: 100%; height: 160px; object-fit: cover; cursor: pointer; }
+        .info { padding: 10px; }
+        .price { color: var(--primary); font-weight: bold; font-size: 15px; }
+        .badge-foto { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px; font-size: 10px; z-index: 2; }
+        .btn-chat { display: block; background: var(--green); color: white; text-align: center; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; margin-top: 8px; cursor: pointer; border: none; width: 100%; }
+        .btn-wa { display: block; background: #008cff; color: white; text-align: center; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; margin-top: 5px; text-decoration: none; }
+        .btn-add { position: fixed; bottom: 20px; right: 20px; background: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; border: none; color: white; z-index: 99; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; }
+        .modal-header { background: #222; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
+        .modal-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        .bubble { padding: 10px 15px; border-radius: 15px; max-width: 85%; font-size: 14px; margin-bottom: 8px; }
+        .msg-mc { background: var(--primary); align-self: center; text-align: center; font-weight: bold; width: 90%; }
+        .msg-me { background: #005c4b; align-self: flex-end; }
+        .msg-them { background: #333; align-self: flex-start; }
+        .chat-galeri { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; }
+        .chat-galeri img { height: 150px; border-radius: 8px; flex-shrink: 0; border: 1px solid #555; }
+        .chat-footer { padding: 15px; background: #1e1e1e; display: flex; gap: 10px; }
+        .chat-footer input { flex: 1; padding: 12px; border-radius: 25px; border: none; background: #333; color: white; outline: none; }
+    </style>
+</head>
+<body>
+
+<nav>RAJA MC STORE</nav>
+
+<div class="container">
+    <div class="grid" id="productGrid"></div>
+</div>
+
+<button class="btn-add" onclick="openModal('uploadModal')">+</button>
+
+<div id="uploadModal" class="modal">
+    <div class="modal-header"><span>Upload Akun</span><button onclick="closeModal('uploadModal')" style="background:none; color:white; border:none; font-size:25px;">✕</button></div>
+    <div class="modal-body">
+        <input type="text" id="upJudul" placeholder="Judul Akun" style="width:100%; padding:12px; margin-bottom:10px; background:#222; color:white; border:1px solid #444; border-radius:8px;">
+        <input type="number" id="upHarga" placeholder="Harga (Rp)" style="width:100%; padding:12px; margin-bottom:10px; background:#222; color:white; border:1px solid #444; border-radius:8px;">
+        <label style="font-size:12px; color:#aaa;">Pilih Foto (Bisa lebih dari 1):</label>
+        <input type="file" id="upFotoFile" accept="image/*" multiple style="margin-bottom:15px; color:white;">
+        <textarea id="upSpek" rows="3" placeholder="Spek Akun" style="width:100%; padding:12px; margin-bottom:15px; background:#222; color:white; border:1px solid #444; border-radius:8px;"></textarea>
+        <button onclick="prosesUpload()" id="btnPost" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">POSTING SEKARANG</button>
+    </div>
+</div>
+
+<div id="chatModal" class="modal">
+    <div class="modal-header"><span id="chatTitle">Room</span><button onclick="closeModal('chatModal')" style="background:none; color:white; border:none; font-size:25px;">✕</button></div>
+    <div id="chatBox" class="modal-body"></div>
+    <div class="chat-footer">
+        <input type="text" id="chatInput" placeholder="Ketik pesan...">
+        <button onclick="kirimPesan()" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:25px; font-weight:bold;">Kirim</button>
+    </div>
+</div>
+
+<script>
+    let db = JSON.parse(localStorage.getItem('raja_mc_db')) || [];
+    let chatDB = JSON.parse(localStorage.getItem('raja_mc_chats')) || {};
+    let currentRoom = "";
+
+    function renderProduk() {
+        const grid = document.getElementById('productGrid');
+        if (db.length === 0) {
+            grid.innerHTML = "<p style='grid-column:1/-1; text-align:center; opacity:0.5;'>Belum ada stok.</p>";
+            return;
+        }
+        grid.innerHTML = db.map((p) => `
+            <div class="card">
+                <span class="badge-foto">${p.fotos ? p.fotos.length : 0} Foto</span>
+                <img src="${p.fotos ? p.fotos[0] : ''}" onclick="bukaChat('${p.id}', '${p.judul}')">
+                <div class="info">
+                    <div style="font-size: 12px; font-weight: bold; height: 32px; overflow: hidden;">${p.judul}</div>
+                    <div class="price">Rp ${Number(p.harga).toLocaleString('id-ID')}</div>
+                    <button class="btn-chat" onclick="bukaChat('${p.id}', '${p.judul}')">Beli & Chat MC</button>
+                    <a href="https://wa.me/628123456789?text=Halo Raja MC, saya minat akun: ${p.judul}" class="btn-wa">Hubungi Penjual</a>
+                </div>
+            </div>
+        `).reverse().join('');
+    }
+
+    function compressImage(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (e) => {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 500; canvas.height = img.height * (500 / img.width);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.6));
+                }
+            }
+        });
+    }
+
+    async function prosesUpload() {
+        const judul = document.getElementById('upJudul').value;
+        const harga = document.getElementById('upHarga').value;
+        const files = document.getElementById('upFotoFile').files;
+        const btn = document.getElementById('btnPost');
+        if(!judul || !harga || files.length === 0) return alert("Lengkapi data dan foto!");
+
+        btn.innerText = "Memproses..."; btn.disabled = true;
+
+        const fotoPromises = Array.from(files).map(f => compressImage(f));
+        const allFotos = await Promise.all(fotoPromises);
+        const id = "ID-" + Date.now();
+
+        db.push({ id, judul, harga, fotos: allFotos });
+        localStorage.setItem('raja_mc_db', JSON.stringify(db));
+        
+        chatDB[id] = [
+            {sender: "SISTEM", text: `Room Transaksi: ${judul}`, type: "mc"},
+            {sender: "SISTEM", images: allFotos, isGaleri: true, type: "mc"}
+        ];
+        localStorage.setItem('raja_mc_chats', JSON.stringify(chatDB));
+        location.reload();
+    }
+
+    function bukaChat(roomId, judul) {
+        currentRoom = roomId;
+        openModal('chatModal');
+        document.getElementById('chatTitle').innerText = judul;
+        loadMessages();
+    }
+
+    function loadMessages() {
+        const box = document.getElementById('chatBox');
+        const messages = chatDB[currentRoom] || [];
+        box.innerHTML = messages.map(m => {
+            if(m.type === "mc") {
+                if(m.isGaleri) return `<div class="chat-galeri">${m.images.map(i => `<img src="${i}">`).join('')}</div>`;
+                return `<div class="bubble msg-mc">${m.text}</div>`;
+            }
+            let isMe = m.sender === "Saya" || m.sender === "Admin";
+            return `<div class="bubble ${isMe ? 'msg-me' : 'msg-them'}">
+                <small style="display:block; font-size:9px; opacity:0.6;">${m.sender}</small>${m.text}
+            </div>`;
+        }).join('');
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function kirimPesan() {
+        const input = document.getElementById('chatInput');
+        let text = input.value.trim();
+        if(!text) return;
+        let sender = text.startsWith("admin:") ? "Admin" : "Saya";
+        if(sender === "Admin") text = text.replace("admin:", "");
+
+        chatDB[currentRoom].push({ sender, text, type: "chat" });
+        localStorage.setItem('raja_mc_chats', JSON.stringify(chatDB));
+        input.value = "";
+        loadMessages();
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onload = renderProduk;
+</script>
+</body>
+</html>
