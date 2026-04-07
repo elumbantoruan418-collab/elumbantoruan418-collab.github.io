@@ -6,47 +6,125 @@
     <title>XTR JB // Upload Product</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --bg: #030305; --card: #0d0d1a; --primary: #38bdf8; --accent: #10b981; }
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; padding: 20px; }
-        .container { max-width: 500px; margin: 0 auto; background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.2); }
-        h2 { color: var(--primary); margin-bottom: 20px; text-align: center; }
+        :root { 
+            --bg: #030305; 
+            --card: #0d0d1a; 
+            --primary: #ee4d2d; /* Oranye Shopee agar matching */
+            --accent: #38bdf8; 
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            background: var(--bg); 
+            color: white; 
+            font-family: 'Inter', sans-serif; 
+            padding: 20px; 
+        }
+
+        .container { 
+            max-width: 500px; 
+            margin: 0 auto; 
+            background: var(--card); 
+            padding: 25px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(56, 189, 248, 0.1); 
+        }
+
+        h2 { color: var(--accent); margin-bottom: 20px; text-align: center; font-size: 1.2rem; }
+
         .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 12px; color: var(--primary); margin-bottom: 5px; }
-        input, textarea { width: 100%; padding: 12px; background: #151c2c; border: 1px solid #1e293b; border-radius: 10px; color: white; }
-        .btn-upload { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 10px; color: var(--bg); font-weight: 800; cursor: pointer; margin-top: 10px; }
-        #imagePreview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
-        .preview-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary); }
+        
+        label { 
+            display: block; 
+            font-size: 11px; 
+            color: var(--accent); 
+            margin-bottom: 5px; 
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        input, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            background: #151c2c; 
+            border: 1px solid #1e293b; 
+            border-radius: 10px; 
+            color: white; 
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, textarea:focus { border-color: var(--accent); }
+
+        .btn-upload { 
+            width: 100%; 
+            padding: 15px; 
+            background: var(--primary); 
+            border: none; 
+            border-radius: 10px; 
+            color: white; 
+            font-weight: 800; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            text-transform: uppercase;
+        }
+
+        #imagePreview { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px; 
+            margin-top: 10px; 
+        }
+
+        .preview-img { 
+            width: 100%; 
+            height: 80px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            border: 1px solid var(--accent); 
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2><i class="fas fa-shopping-cart"></i> POST BARANG BARU</h2>
+    <h2><i class="fas fa-plus-circle"></i> TAMBAH PRODUK BARU</h2>
     <form id="jbForm">
         <div class="form-group">
-            <label>POTO PRODUK (Bisa banyak)</label>
+            <label><i class="fas fa-camera"></i> Foto Produk (Bisa Pilih Banyak)</label>
             <input type="file" id="poto" accept="image/*" multiple required onchange="previewImages()">
             <div id="imagePreview"></div>
         </div>
+
         <div class="form-group">
-            <label>HARGA (Rp)</label>
-            <input type="number" id="harga" placeholder="Contoh: 50000" required>
+            <label><i class="fas fa-tag"></i> Judul Produk</label>
+            <input type="text" id="judul" placeholder="Contoh: Akun FF Old Evo Gun 3" required>
         </div>
+
         <div class="form-group">
-            <label>DESKRIPSI BARANG</label>
-            <textarea id="deskripsi" rows="4" placeholder="Spek akun/jasa..." required></textarea>
+            <label><i class="fas fa-money-bill-wave"></i> Harga (Rp)</label>
+            <input type="number" id="harga" placeholder="Masukkan angka saja..." required>
         </div>
+
         <div class="form-group">
-            <label>NOMOR HP PENJUAL (Sembunyi dari Pembeli)</label>
-            <input type="text" id="nomorPenjual" placeholder="628xxxx" required>
+            <label><i class="fas fa-align-left"></i> Deskripsi Singkat</label>
+            <textarea id="deskripsi" rows="3" placeholder="Detail spek singkat..." required></textarea>
         </div>
-        <button type="submit" class="btn-upload">SIMPAN KE MARKET</button>
+
+        <div class="form-group">
+            <label><i class="fas fa-phone"></i> Nomor HP Penjual</label>
+            <input type="text" id="nomorPenjual" placeholder="628xxxx (Gunakan kode negara)" required>
+        </div>
+
+        <button type="submit" class="btn-upload">POSTING KE MARKET</button>
     </form>
 </div>
 
 <script>
     let base64Images = [];
 
+    // Fungsi Preview Gambar
     function previewImages() {
         const preview = document.getElementById('imagePreview');
         preview.innerHTML = "";
@@ -66,26 +144,35 @@
         });
     }
 
+    // Fungsi Simpan Data
     document.getElementById('jbForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
         const dataBarang = {
             id: Date.now(),
+            sku: "XTR-" + Math.floor(10000 + Math.random() * 90000),
             fotos: base64Images,
+            judul: document.getElementById('judul').value, // Mengambil Judul
             harga: document.getElementById('harga').value,
             deskripsi: document.getElementById('deskripsi').value,
             nomerPenjual: document.getElementById('nomorPenjual').value,
             waktu: new Date().toLocaleString('id-ID')
         };
 
+        // Ambil data lama dari localStorage
         const listBarang = JSON.parse(localStorage.getItem("dataJB")) || [];
+        
+        // Tambahkan data baru
         listBarang.push(dataBarang);
+        
+        // Simpan kembali
         localStorage.setItem("dataJB", JSON.stringify(listBarang));
 
-        alert("Berhasil disimpan ke simpan.html!");
-        window.location.href = "simpan.html";
+        alert("Produk Berhasil Diupload!");
+        window.location.href = "simpan.html"; // Pastikan nama file marketplace kamu benar
     });
 </script>
 </body>
 </html>
+
 
