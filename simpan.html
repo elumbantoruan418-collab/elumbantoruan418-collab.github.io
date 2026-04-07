@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XTR // Simpan Produk</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --bg: #030305; 
+            --card: #0d0d1a; 
+            --primary: #38bdf8; 
+            --accent: #10b981; 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background: var(--bg); 
+            color: white; 
+            font-family: 'Rajdhani', sans-serif; 
+            padding: 15px; 
+        }
+
+        .header { text-align: center; margin-bottom: 25px; padding-top: 10px; }
+        .header h2 { color: var(--primary); letter-spacing: 2px; text-transform: uppercase; }
+
+        .product-card { 
+            background: var(--card); 
+            border-radius: 20px; 
+            overflow: hidden; 
+            margin-bottom: 25px; 
+            border: 1px solid rgba(56, 189, 248, 0.1); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Container untuk banyak foto */
+        .img-slider { 
+            display: flex; 
+            overflow-x: auto; 
+            gap: 10px; 
+            padding: 15px; 
+            background: rgba(0,0,0,0.3);
+            scroll-snap-type: x mandatory;
+        }
+        
+        .img-slider::-webkit-scrollbar { height: 4px; }
+        .img-slider::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .img-slider img { 
+            height: 200px; 
+            border-radius: 12px; 
+            scroll-snap-align: start; 
+            flex-shrink: 0; 
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .info { padding: 20px; }
+        
+        .sku-box { 
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; 
+            color: var(--accent); 
+            background: rgba(16, 185, 129, 0.1); 
+            padding: 4px 10px; 
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .price { 
+            font-size: 26px; 
+            font-weight: 800; 
+            color: var(--primary); 
+            margin-bottom: 10px; 
+        }
+
+        .desc { 
+            font-size: 14px; 
+            opacity: 0.8; 
+            line-height: 1.6; 
+            margin-bottom: 20px;
+            color: #cbd5e1;
+        }
+
+        .btn-buy { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--primary); 
+            color: #000; 
+            border: none; 
+            border-radius: 15px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-buy:active { transform: scale(0.98); opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2><i class="fas fa-store"></i> XTR Marketplace</h2>
+        <p style="font-size: 12px; opacity: 0.5;">Secure Transaction via Admin</p>
+    </div>
+
+    <div id="marketList"></div>
+
+    <script>
+        // Nomor Admin yang dituju
+        const ADMIN_WA = "639319692180"; 
+
+        function renderMarket() {
+            const list = JSON.parse(localStorage.getItem("dataJB")) || [];
+            const container = document.getElementById('marketList');
+
+            if(list.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; margin-top:100px; opacity:0.2;">
+                        <i class="fas fa-box-open fa-4x"></i>
+                        <p style="margin-top:15px;">Belum ada produk tersedia.</p>
+                    </div>`;
+                return;
+            }
+
+            // Render produk dari yang terbaru
+            container.innerHTML = list.map(item => {
+                // Pastikan kode unik tersedia, jika tidak buat baru secara otomatis
+                const itemSKU = item.sku || "XTR-" + Math.floor(Math.random() * 90000);
+                
+                return `
+                <div class="product-card">
+                    <div class="img-slider">
+                        ${item.fotos.map(img => `<img src="${img}" alt="Product image">`).join('')}
+                    </div>
+                    <div class="info">
+                        <div class="sku-box">KODE: ${itemSKU}</div>
+                        <div class="price">Rp ${parseInt(item.harga).toLocaleString('id-ID')}</div>
+                        <p class="desc">${item.deskripsi}</p>
+                        
+                        <a href="https://wa.me/${ADMIN_WA}?text=Halo Admin, saya mau beli barang ini:%0A%0AKode: ${itemSKU}%0AHarga: Rp ${item.harga}%0A%0AHubungkan saya dengan penjual." 
+                           class="btn-buy">
+                            <i class="fab fa-whatsapp"></i> Beli Sekarang
+                        </a>
+                    </div>
+                </div>
+                `;
+            }).reverse().join('');
+        }
+
+        // Jalankan fungsi saat halaman dimuat
+        window.onload = renderMarket;
+    </script>
+</body>
+</html>
