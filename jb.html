@@ -3,59 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XTR // Simpan Produk</title>
+    <title>XTR JB // Upload Product</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
         :root { --bg: #030305; --card: #0d0d1a; --primary: #38bdf8; --accent: #10b981; }
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; padding: 15px; }
-        .product-card { background: var(--card); border-radius: 20px; overflow: hidden; margin-bottom: 20px; border: 1px solid rgba(56, 189, 248, 0.1); }
-        .img-slider { display: flex; overflow-x: auto; gap: 8px; padding: 12px; scroll-snap-type: x mandatory; }
-        .img-slider img { height: 180px; border-radius: 12px; scroll-snap-align: start; flex-shrink: 0; }
-        .info { padding: 15px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .sku-tag { font-size: 10px; color: var(--accent); font-family: monospace; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px; }
-        .price { font-size: 22px; font-weight: 800; color: var(--primary); margin: 8px 0; }
-        .desc { font-size: 13px; opacity: 0.8; line-height: 1.5; margin-bottom: 15px; }
-        .btn-buy { 
-            width: 100%; padding: 14px; background: var(--primary); color: #000; 
-            border: none; border-radius: 12px; font-weight: 800; cursor: pointer; 
-            text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 10px; 
-        }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        h2 { color: var(--primary); margin-bottom: 20px; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 12px; color: var(--primary); margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 12px; background: #151c2c; border: 1px solid #1e293b; border-radius: 10px; color: white; }
+        .btn-upload { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 10px; color: var(--bg); font-weight: 800; cursor: pointer; margin-top: 10px; }
+        #imagePreview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .preview-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary); }
     </style>
 </head>
 <body>
 
-    <h2 style="text-align:center; margin-bottom:20px; color:var(--primary);">XTR MARKETPLACE</h2>
-    <div id="marketList"></div>
+<div class="container">
+    <h2><i class="fas fa-shopping-cart"></i> POST BARANG BARU</h2>
+    <form id="jbForm">
+        <div class="form-group">
+            <label>POTO PRODUK (Bisa banyak)</label>
+            <input type="file" id="poto" accept="image/*" multiple required onchange="previewImages()">
+            <div id="imagePreview"></div>
+        </div>
+        <div class="form-group">
+            <label>HARGA (Rp)</label>
+            <input type="number" id="harga" placeholder="Contoh: 50000" required>
+        </div>
+        <div class="form-group">
+            <label>DESKRIPSI BARANG</label>
+            <textarea id="deskripsi" rows="4" placeholder="Spek akun/jasa..." required></textarea>
+        </div>
+        <div class="form-group">
+            <label>NOMOR HP PENJUAL (Sembunyi dari Pembeli)</label>
+            <input type="text" id="nomorPenjual" placeholder="628xxxx" required>
+        </div>
+        <button type="submit" class="btn-upload">SIMPAN KE MARKET</button>
+    </form>
+</div>
 
-    <script>
-        const ADMIN_NUMBER = "639319692180";
+<script>
+    let base64Images = [];
 
-        function loadMarket() {
-            const list = JSON.parse(localStorage.getItem("dataJB")) || [];
-            const container = document.getElementById('marketList');
+    function previewImages() {
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = "";
+        base64Images = [];
+        const files = document.getElementById('poto').files;
 
-            if(list.length === 0) {
-                container.innerHTML = "<div style='text-align:center; margin-top:50px; opacity:0.3;'><i class='fas fa-box-open fa-3x'></i><p>Belum ada barang diupload.</p></div>";
-                return;
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                base64Images.push(e.target.result);
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'preview-img';
+                preview.appendChild(img);
             }
+            reader.readAsDataURL(file);
+        });
+    }
 
-            container.innerHTML = list.map(item => `
-                <div class="product-card">
-                    <div class="img-slider">
-                        ${item.fotos.map(img => `<img src="${img}" alt="Product">`).join('')}
-                    </div>
-                    <div class="info">
-                        <span class="sku-tag">CODE: ${item.sku}</span>
-                        <div class="price">Rp ${parseInt(item.harga).toLocaleString('id-ID')}</div>
-                        <p class="desc">${item.deskripsi}</p>
-                        <a href="https://wa.me/${ADMIN_NUMBER}?text=Halo Admin, saya ingin beli barang dengan Kode: ${item.sku}" class="btn-buy">
-                            <i class="fab fa-whatsapp"></i> HUBUNGI ADMIN MC
-                        </a>
-                    </div>
-                </div>
-            `).reverse().join('');
-        }
-        loadMarket();
-    </script>
+    document.getElementById('jbForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const dataBarang = {
+            id: Date.now(),
+            fotos: base64Images,
+            harga: document.getElementById('harga').value,
+            deskripsi: document.getElementById('deskripsi').value,
+            nomerPenjual: document.getElementById('nomorPenjual').value,
+            waktu: new Date().toLocaleString('id-ID')
+        };
+
+        const listBarang = JSON.parse(localStorage.getItem("dataJB")) || [];
+        listBarang.push(dataBarang);
+        localStorage.setItem("dataJB", JSON.stringify(listBarang));
+
+        alert("Berhasil disimpan ke simpan.html!");
+        window.location.href = "simpan.html";
+    });
+</script>
 </body>
 </html>
+
