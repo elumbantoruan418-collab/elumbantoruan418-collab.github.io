@@ -3,114 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XTR // ADMIN TERMINAL</title>
+    <title>XTR // SUPREME ADMIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --bg: #030305; --card: #0d0d1a; --primary: #38bdf8; --accent: #10b981; --red: #ef4444; }
+        :root { --bg: #030305; --card: #0d0d1a; --primary: #38bdf8; --accent: #10b981; --red: #ef4444; --sky: #0ea5e9; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; }
-        body { background: var(--bg); color: white; padding: 20px; }
+        body { background: var(--bg); color: white; padding-bottom: 30px; }
         
-        .header { border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { font-size: 20px; color: var(--primary); }
+        .header { background: var(--card); padding: 20px; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-size: 18px; color: var(--primary); letter-spacing: 1px; }
 
-        /* Search Box */
-        .search-box { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.3); margin-bottom: 25px; }
-        .search-box input { width: 100%; padding: 12px; background: #000; border: 1px solid #333; border-radius: 8px; color: var(--primary); font-weight: bold; margin-bottom: 10px; }
+        .container { padding: 15px; max-width: 600px; margin: auto; }
+
+        /* TAB SYSTEM */
+        .tab-menu { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; background: #151c2c; border: 1px solid #1e293b; color: #64748b; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .tab-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* STYLE VPS ACC/REJECT */
+        .order-card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid var(--sky); border-top: 1px solid rgba(255,255,255,0.05); }
+        .bukti-img { width: 100%; border-radius: 8px; margin: 10px 0; border: 1px solid #333; cursor: pointer; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-acc { background: var(--accent); color: black; border: none; padding: 12px; border-radius: 8px; flex: 2; font-weight: bold; cursor: pointer; }
+        .btn-rej { background: var(--red); color: white; border: none; padding: 12px; border-radius: 8px; flex: 1; font-weight: bold; cursor: pointer; }
+        textarea { width: 100%; background: #000; color: #38bdf8; border: 1px solid #333; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 12px; outline: none; }
+
+        /* STYLE JB TRACKER */
+        .search-box { background: var(--card); padding: 12px; border-radius: 10px; border: 1px solid rgba(56, 189, 248, 0.2); margin-bottom: 15px; }
+        .search-box input { width: 100%; padding: 10px; background: #000; border: 1px solid #333; border-radius: 6px; color: var(--primary); font-weight: bold; }
         
-        /* Result Card */
-        .item-card { background: var(--card); border-radius: 15px; border: 1px solid #1e293b; padding: 20px; margin-bottom: 15px; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .item-card { background: var(--card); border-radius: 15px; border: 1px solid #1e293b; padding: 15px; margin-bottom: 15px; }
+        .sku-badge { background: var(--primary); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; }
+        .btn-wa { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px; font-size: 13px; }
 
-        .sku-badge { background: var(--primary); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
-        .detail-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 15px 0; }
-        .detail-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 5px 0; font-size: 13px; }
-        .label { color: #64748b; }
-        
-        /* Action Buttons */
-        .btn-wa { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; background: var(--accent); color: white; border: none; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 10px; transition: 0.3s; }
-        .btn-wa:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
-        .btn-del { width: 100%; padding: 10px; background: transparent; color: var(--red); border: 1px solid var(--red); border-radius: 10px; margin-top: 10px; cursor: pointer; font-size: 12px; }
-
-        .empty { text-align: center; opacity: 0.4; padding: 50px 0; }
+        .empty { text-align: center; opacity: 0.3; padding: 40px 0; font-size: 13px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1><i class="fas fa-user-shield"></i> WINZ ADMIN</h1>
-        <span style="font-size: 10px; opacity: 0.5;">v.2.0.6</span>
+        <h1><i class="fas fa-terminal"></i> XTR ADMIN PANEL</h1>
+        <div id="clock" style="font-size: 12px; color: var(--accent);"></div>
     </div>
 
-    <div class="search-box">
-        <label style="font-size: 11px; margin-bottom: 8px; display: block;">TRACKING BARANG / SKU</label>
-        <input type="text" id="searchInput" placeholder="Ketik Kode Unik (Contoh: XTR-12345)" onkeyup="searchProduct()">
-    </div>
-
-    <div id="adminList">
+    <div class="container">
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="switchTab('vps', this)"><i class="fas fa-server"></i> VPS ORDERS</button>
+            <button class="tab-btn" onclick="switchTab('jb', this)"><i class="fas fa-shopping-cart"></i> JB TRACKER</button>
         </div>
 
+        <div id="section-vps" class="section active">
+            <h4 style="margin-bottom:15px; color:var(--sky); font-size:13px;"><i class="fas fa-clock"></i> PENDING REQUESTS</h4>
+            <div id="orderList">
+                </div>
+        </div>
+
+        <div id="section-jb" class="section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Cari Kode SKU / Deskripsi..." onkeyup="searchJB()">
+            </div>
+            <div id="adminListJB">
+                </div>
+        </div>
+    </div>
+
     <script>
-        function searchProduct() {
+        // --- SYSTEM TABS ---
+        function switchTab(type, el) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('section-' + type).classList.add('active');
+            
+            if(type === 'vps') loadVpsOrders();
+            if(type === 'jb') searchJB();
+        }
+
+        // --- LOGIC VPS (ACC / REJECT) ---
+        function loadVpsOrders() {
+            const container = document.getElementById("orderList");
+            const orders = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+            
+            if (orders.length === 0) {
+                container.innerHTML = '<div class="empty">NO PENDING ORDERS</div>';
+                return;
+            }
+
+            container.innerHTML = orders.map((o, i) => `
+                <div class="order-card">
+                    <div style="font-size:12px; margin-bottom:8px;">
+                        <span style="color:var(--primary)">Target:</span> ${o.nomor} <br>
+                        <span style="color:var(--primary)">Package:</span> ${o.paket}
+                    </div>
+                    <img src="${o.bukti}" class="bukti-img" onclick="window.open(this.src)">
+                    <textarea id="note-${i}" placeholder="Tulis rincian login / alasan reject..."></textarea>
+                    <div class="btn-group">
+                        <button class="btn-acc" onclick="handleAction(${i}, 'ACC')">APPROVE</button>
+                        <button class="btn-rej" onclick="handleAction(${i}, 'REJECT')">REJECT</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function handleAction(index, type) {
+            let orders = JSON.parse(localStorage.getItem("vpsOrders"));
+            let item = orders[index];
+            let note = document.getElementById(`note-${index}`).value || (type === 'ACC' ? "VPS Aktif!" : "Bukti tidak valid.");
+            
+            let logs = JSON.parse(localStorage.getItem("vpsLogs")) || []; // Log untuk user
+            
+            logs.unshift({
+                owner: item.nomor,
+                paket: item.paket,
+                status: type === 'ACC' ? 'sukses' : 'gagal',
+                pesan: note,
+                waktu: new Date().toLocaleString('id-ID')
+            });
+
+            localStorage.setItem("vpsLogs", JSON.stringify(logs));
+            orders.splice(index, 1);
+            localStorage.setItem("vpsOrders", JSON.stringify(orders));
+            
+            alert("Order " + type + " Success!");
+            loadVpsOrders();
+        }
+
+        // --- LOGIC JB (SEARCH SKU) ---
+        function searchJB() {
             const input = document.getElementById('searchInput').value.toUpperCase();
             const listJB = JSON.parse(localStorage.getItem("dataJB")) || [];
-            const container = document.getElementById('adminList');
+            const container = document.getElementById('adminListJB');
             
-            // Filter berdasarkan SKU atau Deskripsi
             const filtered = listJB.filter(item => 
                 item.sku.toUpperCase().includes(input) || 
                 item.deskripsi.toLowerCase().includes(input.toLowerCase())
             );
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div class="empty"><i class="fas fa-search"></i><p>Barang tidak ditemukan.</p></div>';
+                container.innerHTML = '<div class="empty">SKU Tidak Ditemukan</div>';
                 return;
             }
 
             container.innerHTML = filtered.map(item => `
                 <div class="item-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; justify-content:space-between;">
                         <span class="sku-badge">${item.sku}</span>
-                        <small style="font-size:10px; opacity:0.5;">${item.waktu}</small>
+                        <small style="font-size:9px; opacity:0.5;">${item.waktu}</small>
                     </div>
-                    
-                    <div class="detail-grid">
-                        <div class="detail-row">
-                            <span class="label">Harga:</span>
-                            <span style="color:var(--primary)">Rp ${parseInt(item.harga).toLocaleString('id-ID')}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Deskripsi:</span>
-                            <span>${item.deskripsi.substring(0, 50)}...</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Nomor Penjual:</span>
-                            <span style="color:var(--accent); font-weight:bold;">+${item.nomerPenjual}</span>
-                        </div>
+                    <div style="margin:10px 0; font-size:12px;">
+                        <p style="color:var(--primary); font-weight:bold;">Harga: Rp ${Number(item.harga).toLocaleString()}</p>
+                        <p style="opacity:0.7; margin-top:5px;">${item.deskripsi}</p>
+                        <p style="margin-top:10px; border-top:1px dashed #333; padding-top:5px;">
+                            <span style="color:var(--accent)">Penjual: ${item.nomerPenjual}</span>
+                        </p>
                     </div>
-
-                    <a href="https://wa.me/${item.nomerPenjual}?text=Halo Penjual, ada yang nanya barang Kode: ${item.sku}. Apakah masih ada?" class="btn-wa">
-                        <i class="fab fa-whatsapp"></i> CHAT PENJUAL SEKARANG
+                    <a href="https://wa.me/${item.nomerPenjual}?text=Halo, saya Admin Winz. Ada pembeli menanyakan Kode: ${item.sku}. Masih ready?" class="btn-wa">
+                        <i class="fab fa-whatsapp"></i> HUBUNGI PENJUAL
                     </a>
-
-                    <button class="btn-del" onclick="deleteItem(${item.id})">Hapus Data</button>
                 </div>
             `).join('');
         }
 
-        function deleteItem(id) {
-            if(confirm("Hapus postingan ini dari database?")) {
-                let listJB = JSON.parse(localStorage.getItem("dataJB")) || [];
-                listJB = listJB.filter(i => i.id !== id);
-                localStorage.setItem("dataJB", JSON.stringify(listJB));
-                searchProduct(); // Refresh list
-            }
-        }
+        // Waktu real-time
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
 
-        // Jalankan render awal
-        searchProduct();
+        // Load awal
+        loadVpsOrders();
     </script>
 </body>
 </html>
-
-
-
