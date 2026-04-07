@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XTR MARKET</title>
+    <title>XTR MARKET // Katalog</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
@@ -16,39 +16,46 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
         /* --- UI UTAMA --- */
         .header { position: sticky; top: 0; z-index: 100; text-align: center; padding: 15px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .header h2 { color: var(--primary); font-size: 1.1rem; font-weight: 800; }
+        .header h2 { color: var(--primary); font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
         #marketList { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 8px; }
 
-        .product-card { background: white; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .product-card { background: white; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1); transition: transform 0.1s; }
+        .product-card:active { transform: scale(0.97); }
         
         .img-card { position: relative; width: 100%; padding-top: 100%; background: #eee; }
         .img-card img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
 
-        .info { padding: 8px; }
+        .info { padding: 8px; flex-grow: 1; display: flex; flex-direction: column; }
         .p-title { font-size: 12px; font-weight: 500; color: #333; height: 34px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
-        .p-price { font-size: 14px; font-weight: 700; color: var(--primary); }
+        .p-price { font-size: 14px; font-weight: 700; color: var(--primary); margin-top: auto; }
 
-        /* --- MODAL DETAIL (Popup ala Shopee) --- */
+        /* --- MODAL DETAIL --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 1000; overflow-y: auto; }
         
         .modal-header { position: sticky; top: 0; background: white; padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; z-index: 10; }
-        .btn-back { font-size: 20px; cursor: pointer; color: var(--text-main); }
+        .btn-back { font-size: 20px; cursor: pointer; color: var(--text-main); padding: 5px; }
 
-        .detail-slider { width: 100%; aspect-ratio: 1/1; background: #000; overflow-x: auto; display: flex; scroll-snap-type: x mandatory; }
-        .detail-slider img { min-width: 100%; object-fit: contain; scroll-snap-align: start; }
+        .detail-slider { width: 100%; aspect-ratio: 1/1; background: #000; overflow-x: auto; display: flex; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }
+        .detail-slider::-webkit-scrollbar { display: none; }
+        
+        .detail-slider img { min-width: 100%; object-fit: contain; scroll-snap-align: start; transition: transform 0.3s ease; cursor: zoom-in; }
+        .detail-slider img.zoomed { transform: scale(1.6); cursor: zoom-out; z-index: 100; }
 
         .detail-info { padding: 20px; }
         .detail-price { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
         .detail-title { font-size: 18px; font-weight: 600; line-height: 1.4; margin-bottom: 15px; }
+        .detail-sku { font-size: 11px; color: #26aa99; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
         .detail-desc { font-size: 14px; color: #555; line-height: 1.6; white-space: pre-line; border-top: 1px solid #eee; padding-top: 15px; }
 
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; padding: 10px; border-top: 1px solid #eee; display: flex; gap: 10px; }
-        .btn-wa { flex: 1; background: var(--primary); color: white; text-align: center; padding: 12px; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 14px; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; padding: 10px; border-top: 1px solid #eee; display: flex; gap: 10px; z-index: 100; }
+        .btn-wa { flex: 1; background: var(--primary); color: white; text-align: center; padding: 12px; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
+        .empty-state { grid-column: span 2; text-align: center; padding: 100px 20px; color: #ccc; }
     </style>
 </head>
 <body>
@@ -70,12 +77,13 @@
         <div class="detail-info">
             <div id="detailPrice" class="detail-price"></div>
             <div id="detailTitle" class="detail-title"></div>
-            <div id="detailSKU" style="font-size: 11px; color: #26aa99; font-weight: 700; margin-bottom: 10px;"></div>
+            <div id="detailSKU" class="detail-sku"></div>
             <div id="detailDesc" class="detail-desc"></div>
         </div>
 
-        <div style="height: 80px;"></div> <div class="bottom-nav">
-            <a id="btnBeli" href="#" class="btn-wa">
+        <div style="height: 80px;"></div> 
+        <div class="bottom-nav">
+            <a id="btnBeli" href="#" class="btn-wa" target="_blank">
                 <i class="fab fa-whatsapp"></i> BELI SEKARANG
             </a>
         </div>
@@ -84,13 +92,19 @@
     <script>
         const ADMIN_WA = "639319692180"; 
         let currentProducts = [];
+        let autoSlideInterval;
 
         function renderMarket() {
             const container = document.getElementById('marketList');
-            currentProducts = JSON.parse(localStorage.getItem("dataJB")) || [];
+            const rawData = JSON.parse(localStorage.getItem("dataJB")) || [];
+            currentProducts = [...rawData].reverse();
 
             if(currentProducts.length === 0) {
-                container.innerHTML = `<p style="grid-column:span 2; text-align:center; padding:50px;">Kosong...</p>`;
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open fa-3x"></i>
+                        <p style="margin-top:10px;">Belum ada produk tersedia.</p>
+                    </div>`;
                 return;
             }
 
@@ -99,7 +113,7 @@
                 return `
                 <div class="product-card" onclick="openDetail(${index})">
                     <div class="img-card">
-                        <img src="${cover}">
+                        <img src="${cover}" loading="lazy">
                     </div>
                     <div class="info">
                         <p class="p-title">${item.judul || 'Produk XTR'}</p>
@@ -107,40 +121,65 @@
                     </div>
                 </div>
                 `;
-            }).reverse().join('');
+            }).join('');
         }
 
         function openDetail(index) {
-            const item = currentProducts.reverse()[index]; // Re-reverse karena di render kita balik
-            currentProducts.reverse(); // Balikin lagi ke asal
-
+            const item = currentProducts[index];
             const modal = document.getElementById('productModal');
             const slider = document.getElementById('detailSlider');
             const hargaFormatted = parseInt(item.harga).toLocaleString('id-ID');
 
-            // Isi Foto Slider
-            slider.innerHTML = item.fotos.map(f => `<img src="${f}">`).join('');
+            // 1. Reset & Isi Foto Slider
+            slider.innerHTML = item.fotos.map(f => `<img src="${f}" onclick="toggleZoom(this)">`).join('');
+            slider.scrollLeft = 0;
             
-            // Isi Info
+            // 2. Isi Tulisan
             document.getElementById('detailPrice').innerText = `Rp ${hargaFormatted}`;
             document.getElementById('detailTitle').innerText = item.judul || 'Produk XTR';
             document.getElementById('detailSKU').innerText = `KODE: ${item.sku || 'XTR-UNKNOWN'}`;
             document.getElementById('detailDesc').innerText = item.deskripsi || '';
 
-            // Set Link WhatsApp sesuai format permintaanmu
+            // 3. Link WhatsApp
             const pesan = `Halo Admin, saya mau beli barang ini:%0A%0AKode: ${item.sku}%0AHarga: Rp ${hargaFormatted}%0A%0AHubungkan saya dengan penjual.`;
             document.getElementById('btnBeli').href = `https://wa.me/${ADMIN_WA}?text=${pesan}`;
 
             modal.style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Kunci scroll layar utama
+            document.body.style.overflow = 'hidden';
+
+            // 4. AUTO SLIDE 3.5 DETIK
+            clearInterval(autoSlideInterval);
+            if (item.fotos.length > 1) {
+                let slideIdx = 0;
+                autoSlideInterval = setInterval(() => {
+                    // Cek jika user sedang men-zoom, hentikan slide sementara
+                    const isZoomed = slider.querySelector('.zoomed');
+                    if (!isZoomed) {
+                        slideIdx++;
+                        if (slideIdx >= item.fotos.length) slideIdx = 0;
+                        slider.scrollTo({ 
+                            left: slider.offsetWidth * slideIdx, 
+                            behavior: 'smooth' 
+                        });
+                    }
+                }, 3500);
+            }
+        }
+
+        // Fungsi Perbesar Gambar (Toggle)
+        function toggleZoom(img) { 
+            img.classList.toggle('zoomed'); 
         }
 
         function closeDetail() {
+            clearInterval(autoSlideInterval); // Stop slide saat modal tutup
             document.getElementById('productModal').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
 
+        // Jalankan saat halaman dibuka
         window.onload = renderMarket;
     </script>
 </body>
 </html>
+
