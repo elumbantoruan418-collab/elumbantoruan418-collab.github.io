@@ -3,150 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winz // SUPPORT CENTER</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <title>Winz Cloud // Secure Access</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
     <style>
         :root {
-            --bg: #030305;
-            --card-bg: #0d0d1a;
-            --primary: #38bdf8;
-            --instagram: #e1306c;
-            --telegram: #0088cc;
-            --owner-chat: #facc15;
-            --font-display: 'Rajdhani', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
+            --brand-primary: #6366f1; 
+            --brand-secondary: #8b5cf6;
+            --bg-body: #0f172a; /* Gelap Premium */
+            --white: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: var(--bg); 
-            color: #fff; 
-            font-family: var(--font-display); 
-            min-height: 100vh;
+        * { margin:0; padding:0; box-sizing:border-box; }
+        
+        body {
+            background-color: var(--bg-body);
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
-            position: relative;
-        }
-
-        /* Tombol Kembali Pojok Kiri Atas */
-        .back-nav {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            text-decoration: none;
-            color: #fff;
-            display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-family: var(--font-mono);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: 0.3s;
-            z-index: 100;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .back-nav:hover {
-            background: rgba(56, 189, 248, 0.1);
-            border-color: var(--primary);
-            color: var(--primary);
+        /* TOAST ERROR */
+        #toast { 
+            position: fixed; top: 20px; right: 20px; 
+            background: #ef4444; color: white; padding: 16px 24px; border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.3);
+            transform: translateX(150%); transition: 0.5s; z-index: 1000;
         }
+        #toast.visible { transform: translateX(0); }
 
-        .support-card {
-            background: var(--card-bg);
+        .auth-card {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 24px;
             width: 100%;
             max-width: 400px;
-            padding: 30px;
-            border-radius: 24px;
-            border: 1px solid rgba(56, 189, 248, 0.1);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            border: 1px solid #334155;
             text-align: center;
-            animation: fadeIn 0.5s ease-out;
-            position: relative;
         }
 
-        .icon-box {
-            width: 70px;
-            height: 70px;
-            background: rgba(56, 189, 248, 0.1);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            color: var(--primary);
-            font-size: 30px;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-            transform: rotate(-5deg);
+        .brand-logo {
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+            border-radius: 14px; margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center;
         }
+        .brand-logo i { color: white; font-size: 24px; }
 
-        h2 { letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; font-size: 24px; }
-        p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; margin-bottom: 10px; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
 
-        .btn-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: bold;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255,255,255,0.05);
+        .form-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; font-size: 12px; font-weight: 700; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; }
+        
+        .input-wrapper { position: relative; }
+        .input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b; }
+
+        .form-control {
+            width: 100%; padding: 12px 16px 12px 48px;
+            background: #0f172a; border: 1px solid #334155;
+            border-radius: 12px; color: white; outline: none; transition: 0.3s;
         }
+        .form-control:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
 
-        .owner { background: var(--owner-chat); color: #000; }
-        .ig { background: #1a1a2e; color: #fff; border: 1px solid var(--instagram); }
-        .tg { background: #1a1a2e; color: #fff; border: 1px solid var(--telegram); }
+        .btn-login {
+            width: 100%; padding: 14px; background: var(--brand-primary);
+            color: white; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s;
+        }
+        .btn-login:hover { background: var(--brand-secondary); transform: translateY(-2px); }
 
-        .btn-link:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .owner:hover { filter: brightness(1.2); }
+        .divider { margin: 25px 0; border-top: 1px solid #334155; position: relative; }
+        .divider span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #1e293b; padding: 0 10px; font-size: 12px; color: #64748b; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-register {
+            display: block; width: 100%; padding: 12px;
+            border: 1px solid #334155; border-radius: 12px;
+            color: white; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s;
+        }
+        .btn-register:hover { background: #334155; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="back-nav">
-        <i class="fas fa-arrow-left"></i> KEMBALI
-    </a>
+<div id="toast">Gagal masuk. Username atau Password salah!</div>
 
-    <div class="support-card">
-        <div class="icon-box">
-            <i class="fas fa-headset"></i>
-        </div>
-        <h2>XTR CENTER</h2>
-        <p>Butuh bantuan teknis atau info layanan? Hubungi owner atau join channel kami.</p>
-
-        <a href="obrolan.html" class="btn-link owner">
-            <i class="fas fa-comment-dots"></i> CHAT OWNER (ONLINE)
-        </a>
-
-        <a href="https://www.instagram.com/erwin__shbg" target="_blank" class="btn-link ig">
-            <i class="fab fa-instagram"></i> erwin__shbg
-        </a>
-
-        <a href="https://t.me/Winz_ofcial" target="_blank" class="btn-link tg">
-            <i class="fab fa-telegram-plane"></i> CHANNEL TELEGRAM
-        </a>
-
-        <div style="margin-top: 25px; font-size: 10px; opacity: 0.3; font-family: var(--font-mono); letter-spacing: 1px;">
-            WINZ PROJECT // INFRASTRUCTURE ACCESS
-        </div>
+<div class="auth-card">
+    <div class="brand-logo">
+        <i class="fas fa-terminal"></i>
     </div>
+    <h1>Winz Cloud Access</h1>
+    <p>Sign in to manage your framework</p>
+
+    <form id="loginForm">
+        <div class="form-group">
+            <label>Username</label>
+            <div class="input-wrapper">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" class="form-control" placeholder="Your username" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Security Password</label>
+            <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login">Login System</button>
+
+        <div class="divider"><span>ATAU</span></div>
+
+        <a href="register.html" class="btn-register">Buat Akun Baru</a>
+    </form>
+</div>
+
+<script src="users.js"></script>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const userInp = document.getElementById('username').value.trim();
+        const passInp = document.getElementById('password').value.trim();
+
+        // Ambil data users dari LocalStorage (yang dikelola users.js)
+        const allUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+        // Validasi
+        const userFound = allUsers.find(u => u.username === userInp && u.password === passInp);
+
+        if (userFound) {
+            // Jika berhasil, simpan session sementara
+            localStorage.setItem("currentUser", JSON.stringify(userFound));
+            
+            // Arahkan ke dashboard (Ganti 'dashboard.html' sesuai filemu)
+            alert("Login Berhasil! Selamat datang " + userFound.username);
+            window.location.href = "dashboard.html"; 
+        } else {
+            // Munculkan Toast Error
+            const toast = document.getElementById('toast');
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 3000);
+        }
+    });
+</script>
 
 </body>
 </html>
+
+
+
+
 
 
 
