@@ -9,128 +9,95 @@
         :root { 
             --bg: #030305; 
             --card: #0d0d1a; 
-            --primary: #ee4d2d; /* Oranye Shopee agar matching */
+            --primary: #ee4d2d; 
             --accent: #38bdf8; 
+            --warning: #fbbf24;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            background: var(--bg); 
-            color: white; 
-            font-family: 'Inter', sans-serif; 
-            padding: 20px; 
-        }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; padding: 20px; }
 
-        .container { 
-            max-width: 500px; 
-            margin: 0 auto; 
-            background: var(--card); 
-            padding: 25px; 
-            border-radius: 20px; 
-            border: 1px solid rgba(56, 189, 248, 0.1); 
-        }
-
+        .container { max-width: 500px; margin: 0 auto; background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.1); }
         h2 { color: var(--accent); margin-bottom: 20px; text-align: center; font-size: 1.2rem; }
 
+        /* MENU PERINGATAN */
+        .alert-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid var(--warning);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .alert-box i { color: var(--warning); font-size: 20px; }
+        .alert-box p { font-size: 12px; color: #fef3c7; line-height: 1.5; }
+        .alert-box b { color: var(--warning); }
+
         .form-group { margin-bottom: 15px; }
-        
-        label { 
-            display: block; 
-            font-size: 11px; 
-            color: var(--accent); 
-            margin-bottom: 5px; 
-            font-weight: 600;
-            text-transform: uppercase;
-        }
+        label { display: block; font-size: 11px; color: var(--accent); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
 
-        input, textarea { 
-            width: 100%; 
-            padding: 12px; 
-            background: #151c2c; 
-            border: 1px solid #1e293b; 
-            border-radius: 10px; 
-            color: white; 
-            font-size: 14px;
-            outline: none;
-        }
-
+        input, textarea { width: 100%; padding: 12px; background: #151c2c; border: 1px solid #1e293b; border-radius: 10px; color: white; font-size: 14px; outline: none; }
         input:focus, textarea:focus { border-color: var(--accent); }
 
-        .btn-upload { 
-            width: 100%; 
-            padding: 15px; 
-            background: var(--primary); 
-            border: none; 
-            border-radius: 10px; 
-            color: white; 
-            font-weight: 800; 
-            cursor: pointer; 
-            margin-top: 10px; 
-            text-transform: uppercase;
-        }
+        .btn-upload { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 10px; color: white; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; transition: 0.3s; }
+        .btn-upload:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(238, 77, 45, 0.4); }
 
-        #imagePreview { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 10px; 
-            margin-top: 10px; 
-        }
-
-        .preview-img { 
-            width: 100%; 
-            height: 80px; 
-            object-fit: cover; 
-            border-radius: 8px; 
-            border: 1px solid var(--accent); 
-        }
+        #imagePreview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .preview-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--accent); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2><i class="fas fa-plus-circle"></i> TAMBAH PRODUK BARU</h2>
+    <h2><i class="fas fa-plus-circle"></i> TAMBAH PRODUK</h2>
+
+    <div class="alert-box">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>
+            <b>PENTING:</b> Admin akan menaikkan harga sedikit dari harga asli untuk biaya <b>MC (Rekber)</b> Anda. Wajib gunakan MC demi keamanan bersama!
+        </p>
+    </div>
+
     <form id="jbForm">
         <div class="form-group">
-            <label><i class="fas fa-camera"></i> Foto Produk (Bisa Pilih Banyak)</label>
+            <label><i class="fas fa-camera"></i> Foto Produk (Banyak)</label>
             <input type="file" id="poto" accept="image/*" multiple required onchange="previewImages()">
             <div id="imagePreview"></div>
         </div>
 
         <div class="form-group">
             <label><i class="fas fa-tag"></i> Judul Produk</label>
-            <input type="text" id="judul" placeholder="Contoh: Akun FF Old Evo Gun 3" required>
+            <input type="text" id="judul" placeholder="Contoh: Akun FF Old Evo Gun" required>
         </div>
 
         <div class="form-group">
             <label><i class="fas fa-money-bill-wave"></i> Harga (Rp)</label>
-            <input type="number" id="harga" placeholder="Masukkan angka saja..." required>
+            <input type="number" id="harga" placeholder="Masukkan harga bersih Anda..." required>
         </div>
 
         <div class="form-group">
-            <label><i class="fas fa-align-left"></i> Deskripsi Singkat</label>
-            <textarea id="deskripsi" rows="3" placeholder="Detail spek singkat..." required></textarea>
+            <label><i class="fas fa-align-left"></i> Deskripsi</label>
+            <textarea id="deskripsi" rows="3" placeholder="Detail spesifikasi..." required></textarea>
         </div>
 
         <div class="form-group">
-            <label><i class="fas fa-phone"></i> Nomor HP Penjual</label>
-            <input type="text" id="nomorPenjual" placeholder="628xxxx (Gunakan kode negara)" required>
+            <label><i class="fas fa-phone"></i> WhatsApp Penjual</label>
+            <input type="text" id="nomorPenjual" placeholder="628xxxx" required>
         </div>
 
-        <button type="submit" class="btn-upload">POSTING KE MARKET</button>
+        <button type="submit" class="btn-upload">POSTING SEKARANG</button>
     </form>
 </div>
 
 <script>
     let base64Images = [];
-
-    // Fungsi Preview Gambar
     function previewImages() {
         const preview = document.getElementById('imagePreview');
         preview.innerHTML = "";
         base64Images = [];
         const files = document.getElementById('poto').files;
-
         Array.from(files).forEach(file => {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -144,35 +111,26 @@
         });
     }
 
-    // Fungsi Simpan Data
     document.getElementById('jbForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
         const dataBarang = {
             id: Date.now(),
-            sku: "XTR-" + Math.floor(10000 + Math.random() * 90000),
             fotos: base64Images,
-            judul: document.getElementById('judul').value, // Mengambil Judul
+            judul: document.getElementById('judul').value,
             harga: document.getElementById('harga').value,
             deskripsi: document.getElementById('deskripsi').value,
             nomerPenjual: document.getElementById('nomorPenjual').value,
             waktu: new Date().toLocaleString('id-ID')
         };
-
-        // Ambil data lama dari localStorage
         const listBarang = JSON.parse(localStorage.getItem("dataJB")) || [];
-        
-        // Tambahkan data baru
         listBarang.push(dataBarang);
-        
-        // Simpan kembali
         localStorage.setItem("dataJB", JSON.stringify(listBarang));
-
         alert("Produk Berhasil Diupload!");
-        window.location.href = "simpan.html"; // Pastikan nama file marketplace kamu benar
+        window.location.href = "simpan.html";
     });
 </script>
 </body>
 </html>
+
 
 
