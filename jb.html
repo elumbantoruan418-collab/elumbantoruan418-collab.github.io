@@ -5,118 +5,245 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XTR JB // Upload Product</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --bg: #030305; --card: #0d0d1a; --primary: #ee4d2d; --accent: #38bdf8; --warning: #fbbf24; }
+        :root { 
+            --bg: #030305; 
+            --card: #0d0d1a; 
+            --primary: #ee4d2d; 
+            --accent: #38bdf8; 
+            --warning: #fbbf24; 
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; padding: 20px; }
-        .container { max-width: 500px; margin: 0 auto; background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.1); }
-        h2 { color: var(--accent); margin-bottom: 20px; text-align: center; }
-        .alert-box { background: rgba(251, 191, 36, 0.1); border: 1px solid var(--warning); padding: 12px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; font-size: 11px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 11px; color: var(--accent); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
-        input, textarea { width: 100%; padding: 12px; background: #151c2c; border: 1px solid #1e293b; border-radius: 10px; color: white; outline: none; }
-        .btn-upload { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 10px; color: white; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
-        .btn-upload:disabled { background: #444; cursor: not-allowed; }
-        #imagePreview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
-        .preview-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--accent); }
+        
+        body { 
+            background: var(--bg); 
+            color: white; 
+            font-family: 'Inter', sans-serif; 
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container { 
+            max-width: 500px; 
+            margin: 0 auto; 
+            background: var(--card); 
+            padding: 25px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(56, 189, 248, 0.1); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h2 { 
+            color: var(--accent); 
+            margin-bottom: 20px; 
+            text-align: center; 
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .alert-box { 
+            background: rgba(251, 191, 36, 0.1); 
+            border: 1px solid var(--warning); 
+            padding: 12px; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            gap: 12px; 
+            align-items: center; 
+            font-size: 11px; 
+        }
+
+        .form-group { margin-bottom: 18px; }
+        
+        label { 
+            display: block; 
+            font-size: 11px; 
+            color: var(--accent); 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+
+        input, textarea { 
+            width: 100%; 
+            padding: 14px; 
+            background: #151c2c; 
+            border: 1px solid #1e293b; 
+            border-radius: 12px; 
+            color: white; 
+            font-size: 14px;
+            outline: none; 
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus { border-color: var(--accent); background: #1a2438; }
+
+        /* Custom File Input */
+        input[type="file"] { padding: 10px; font-size: 12px; color: #94a3b8; }
+
+        .btn-upload { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--primary); 
+            border: none; 
+            border-radius: 12px; 
+            color: white; 
+            font-weight: 800; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            text-transform: uppercase;
+            transition: 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .btn-upload:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(238, 77, 45, 0.4); }
+        .btn-upload:disabled { background: #334155; cursor: not-allowed; opacity: 0.6; }
+
+        #imagePreview { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px; 
+            margin-top: 12px; 
+        }
+
+        .preview-img { 
+            width: 100%; 
+            height: 90px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+            border: 2px solid var(--accent); 
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2><i class="fas fa-plus-circle"></i> TAMBAH PRODUK</h2>
+    
     <div class="alert-box">
-        <i class="fas fa-exclamation-triangle" style="color:var(--warning)"></i>
-        <p>Gunakan maksimal 3-5 foto agar memori browser tidak penuh (Limit 5MB).</p>
+        <i class="fas fa-shield-alt" style="color:var(--warning); font-size: 18px;"></i>
+        <p><b>INFO:</b> Gambar dikompres otomatis agar hemat kuota & memori. Gunakan <b>MC/REKBER</b> demi keamanan transaksi!</p>
     </div>
 
     <form id="jbForm">
         <div class="form-group">
-            <label>Foto Produk (Bisa banyak)</label>
+            <label><i class="fas fa-images"></i> Foto Produk (Bisa Pilih Banyak)</label>
             <input type="file" id="poto" accept="image/*" multiple required onchange="processImages(this)">
             <div id="imagePreview"></div>
         </div>
+
         <div class="form-group">
-            <label>Judul</label>
-            <input type="text" id="judul" placeholder="Contoh: Drone XT808" required>
+            <label><i class="fas fa-shopping-cart"></i> Judul Produk</label>
+            <input type="text" id="judul" placeholder="Contoh: Akun FF Old Evo Gun" required>
         </div>
+
         <div class="form-group">
-            <label>Harga Bersih (Rp)</label>
-            <input type="number" id="harga" placeholder="Masukkan harga..." required>
+            <label><i class="fas fa-money-bill-wave"></i> Harga Jual (Rp)</label>
+            <input type="number" id="harga" placeholder="Masukkan harga bersih..." required>
         </div>
+
         <div class="form-group">
-            <label>Deskripsi</label>
-            <textarea id="deskripsi" rows="3" placeholder="Detail spesifikasi..." required></textarea>
+            <label><i class="fas fa-edit"></i> Deskripsi Produk</label>
+            <textarea id="deskripsi" rows="4" placeholder="Sebutkan spek lengkap, minus, dll..." required></textarea>
         </div>
+
         <div class="form-group">
-            <label>WhatsApp Penjual</label>
-            <input type="text" id="nomorPenjual" placeholder="628xxxx" required>
+            <label><i class="fab fa-whatsapp"></i> WhatsApp Penjual</label>
+            <input type="text" id="nomorPenjual" placeholder="Contoh: 62812345678" required>
         </div>
-        <button type="submit" class="btn-upload" id="btnSubmit">POSTING KE MARKET</button>
+
+        <button type="submit" class="btn-upload" id="btnSubmit">POSTING SEKARANG</button>
     </form>
 </div>
 
 <script>
     let base64Images = [];
 
-    // FUNGSI KOMPRES AGAR LOCALSTORAGE TIDAK FULL
-    async function processImages(input) {
+    // FUNGSI KOMPRES & PROSES GAMBAR (STABIL UNTUK SEMUA HP)
+    function processImages(input) {
         const preview = document.getElementById('imagePreview');
         const btn = document.getElementById('btnSubmit');
         preview.innerHTML = "";
         base64Images = [];
+        
+        if (!input.files || input.files.length === 0) return;
+
         btn.disabled = true;
         btn.innerText = "MENGOMPRES FOTO...";
 
+        let filesProcessed = 0;
         const files = Array.from(input.files);
-        
-        for (let file of files) {
-            try {
-                const bitmap = await createImageBitmap(file);
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                // Set ukuran maksimal lebih kecil (600px) untuk menghemat banyak memori
-                let width = bitmap.width;
-                let height = bitmap.height;
-                const max_size = 600; 
 
-                if (width > height) {
-                    if (width > max_size) {
-                        height *= max_size / width;
-                        width = max_size;
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Ukuran maksimal 750px agar kualitas tetap terjaga tapi ringan
+                    let width = img.width;
+                    let height = img.height;
+                    const max_size = 750;
+
+                    if (width > height) {
+                        if (width > max_size) {
+                            height *= max_size / width;
+                            width = max_size;
+                        }
+                    } else {
+                        if (height > max_size) {
+                            width *= max_size / height;
+                            height = max_size;
+                        }
                     }
-                } else {
-                    if (height > max_size) {
-                        width *= max_size / height;
-                        height = max_size;
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Konversi ke JPEG dengan kualitas 0.7 (Hemat Memori)
+                    const compressedData = canvas.toDataURL('image/jpeg', 0.7);
+                    base64Images.push(compressedData);
+
+                    // Tampilkan Preview
+                    const previewImg = document.createElement('img');
+                    previewImg.src = compressedData;
+                    previewImg.className = 'preview-img';
+                    preview.appendChild(previewImg);
+
+                    filesProcessed++;
+                    // Jika semua foto selesai diproses
+                    if (filesProcessed === files.length) {
+                        btn.disabled = false;
+                        btn.innerText = "POSTING SEKARANG";
                     }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                ctx.drawImage(bitmap, 0, 0, width, height);
-                
-                // Kualitas diturunkan ke 0.5 (50%) agar file sangat kecil (sekitar 30-50KB per foto)
-                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5);
-                base64Images.push(compressedBase64);
-
-                const img = document.createElement('img');
-                img.src = compressedBase64;
-                img.className = 'preview-img';
-                preview.appendChild(img);
-            } catch (e) {
-                console.error("Gagal proses gambar:", e);
-            }
-        }
-        
-        btn.disabled = false;
-        btn.innerText = "POSTING KE MARKET";
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
     }
 
+    // SIMPAN KE LOCALSTORAGE & REDIRECT
     document.getElementById('jbForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
+        const btn = document.getElementById('btnSubmit');
+        
+        if (base64Images.length === 0) {
+            alert("Harap tunggu hingga foto selesai diproses!");
+            return;
+        }
+
         const dataBarang = {
             id: Date.now(),
             sku: "XTR-" + Math.floor(1000 + Math.random() * 9000),
@@ -128,34 +255,18 @@
             waktu: new Date().toLocaleString('id-ID')
         };
 
-        let listBarang = JSON.parse(localStorage.getItem("dataJB")) || [];
-        
-        // Batasi market hanya menyimpan 20 produk terbaru agar web tidak "mati" karena memori penuh
-        if (listBarang.length >= 20) {
-            listBarang.shift(); // Hapus jualan paling lama
-        }
-        
+        const listBarang = JSON.parse(localStorage.getItem("dataJB")) || [];
         listBarang.push(dataBarang);
         
         try {
             localStorage.setItem("dataJB", JSON.stringify(listBarang));
-            alert("Produk Berhasil Diupload!");
-            window.location.href = "index.html";
+            alert("✅ PRODUK BERHASIL DIPOSTING!");
+            window.location.href = "index.html"; 
         } catch (err) {
-            // Jika masih gagal, paksa hapus 5 item lama
-            alert("Memori browser penuh! Menghapus beberapa jualan lama otomatis...");
-            listBarang.splice(0, 5); 
-            localStorage.setItem("dataJB", JSON.stringify(listBarang));
-            location.reload();
+            alert("❌ MEMORI PENUH! Kurangi jumlah foto atau hapus beberapa produk lama di market.");
+            console.error(err);
         }
     });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
