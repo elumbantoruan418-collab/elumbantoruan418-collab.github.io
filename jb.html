@@ -10,12 +10,20 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; padding: 20px; }
         .container { max-width: 500px; margin: 0 auto; background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.1); }
-        h2 { color: var(--accent); margin-bottom: 20px; text-align: center; }
+        h2 { color: var(--accent); margin-bottom: 20px; text-align: center; font-size: 1.2rem; }
+        
         .alert-box { background: rgba(251, 191, 36, 0.1); border: 1px solid var(--warning); padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 12px; align-items: center; font-size: 12px; }
+        .alert-box i { color: var(--warning); font-size: 20px; }
+
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 11px; color: var(--accent); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
-        input, textarea { width: 100%; padding: 12px; background: #151c2c; border: 1px solid #1e293b; border-radius: 10px; color: white; outline: none; }
-        .btn-upload { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 10px; color: white; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+
+        input, textarea { width: 100%; padding: 12px; background: #151c2c; border: 1px solid #1e293b; border-radius: 10px; color: white; font-size: 14px; outline: none; }
+        input:focus { border-color: var(--accent); }
+
+        .btn-upload { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 10px; color: white; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; transition: 0.3s; }
+        .btn-upload:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(238, 77, 45, 0.4); }
+
         #imagePreview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
         .preview-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--accent); }
     </style>
@@ -23,61 +31,88 @@
 <body>
 
 <div class="container">
-    <h2><i class="fas fa-plus-circle"></i> POSTING JUALAN</h2>
+    <h2><i class="fas fa-plus-circle"></i> TAMBAH PRODUK</h2>
+
     <div class="alert-box">
         <i class="fas fa-exclamation-triangle"></i>
-        <p><b>PENTING:</b> Admin akan menaikkan harga sedikit untuk biaya <b>MC (Rekber)</b>. Wajib MC!</p>
+        <p><b>PENTING:</b> Admin akan menaikkan harga sedikit untuk biaya <b>MC (Rekber)</b>. Wajib MC demi keamanan!</p>
     </div>
 
     <form id="jbForm">
         <div class="form-group">
-            <label>Foto Produk</label>
+            <label><i class="fas fa-camera"></i> Foto Produk</label>
             <input type="file" id="poto" accept="image/*" multiple required onchange="previewImages()">
             <div id="imagePreview"></div>
         </div>
+
         <div class="form-group">
-            <label>Judul</label>
-            <input type="text" id="judul" placeholder="Contoh: Akun FF Old" required>
+            <label><i class="fas fa-tag"></i> Judul Produk</label>
+            <input type="text" id="judul" placeholder="Contoh: Akun FF Old Evo Gun" required>
         </div>
+
         <div class="form-group">
-            <label>Harga (Rp)</label>
-            <input type="number" id="harga" placeholder="Harga bersih Anda..." required>
+            <label><i class="fas fa-money-bill-wave"></i> Harga Bersih (Rp)</label>
+            <input type="number" id="harga" placeholder="Contoh: 50000" required>
         </div>
+
         <div class="form-group">
-            <label>Deskripsi</label>
-            <textarea id="deskripsi" rows="3" placeholder="Detail spek..." required></textarea>
+            <label><i class="fas fa-align-left"></i> Deskripsi Lengkap</label>
+            <textarea id="deskripsi" rows="4" placeholder="Sebutkan spek lengkap di sini..." required></textarea>
         </div>
+
         <div class="form-group">
-            <label>WhatsApp Penjual</label>
+            <label><i class="fas fa-phone"></i> WhatsApp Penjual</label>
             <input type="text" id="nomorPenjual" placeholder="628xxxx" required>
         </div>
-        <button type="submit" class="btn-upload">POSTING KE MARKET</button>
+
+        <button type="submit" class="btn-upload" id="btnSubmit">POSTING KE MARKET</button>
     </form>
 </div>
 
 <script>
     let base64Images = [];
+
+    // Fungsi Preview Gambar
     function previewImages() {
         const preview = document.getElementById('imagePreview');
-        preview.innerHTML = ""; base64Images = [];
+        preview.innerHTML = "";
+        base64Images = [];
         const files = document.getElementById('poto').files;
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                base64Images.push(e.target.result);
-                const img = document.createElement('img');
-                img.src = e.target.result; img.className = 'preview-img';
-                preview.appendChild(img);
-            }
-            reader.readAsDataURL(file);
-        });
+
+        if (files) {
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    base64Images.push(e.target.result);
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'preview-img';
+                    preview.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            });
+        }
     }
 
+    // Fungsi Simpan Data
     document.getElementById('jbForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        const btn = document.getElementById('btnSubmit');
+        btn.disabled = true;
+        btn.innerText = "SEDANG MENGUPLOAD...";
+
+        // Pastikan gambar sudah terproses
+        if (base64Images.length === 0) {
+            alert("Tunggu sampai gambar muncul di preview!");
+            btn.disabled = false;
+            btn.innerText = "POSTING KE MARKET";
+            return;
+        }
+
         const dataBarang = {
-            id: Date.now(),
-            sku: "XTR-" + Math.floor(1000 + Math.random() * 9000),
+            id: Date.now(), // Digunakan sebagai fallback kode jika SKU kosong
+            sku: "XTR-" + Math.floor(1000 + Math.random() * 9000), // Generate SKU Otomatis
             fotos: base64Images,
             judul: document.getElementById('judul').value,
             harga: document.getElementById('harga').value,
@@ -85,15 +120,25 @@
             nomerPenjual: document.getElementById('nomorPenjual').value,
             waktu: new Date().toLocaleString('id-ID')
         };
+
+        // Ambil data lama, tambah yang baru, lalu simpan kembali
         const listBarang = JSON.parse(localStorage.getItem("dataJB")) || [];
         listBarang.push(dataBarang);
-        localStorage.setItem("dataJB", JSON.stringify(listBarang));
-        alert("Berhasil Terpasang di Market!");
-        window.location.href = "index.html"; // Balik ke halaman utama
+        
+        try {
+            localStorage.setItem("dataJB", JSON.stringify(listBarang));
+            alert("Produk Berhasil Diupload ke Market!");
+            window.location.href = "index.html"; // Redirect ke halaman utama
+        } catch (err) {
+            alert("Gagal Upload! Mungkin foto terlalu banyak atau ukuran file terlalu besar.");
+            btn.disabled = false;
+            btn.innerText = "POSTING KE MARKET";
+        }
     });
 </script>
 </body>
 </html>
+
 
 
 
