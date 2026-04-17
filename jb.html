@@ -3,134 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XTR JB // Upload Product</title>
+    <title>XTR MARKET</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
-        :root { 
-            --bg: #030305; 
-            --card: #0d0d1a; 
-            --primary: #ee4d2d; 
-            --accent: #38bdf8; 
-            --warning: #fbbf24;
-        }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; padding: 20px; }
+        body { background: #030305; color: white; font-family: sans-serif; padding: 15px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #38bdf8; }
+        #marketList { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .product-card { background: #0d0d1a; border-radius: 12px; overflow: hidden; border: 1px solid rgba(56,189,248,0.1); cursor: pointer; }
+        .img-card img { width: 100%; height: 110px; object-fit: cover; }
+        .info { padding: 8px; }
+        .p-title { font-size: 12px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .p-price { color: #ee4d2d; font-weight: bold; font-size: 14px; margin-top: 5px; }
 
-        .container { max-width: 500px; margin: 0 auto; background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.1); }
-        h2 { color: var(--accent); margin-bottom: 20px; text-align: center; font-size: 1.2rem; }
-
-        /* MENU PERINGATAN */
-        .alert-box {
-            background: rgba(251, 191, 36, 0.1);
-            border: 1px solid var(--warning);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .alert-box i { color: var(--warning); font-size: 20px; }
-        .alert-box p { font-size: 12px; color: #fef3c7; line-height: 1.5; }
-        .alert-box b { color: var(--warning); }
-
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 11px; color: var(--accent); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
-
-        input, textarea { width: 100%; padding: 12px; background: #151c2c; border: 1px solid #1e293b; border-radius: 10px; color: white; font-size: 14px; outline: none; }
-        input:focus, textarea:focus { border-color: var(--accent); }
-
-        .btn-upload { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 10px; color: white; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; transition: 0.3s; }
-        .btn-upload:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(238, 77, 45, 0.4); }
-
-        #imagePreview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
-        .preview-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--accent); }
+        /* Modal Detail */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #030305; z-index: 9999; display: none; overflow-y: auto; }
+        .modal-header { padding: 15px; display: flex; align-items: center; background: #0d0d1a; position: sticky; top:0; }
+        .detail-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; height: 300px; background: #000; scrollbar-width: none; }
+        .detail-slider img { flex-shrink: 0; width: 100%; height: 100%; object-fit: contain; scroll-snap-align: center; }
+        .detail-info { padding: 20px; }
+        .btn-wa { display: block; background: #ee4d2d; color: white; text-align: center; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: bold; position: fixed; bottom: 20px; width: 90%; left: 5%; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2><i class="fas fa-plus-circle"></i> TAMBAH PRODUK</h2>
-
-    <div class="alert-box">
-        <i class="fas fa-exclamation-triangle"></i>
-        <p>
-            <b>PENTING:</b> Admin akan menaikkan harga sedikit dari harga asli untuk biaya <b>MC (Rekber)</b> Anda. Wajib gunakan MC demi keamanan bersama!
-        </p>
+    <div class="header">
+        <h3><i class="fas fa-shopping-bag"></i> XTR MARKET</h3>
+        <a href="upload.html" style="color: #38bdf8; text-decoration: none; font-size: 12px; border: 1px solid; padding: 5px 10px; border-radius: 5px;">+ JUAL</a>
     </div>
 
-    <form id="jbForm">
-        <div class="form-group">
-            <label><i class="fas fa-camera"></i> Foto Produk (Banyak)</label>
-            <input type="file" id="poto" accept="image/*" multiple required onchange="previewImages()">
-            <div id="imagePreview"></div>
+    <div id="marketList"></div>
+
+    <div id="productModal" class="modal">
+        <div class="modal-header">
+            <i class="fas fa-arrow-left" onclick="closeDetail()"></i>
+            <span style="margin-left: 15px;">Detail Produk</span>
         </div>
-
-        <div class="form-group">
-            <label><i class="fas fa-tag"></i> Judul Produk</label>
-            <input type="text" id="judul" placeholder="Contoh: Akun FF Old Evo Gun" required>
+        <div id="detailSlider" class="detail-slider"></div>
+        <div class="detail-info">
+            <h2 id="detailPrice" style="color: #ee4d2d;"></h2>
+            <h4 id="detailTitle" style="margin: 10px 0;"></h4>
+            <p id="detailSKU" style="font-size: 11px; color: #38bdf8;"></p>
+            <hr style="opacity: 0.1; margin: 15px 0;">
+            <p id="detailDesc" style="color: #94a3b8; font-size: 14px; line-height: 1.5;"></p>
         </div>
+        <div style="height: 100px;"></div>
+        <a id="btnBeli" href="#" class="btn-wa" target="_blank">HUBUNGI ADMIN</a>
+    </div>
 
-        <div class="form-group">
-            <label><i class="fas fa-money-bill-wave"></i> Harga (Rp)</label>
-            <input type="number" id="harga" placeholder="Masukkan harga bersih Anda..." required>
-        </div>
+    <script>
+        const ADMIN_WA = "639319692180";
+        let currentProducts = [];
 
-        <div class="form-group">
-            <label><i class="fas fa-align-left"></i> Deskripsi</label>
-            <textarea id="deskripsi" rows="3" placeholder="Detail spesifikasi..." required></textarea>
-        </div>
+        function renderMarket() {
+            const container = document.getElementById('marketList');
+            const data = JSON.parse(localStorage.getItem("dataJB")) || [];
+            currentProducts = [...data].reverse();
 
-        <div class="form-group">
-            <label><i class="fas fa-phone"></i> WhatsApp Penjual</label>
-            <input type="text" id="nomorPenjual" placeholder="628xxxx" required>
-        </div>
-
-        <button type="submit" class="btn-upload">POSTING SEKARANG</button>
-    </form>
-</div>
-
-<script>
-    let base64Images = [];
-    function previewImages() {
-        const preview = document.getElementById('imagePreview');
-        preview.innerHTML = "";
-        base64Images = [];
-        const files = document.getElementById('poto').files;
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                base64Images.push(e.target.result);
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.className = 'preview-img';
-                preview.appendChild(img);
+            if(currentProducts.length === 0) {
+                container.innerHTML = "<p style='grid-column: span 2; text-align:center; opacity:0.5;'>Belum ada produk.</p>";
+                return;
             }
-            reader.readAsDataURL(file);
-        });
-    }
 
-    document.getElementById('jbForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const dataBarang = {
-            id: Date.now(),
-            fotos: base64Images,
-            judul: document.getElementById('judul').value,
-            harga: document.getElementById('harga').value,
-            deskripsi: document.getElementById('deskripsi').value,
-            nomerPenjual: document.getElementById('nomorPenjual').value,
-            waktu: new Date().toLocaleString('id-ID')
-        };
-        const listBarang = JSON.parse(localStorage.getItem("dataJB")) || [];
-        listBarang.push(dataBarang);
-        localStorage.setItem("dataJB", JSON.stringify(listBarang));
-        alert("Produk Berhasil Diupload!");
-        window.location.href = "simpan.html";
-    });
-</script>
+            container.innerHTML = currentProducts.map((item, index) => `
+                <div class="product-card" onclick="openDetail(${index})">
+                    <div class="img-card"><img src="${item.fotos[0]}"></div>
+                    <div class="info">
+                        <p class="p-title">${item.judul}</p>
+                        <p class="p-price">Rp ${parseInt(item.harga).toLocaleString('id-ID')}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openDetail(index) {
+            const item = currentProducts[index];
+            document.getElementById('detailSlider').innerHTML = item.fotos.map(f => `<img src="${f}">`).join('');
+            document.getElementById('detailPrice').innerText = "Rp " + parseInt(item.harga).toLocaleString('id-ID');
+            document.getElementById('detailTitle').innerText = item.judul;
+            document.getElementById('detailSKU').innerText = "KODE: " + item.sku;
+            document.getElementById('detailDesc').innerText = item.deskripsi;
+            
+            const pesan = encodeURIComponent(`Halo Admin, mau beli produk:\n*${item.judul}*\n*Harga:* Rp ${item.harga}\n*Kode:* ${item.sku}`);
+            document.getElementById('btnBeli').href = `https://wa.me/${ADMIN_WA}?text=${pesan}`;
+            
+            document.getElementById('productModal').style.display = 'block';
+        }
+
+        function closeDetail() { document.getElementById('productModal').style.display = 'none'; }
+
+        window.onload = renderMarket;
+    </script>
 </body>
 </html>
+
 
 
 
