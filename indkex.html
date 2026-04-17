@@ -80,35 +80,25 @@
 
         .btn-login {
             width: 100%; padding: 16px; background: linear-gradient(to right, var(--brand-primary), var(--brand-secondary));
-            color: white; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 5px;
+            color: white; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px;
             text-transform: uppercase; letter-spacing: 1px;
         }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(99, 102, 241, 0.3); }
 
-        .divider { display: flex; align-items: center; text-align: center; margin: 25px 0; color: #334155; font-size: 10px; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #1e293b; }
-        .divider span { padding: 0 15px; font-weight: 700; text-transform: uppercase; }
-
-        .btn-register {
-            width: 100%; padding: 14px; background-color: transparent; color: var(--brand-primary);
-            border: 1px solid var(--brand-primary); border-radius: 14px; font-size: 13px; font-weight: 700;
-            text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;
-        }
-        .btn-register:hover { background-color: rgba(99, 102, 241, 0.1); }
     </style>
 </head>
 <body>
 
 <div id="toast">
     <i id="toastIcon" class="fas fa-circle-exclamation"></i>
-    <span id="toastMsg">Gagal masuk. Periksa kembali data Anda.</span>
+    <span id="toastMsg">Gagal kk ini kosong cuman buat iseng aja gw guna wkwkwk .</span>
 </div>
 
 <div class="auth-container">
     <div class="auth-card">
         <div class="auth-header">
             <div class="brand-logo"><i class="fas fa-cloud-bolt"></i></div>
-            <h1>Winz Cloud</h1>
+            <h1>gak ada guna kk iseng aja buat vitur ter sembunyi wkwkw, gak percaya coba aj kk 🤢🚀😭</h1>
             <p>XTR Infrastructure Management</p>
         </div>
 
@@ -130,9 +120,6 @@
             </div>
 
             <button type="submit" class="btn-login" id="btnLogin">Execute Access</button>
-
-            <div class="divider"><span>Registration Area</span></div>
-            <a href="register.html" class="btn-register"><i class="fas fa-plus"></i> DAFTAR AKUN</a>
         </form>
     </div>
 </div>
@@ -164,7 +151,6 @@
         btn.style.opacity = "0.7";
 
         setTimeout(() => {
-            // 1. CEK DATA ADMIN (Dari admin.js)
             if (typeof ADMINS !== 'undefined') {
                 const isAdmin = ADMINS.find(a => (a.username === userInp || a.id === userInp) && a.password === passInp);
                 if (isAdmin) {
@@ -176,7 +162,6 @@
                 }
             }
 
-            // 2. CEK DATABASE LOCALSTORAGE (User yang daftar di web)
             const localUsers = JSON.parse(localStorage.getItem("users")) || [];
             const isLocalUser = localUsers.find(u => 
                 (u.username === userInp || u.id === userInp) && u.password === passInp
@@ -186,13 +171,10 @@
                 localStorage.setItem("currentUser", userInp);
                 localStorage.setItem("xtr_session_id", userInp);
                 showToast("Akses Diterima! Membuka Dashboard...", "success");
-                
-                // ARAHKAN KE DASHBOARD.HTML
                 setTimeout(() => { window.location.href = "dashboard.html"; }, 1000);
                 return;
             }
 
-            // 3. JIKA GAGAL
             showToast("ACCESS DENIED: ID atau Key Salah!");
             btn.innerText = "Execute Access";
             btn.style.opacity = "1";
@@ -202,4 +184,5 @@
 
 </body>
 </html>
+
 
