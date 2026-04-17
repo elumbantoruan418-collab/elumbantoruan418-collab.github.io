@@ -383,7 +383,58 @@ menus.forEach(menu => {
 
 
 </script>
+    reader.readAsDataURL(input.files[0]);
+  }
+}
 
+function prosesOrder() {
+  const kontak = document.getElementById("kontakUser").value;
+  const paket = document.getElementById("paketVps").value;
+  const status = document.getElementById("statusBox");
+  const btn = document.getElementById("btnProses");
+
+  if (!kontak || !paket || !imgBase64) {
+      status.innerHTML = "<span style='color:#ff4d4d; font-weight:bold;'>⚠️ DATA BELUM LENGKAP!</span>";
+      return;
+  }
+
+  // Tampilkan Efek Loading
+  btn.disabled = true;
+  status.innerHTML = "<span class='loading-dots' style='color:#38bdf8; font-weight:bold;'>PROSES MOHON TUNGGU</span>";
+
+  // Simulasi Pengiriman (1.5 detik)
+  setTimeout(() => {
+    const orderData = {
+      nomor: kontak,
+      paket: paket.split("|")[0],
+      harga: currentHarga,
+      bukti: imgBase64,
+      waktu: new Date().toLocaleString()
+    };
+
+    // Simpan ke LocalStorage
+    let listOrder = JSON.parse(localStorage.getItem("vpsOrders")) || [];
+    listOrder.push(orderData);
+    localStorage.setItem("vpsOrders", JSON.stringify(listOrder));
+
+    // Update Status Berhasil
+    status.innerHTML = `
+      <div style="color:#00ff9d; font-weight:bold;">
+        ✅ PESANAN BERHASIL DIKIRIM!<br>
+        <span style="font-size:11px; color:#fff; font-weight:normal;">Silahkan tunggu konfirmasi via WA/Email.</span>
+      </div>
+    `;
+
+    // Reset Input
+    document.getElementById("kontakUser").value = "";
+    document.getElementById("paketVps").value = "";
+    document.getElementById("previewBukti").style.display = "none";
+    imgBase64 = "";
+    btn.disabled = false;
+
+  }, 1500);
+}
+</script>
 <script>
 const content = document.getElementById("content");
 
