@@ -281,7 +281,17 @@ body {
     </style>
 </head>
 <body>
-
+<a href="index.html" class="secret-link"></a>
+  <style>.secret-link { 
+  position: fixed;   /* Mengunci posisi di layar, tidak ikut tergulung (scroll) */
+  top: 0;            /* Tempel ke paling atas */
+  left: 0;           /* Tempel ke paling kiri */
+  width: 40px;       /* Lebar area klik */
+  height: 40px;      /* Tinggi area klik */
+  z-index: 10001;    /* Angka tinggi supaya dia berada di atas elemen lain (seperti header) */
+  background: transparent; /* Membuatnya bening/tak terlihat */
+}
+  </style>
     <a href="jb.html" class="btn-upload">
         <svg class="shopee-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
